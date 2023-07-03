@@ -1,4 +1,4 @@
-import {AvatarData, AvatarModelList, AvatarTemplate} from "./avatar-model.mjs";
+import {AvatarData, AvatarModelList, AvatarTemplate} from "./avatar-model";
 import {BackgroundModel, BackgroundTemplate} from "./background-model";
 import {copyAsCanvas} from "../utils/utils";
 

@@ -1,4 +1,4 @@
-import {ElementModel} from './element-model.mjs';
+import {ElementModel} from './element-model';
 import {assertArrayLength, getImageFromBlob} from "../utils/utils";
 import {
     binarizeImage,
