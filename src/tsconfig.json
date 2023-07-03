@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "target": "ESNext",
+    "module": "ESNext",
+    "moduleResolution": "node",
+    "useDefineForClassFields": true,
+    "lib": [
+      "es2022",
+      "dom"
+    ],
+    "sourceMap": true
+  }
+}
