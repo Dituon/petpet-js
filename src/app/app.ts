@@ -1,4 +1,4 @@
-import config from "../config.js"
+import config from "../../config.js"
 import {TemplateSelector} from "./template-selector"
 import {AvatarUploader} from "./uploader";
 import {ResultArea} from "./result-area/result-area.js";
