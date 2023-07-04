@@ -1,11 +1,12 @@
 #result-area {
     position: relative;
-    width: calc(min(50vw, 24em) + 8em);
+    padding: 0 2em;
     min-height: 8em;
     border-radius: 16px;
 }
 
 #result-area>canvas {
-    width: 100%;
     border-radius: inherit;
+    width: max(100%, 8em);
+    max-width: 32em;
 }

@@ -83,6 +83,7 @@ input {
 }
 
 .links {
+    margin-top: 2em;
     display: flex;
     text-align: center;
     flex-direction: column;
@@ -90,12 +91,13 @@ input {
 
 .links>a {
     color: var(--hl-text);
-    transition: font-size 0.6s;
+    font-size: 1em;
+    transition: font-size 0.6s, line-height 0.8s;
     letter-spacing: 0.06ch;
 }
 
 .links>a:hover {
-    font-size: large;
+    font-size: 2em;
     letter-spacing: 0.2ch;
 }
 
