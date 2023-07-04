@@ -4,9 +4,9 @@ import {
     binarizeImage,
     clipCircleImage,
     cropImage,
-    deformImage,
     flipImage,
     grayImage,
+    ImageDeformer,
     mirrorImage,
     rotateImage
 } from "../image-synthesis";
@@ -110,7 +110,11 @@ export function compileAvatarTemplate(template: AvatarTemplate): CompiledAvatarT
             )
             break
         case AvatarPosType.DEFORM:
-            targetPos = originPos.map(ele => assertArrayLength(ele, 5).map(e => assertArrayLength(e, 2)))
+            try {
+                targetPos = originPos.map(ele => assertArrayLength(ele, 5).map(e => assertArrayLength(e, 2)))
+            } catch (ex){
+                targetPos = [assertArrayLength(originPos, 5).map(e => assertArrayLength(e, 2))]
+            }
 
             t.pos = targetPos.map(e =>
                 e.map(ele => ele.map(el => typeof el === 'number' ? el : Parser.parse(el as string)))
@@ -147,6 +151,7 @@ export class AvatarModel extends ElementModel {
     protected frames: HTMLCanvasElement[] | HTMLImageElement[]
     private pos: XYWH[] | RO[]
     private readonly initPromise: Promise<void>
+    private deformer?: ImageDeformer
 
     constructor(template: AvatarTemplate, data: AvatarData) {
         super()
@@ -191,7 +196,6 @@ export class AvatarModel extends ElementModel {
 
     protected setStyle(): void {
         for (const style of this.template.style) {
-            console.log(style, 1)
             switch (style) {
                 case AvatarStyle.FLIP:
                     this.frames = this.frames.map(flipImage)
@@ -221,6 +225,7 @@ export class AvatarModel extends ElementModel {
                 this.pos = this.template.pos.map(ele => ele.map(this.evalExpression))
                 break
             case AvatarPosType.DEFORM:
+                this.deformer = new ImageDeformer()
                 this.pos = this.template.pos.map(ele => ele.map(e => e.map(this.evalExpression)))
                 break
         }
@@ -259,11 +264,7 @@ export class AvatarModel extends ElementModel {
                 ctx.drawImage(frame, ...pos as XYWH)
                 break
             case AvatarPosType.DEFORM:
-                const tempCanvas = document.createElement('canvas')
-                tempCanvas.width = ctx.canvas.width
-                tempCanvas.height = ctx.canvas.height
-                await deformImage(tempCanvas, frame, pos as RO)
-                ctx.drawImage(tempCanvas, 0, 0)
+                this.deformer.draw(ctx, frame, pos as RO)
                 break
         }
         ctx.globalAlpha = 1

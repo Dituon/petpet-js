@@ -4,9 +4,9 @@ import shaderSource from './clip-circle.glsl?raw'
 
 export function clipCircleImage(image: HTMLImageElement | HTMLCanvasElement): HTMLCanvasElement {
     const canvas = document.createElement('canvas')
-    const gl = canvas.getContext('webgl')
-
-    if (gl) return useGL(shaderSource, image, gl)
+    // const gl = canvas.getContext('webgl')
+    //
+    // if (gl) return useGL(shaderSource, image, gl)
 
     const ctx = canvas.getContext('2d')
 

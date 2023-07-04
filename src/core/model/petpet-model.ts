@@ -86,8 +86,8 @@ export class PetpetModelViewer {
     private userDelay: number = undefined
     private i: number = 0
     private framesCache: HTMLCanvasElement[] = []
-    private resolveFramesPromise: () => void
-    private framesCachedPromise: Promise<void> = new Promise(res => this.resolveFramesPromise = res)
+    private resolveFramesCachedPromise: () => void
+    private framesCachedPromise: Promise<void> = new Promise(res => this.resolveFramesCachedPromise = res)
 
     constructor(
         template: PetpetTemplate,
@@ -164,7 +164,7 @@ export class PetpetModelViewer {
         }
         await this.draw(index)
         this.framesCache[index] = copyAsCanvas(this.canvas, true)
-        if (this.framesCache.length === this.length) this.resolveFramesPromise()
+        if (this.framesCache.length === this.length) this.resolveFramesCachedPromise()
     }
 
     private async draw(index) {

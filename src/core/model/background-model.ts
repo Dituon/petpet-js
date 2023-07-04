@@ -67,25 +67,29 @@ export class BackgroundModel {
     }
 
     static async fetchImages(baseUrl): Promise<HTMLImageElement[]> {
-        let i = 0
         let hasError = false
 
         const queue: Set<Promise<void>> = new Set()
         const result: HTMLImageElement[] = []
 
+        let i = 0
         while (!hasError) {
             if (queue.size >= MAX_CONCURRENT_REQUESTS) await Promise.race(queue)
 
-            const request = fetch(`${baseUrl}${i++}.png`)
+            const fi = i++
+            const request = fetch(`${baseUrl}/${fi}.png`)
                 .then(p => p.blob())
                 .then(getImageFromBlob)
-                .then(img => result.push(img))
+                .then(img => {
+                    result[fi] = img
+                })
                 .catch(() => hasError = true)
             const completionPromise = request.then(() => queue.delete(completionPromise))
 
             queue.add(completionPromise)
         }
 
+        await Promise.all(queue)
         return result
     }
 }

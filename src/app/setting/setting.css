@@ -1,11 +1,12 @@
 .setting-container {
     display: flex;
     flex-direction: column;
-    gap: 10px;
-    padding: 10px;
-    background-color: #f2f2f2;
-    border: 1px solid #ccc;
-    border-radius: 4px;
+    gap: 1em;
+    margin: 2em auto 6em;
+    padding: 1.2em;
+    background-color: var(--sub-bg);
+    border: var(--text) 2px dashed;
+    border-radius: 16px;
 }
 
 .setting-container > div {
@@ -20,16 +21,18 @@
 }
 
 .setting-container button {
-    padding: 5px 10px;
-    background-color: #4caf50;
-    color: white;
+    padding: 0.6em 1em;
+    background-color: var(--card-bg);
+    color: var(--text);
     border: none;
     border-radius: 4px;
     cursor: pointer;
+    transition: color 0.5s;
+    font-variant: all-petite-caps;
 }
 
 .setting-container button:hover {
-    background-color: #45a049;
+    color: var(--sub-text);
 }
 
 .setting-container button:disabled {
