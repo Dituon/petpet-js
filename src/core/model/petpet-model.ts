@@ -107,7 +107,7 @@ export class PetpetModelViewer {
 
     async init() {
         const {posLength, frameLength} = await this.avatars.getMaxLength()
-        this.length = this.template.type === PetpetType.IMG ? frameLength : posLength
+        this.length = this.template.type === PetpetType.IMG ? frameLength : this.backgrounds.length
     }
 
     async play() {
