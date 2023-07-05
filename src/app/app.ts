@@ -7,6 +7,7 @@ import "./app.css"
 import {Setting} from "./setting/setting.js";
 import {PetpetModel, PetpetTemplate} from "../core/model/petpet-model.js";
 import {RepoLoader} from "./loader/repo-loader";
+import {Downloader} from "./downloader/downloader";
 
 /** @typedef { 'FROM' | 'TO' | 'BOT' | 'GROUP' } AvatarType */
 /** @typedef { { version: number, petData: PetpetTemplate[], url: string } } PetDataDTO */
@@ -71,16 +72,20 @@ export default class {
             this.#resultArea = new ResultArea()
             this.#parentElement.appendChild(this.#resultArea.render())
         }
+        this.#resultArea.showLoading()
 
         const petpet = new PetpetModel(this.#template, this.#template.url)
         const viewer = await petpet.generate(this.#uploader.data)
         await viewer.play()
 
-        // const blob = await encodeGif(await viewer.getFrames(), viewer.delay)
-
         this.#resultArea.canvas = viewer.canvas
+        const settingElement = document.createElement('div')
+        this.#resultArea.setting = settingElement
 
         const viewerSetting = new Setting(viewer.settingObject)
-        this.#resultArea.setting = viewerSetting.render()
+        settingElement.appendChild(viewerSetting.render())
+
+        const downloader = new Downloader(viewer)
+        settingElement.appendChild(await downloader.renderAsync())
     }
 }

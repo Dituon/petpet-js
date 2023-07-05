@@ -115,13 +115,13 @@ export class PetpetModelViewer {
         if (this.template.reverse) return this.playReverse()
         this.intervalId = setInterval(() => {
             this.drawCache(this.i++ % this.length)
-        }, this.userDelay ?? this.template.delay)
+        }, Math.abs(this.delay))
     }
 
     private playReverse() {
         this.intervalId = setInterval(() => {
-            this.drawCache(this.length - this.i++ % this.length)
-        }, this.delay)
+            this.drawCache(this.length - 1 - (this.i++ % this.length))
+        }, Math.abs(this.delay))
     }
 
     async stop() {
@@ -135,7 +135,7 @@ export class PetpetModelViewer {
             return
         }
 
-        this.userDelay = Math.abs(ms)
+        this.userDelay = ms
         if (ms > 0) {
             this.stop().then(() => this.play())
         } else {
