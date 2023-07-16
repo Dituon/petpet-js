@@ -8,10 +8,16 @@ export default defineConfig({
     },
     plugins: [
         viteStaticCopy({
-            targets: [{
-                src: './data',
-                dest: './'
-            }]
+            targets: [
+                {
+                    src: './data',
+                    dest: './'
+                },
+                {
+                    src: './index.json',
+                    dest: './'
+                }
+            ]
         })
     ]
 })
