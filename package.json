@@ -12,7 +12,8 @@
     "@dhdbstjr98/gif.js": "^1.0.2",
     "expr-eval": "^2.0.2",
     "gifuct-js": "^2.1.2",
-    "glfx-es6": "^0.0.3"
+    "glfx-es6": "^0.0.3",
+    "vite-plugin-static-copy": "^0.17.0"
   },
   "devDependencies": {
     "vite": "^4.3.9"
