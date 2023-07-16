@@ -1,0 +1,17 @@
+{
+    "type": "IMG",
+    "avatar": [],
+    "text": [
+        {
+            "text": "osu!",
+            "color": "ffffff",
+            "pos": [175,175,230],
+            "size": 104,
+            "font": "Aller-Bold",
+            "wrap": "ZOOM",
+            "align": "CENTER",
+            "style": "BOLD"
+        }
+    ],
+    "inRandomList": false
+}
