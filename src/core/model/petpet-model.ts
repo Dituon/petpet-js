@@ -41,10 +41,12 @@ export class PetpetModel {
     private initPromise: Promise<void>
     protected avatarList: AvatarModelList
     protected backgroundModel: BackgroundModel
+    textModelList: TextModelList
 
     constructor(template: PetpetTemplate, background?: HTMLImageElement[] | HTMLCanvasElement[] | string) {
         this.template = {...defaultPetpetTemplate, ...template}
         this.type = template.type
+        this.textModelList = TextModelList.createFrom(this.template.text)
         this.backgroundModel = new BackgroundModel(this.template.background)
         if (background) this.background = background
         this.initPromise = this.init()
@@ -66,11 +68,10 @@ export class PetpetModel {
 
     async generate(avatarData: AvatarData) {
         const avatars = AvatarModelList.createFrom(this.template.avatar, avatarData)
-        const texts = TextModelList.createFrom(this.template.text)
         const avatarSizeMap = await avatars.getSizeMap()
 
         const backgrounds = await this.backgroundModel.generate(avatarSizeMap)
-        return new PetpetModelViewer(this.template, backgrounds, avatars, texts)
+        return new PetpetModelViewer(this.template, backgrounds, avatars, this.textModelList)
     }
 }
 
@@ -107,7 +108,7 @@ export class PetpetModelViewer {
         this.backgrounds = backgrounds
         this.avatars = avatars
         this.texts = texts
-        this.texts.setCacheArea(this.canvas.width, this.canvas.height)
+        this.texts.setCacheArea(canvas.width, canvas.height)
 
         this.initPromise = this.init()
     }
@@ -120,14 +121,16 @@ export class PetpetModelViewer {
     async play() {
         await this.stop()
         if (this.template.reverse) return this.playReverse()
-        this.intervalId = setInterval(() => {
-            this.drawCache(this.i++ % this.length)
+        this.intervalId = setInterval(async () => {
+            await this.drawAvatarsCache(this.i++ % this.length)
+            this.drawTextsCache()
         }, Math.abs(this.delay))
     }
 
     private playReverse() {
-        this.intervalId = setInterval(() => {
-            this.drawCache(this.length - 1 - (this.i++ % this.length))
+        this.intervalId = setInterval(async () => {
+            await this.drawAvatarsCache(this.length - 1 - (this.i++ % this.length))
+            this.drawTextsCache()
         }, Math.abs(this.delay))
     }
 
@@ -163,25 +166,31 @@ export class PetpetModelViewer {
         return this.framesCache
     }
 
-    private async drawCache(index) {
+    private drawTextsCache() {
+        this.ctx.drawImage(this.texts.getCachedCanvas(), 0, 0)
+    }
+
+    private drawTexts() {
+        this.texts.draw(this.ctx)
+    }
+
+    private async drawAvatarsCache(index) {
         if (this.framesCache[index]) {
             this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
             this.ctx.drawImage(this.framesCache[index], 0, 0)
-            this.ctx.drawImage(this.texts.getCachedCanvas(), 0, 0)
             return
         }
-        await this.draw(index)
+        await this.drawAvatars(index)
         this.framesCache[index] = copyAsCanvas(this.canvas, true)
         if (this.framesCache.length === this.length) this.resolveFramesCachedPromise()
     }
 
-    private async draw(index) {
+    private async drawAvatars(index) {
         await this.initPromise
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
         for (const a of this.avatars.bottomAvatars) await a.draw(this.ctx, index)
         this.ctx.drawImage(this.getBackground(index), 0, 0)
         for (const a of this.avatars.topAvatars) await a.draw(this.ctx, index)
-        this.ctx.drawImage(this.texts.getCachedCanvas(), 0, 0)
     }
 
     get settingObject() {

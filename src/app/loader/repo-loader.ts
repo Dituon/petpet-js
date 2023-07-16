@@ -27,7 +27,7 @@ export class RepoLoader {
         const idMap: Map<string, string> = new Map()
         const fontMap: Map<string, string> = new Map()
 
-        await Promise.all(this.urls.map(async url => {
+        await Promise.allSettled(this.urls.map(async url => {
             const index = await fetch(`${url}/${INDEX_FILE}`).then(p => p.json())
             const {dataPath = DEFAULT_DATA_PATH, dataList, fontList} = index as RepoIndex
 

@@ -178,7 +178,6 @@ export class AvatarModel extends ElementModel {
         if (blob.type.startsWith('video/')) {
             this.frames = await decodeVideo(blob, this.template.pos.length)
         } else if (!blob.type.startsWith('image')) {
-            console.log(blob)
             throw new Error("不支持的格式: " + blob.type)
         }
 

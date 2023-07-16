@@ -4,7 +4,6 @@ const staticCanvas = document.createElement('canvas')
 const staticCtx = staticCanvas.getContext('2d')
 staticCtx.textBaseline = 'alphabetic'
 staticCtx.textAlign = 'left'
-staticCtx.font = 'plain 12px FFF'
 
 export enum TextAlign {
     LEFT = 'LEFT',
@@ -49,12 +48,12 @@ export interface TextTemplate {
 export const defaultTextTemplate: TextTemplate = {
     text: 'default text',
     color: '#191919',
-    pos: [10, 10],
-    size: 12,
+    pos: [50, 50],
+    size: 16,
     font: 'arial',
     style: TextStyle.PLAIN,
     wrap: TextWrap.NONE,
-    align: TextAlign.LEFT,
+    align: TextAlign.CENTER,
     position: [TextPosition.LEFT, TextPosition.TOP],
     strokeColor: '',
     strokeSize: 0
@@ -69,13 +68,18 @@ export class TextModel {
     private readonly template: TextTemplate
     private textStyle?: 'normal' | 'bold' | 'italic'
     pixelSize: number
+    private defaultPixelSize: number
     width: number
     height: number
+    backgroundSize: [number, number]
     private drawOptions: DrawTextOptions
+    private onChangeCallback: (TextModel) => any
+    private disabled: boolean = false
 
     constructor(template: TextTemplate = defaultTextTemplate) {
         this.template = {...defaultTextTemplate, ...template}
-        this.pixelSize = template.size * TextModel.dpiScale
+        this.defaultPixelSize = template.size * TextModel.dpiScale
+        this.pixelSize = this.defaultPixelSize
         this.template.color = getColor(this.template.color)
         // @ts-ignore
         this.textStyle = this.template.style === TextStyle.PLAIN ? 'normal' : this.template.style.toLowerCase()
@@ -166,9 +170,10 @@ export class TextModel {
             }
             case TextWrap.ZOOM: {
                 const maxWidth = this.template.pos[2] || TextModel.DEFAULT_MAX_WIDTH
+                staticCtx.font = `${this.textStyle} ${this.defaultPixelSize}px ${font}`
                 let originWidth = Math.max(...lines.map(line => staticCtx.measureText(line).width))
-                const scale = maxWidth / originWidth
-                const newSize = scale * this.pixelSize
+                const scale = maxWidth / (originWidth || 1)
+                const newSize = scale * this.defaultPixelSize
                 this.pixelSize = newSize
                 staticCtx.font = `${this.textStyle} ${newSize}px ${font}`
                 for (const line of lines) {
@@ -187,7 +192,7 @@ export class TextModel {
         return result
     }
 
-    getPosition(measure: TextMetrics, lineIndex: number): [number, number, number, number] {
+    private getPosition(measure: TextMetrics, lineIndex: number): [number, number, number, number] {
         const [x, y] = this.template.pos
         const width = measure.width
         const fontHeight = measure.actualBoundingBoxAscent + measure.actualBoundingBoxDescent
@@ -203,17 +208,24 @@ export class TextModel {
         }
     }
 
+    get hidden() {
+        return this.disabled
+    }
+
+    set hidden(bool: boolean) {
+        this.disabled = bool
+        this.onChangeCallback && this.onChangeCallback(this)
+    }
+
     get size() {
         return this.template.size
     }
 
     public draw(ctx: CanvasRenderingContext2D) {
+        if (this.disabled) return
         let {
-            text,
             color,
-            pos,
             align,
-            size,
             font,
             strokeColor,
             strokeSize
@@ -235,6 +247,65 @@ export class TextModel {
             }
         }
     }
+
+    get settingObject() {
+        const that = this
+        return new Proxy({
+            get x() {
+                return that.template.pos[0]
+            },
+            set x(x: number) {
+                that.template.pos[0] = x
+            },
+            get y() {
+                return that.template.pos[1]
+            },
+            set y(y: number) {
+                that.template.pos[1] = y
+            },
+            text: that.template.text,
+            color: that.template.color,
+            get size() {
+                return that.template.wrap === TextWrap.ZOOM ? undefined : that.pixelSize
+            },
+            set size(size: number) {
+                that.pixelSize = size
+            },
+            get hidden() {
+                return that.disabled
+            },
+            set hidden(bool: boolean) {
+                that.hidden = bool
+            },
+            _delete: () => that.hidden = true
+        }, {
+            set: (target, prop, value) => {
+                target[prop] = value
+                that.template[prop] = value
+                if (that.disabled) return true
+                this.setDrawOptions()
+                that.onChangeCallback && that.onChangeCallback(this)
+                return true
+            }
+        })
+    }
+
+    get settingAttributes() {
+        const range = {
+            type: 'range',
+            min: 0,
+            step: 1,
+        }
+        return {
+            x: {...range, max: this.backgroundSize ? this.backgroundSize[0] : 1000},
+            y: {...range, max: this.backgroundSize ? this.backgroundSize[1] : 1000},
+            size: {...range, max: 256}
+        }
+    }
+
+    set onchange(callback: (TextModel) => any) {
+        this.onChangeCallback = callback
+    }
 }
 
 
@@ -244,7 +315,7 @@ export class TextModelList {
     readonly topAvatars: TextModel[] = []
     readonly bottomAvatars: TextModel[] = []
     protected sizeMap: { [key: string]: number } = Object.create(null)
-    private maxLength: { posLength: number, frameLength: number }
+    private needUpdate: boolean = false
 
     constructor(arr: TextModel[]) {
         this.arr = arr
@@ -252,6 +323,7 @@ export class TextModelList {
 
         let i = 0
         for (const text of arr) {
+            text.onchange = () => this.needUpdate = true
             this.sizeMap[`text${i}Width`] = text.width
             this.sizeMap[`text${i}Height`] = text.height
             i++
@@ -265,6 +337,9 @@ export class TextModelList {
     }
 
     setCacheArea(width: number, height: number) {
+        for (const text of this.arr) {
+            text.backgroundSize = [width, height]
+        }
         const canvas = document.createElement('canvas')
         canvas.width = width
         canvas.height = height
@@ -279,10 +354,25 @@ export class TextModelList {
     updateCache() {
         this.cacheCtx.clearRect(0, 0, this.cacheCtx.canvas.width, this.cacheCtx.canvas.height)
         this.drawCache()
+        this.needUpdate = false
     }
 
     getCachedCanvas() {
+        if (this.needUpdate) this.updateCache()
         return this.cacheCtx.canvas
+    }
+
+    addTextModel() {
+        const newText = new TextModel()
+        this.arr.push(newText)
+        this.needUpdate = true
+        newText.onchange = () => this.needUpdate = true
+        newText.backgroundSize = [this.cacheCtx.canvas.width, this.cacheCtx.canvas.height]
+        return newText
+    }
+
+    get texts(): TextModel[] {
+        return this.arr
     }
 
     static createFrom(objArr: TextTemplate[]): TextModelList {

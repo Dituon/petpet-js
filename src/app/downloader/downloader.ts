@@ -41,7 +41,6 @@ export class Downloader {
             return
         }
         const delay = this.viewer.delay
-        console.log(delay)
         const blob = await encodeGif(
             delay > 0 ? this.frames : this.frames.reverse(),
             Math.abs(delay) || 65

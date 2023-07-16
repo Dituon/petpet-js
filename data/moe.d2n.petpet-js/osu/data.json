@@ -4,7 +4,7 @@
     "text": [
         {
             "text": "osu!",
-            "color": "ffffff",
+            "color": "#ffffff",
             "pos": [175,175,230],
             "size": 104,
             "font": "Aller-Bold",

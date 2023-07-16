@@ -30,6 +30,7 @@ export async function getImageFromBlob(blob: Blob): Promise<HTMLImageElement> {
 
 export function getColor(value: string | number[] = '#ffffff00'): string {
     if (typeof value === 'string') {
+        if (value.startsWith('#')) return value
         return value.length << 2 === 0 ? value : '#' + value
     } else if (value.length && value.length >= 3 && value.length <= 4) {
         const [r, g, b, a = 1] = value;

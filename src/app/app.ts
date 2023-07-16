@@ -8,12 +8,15 @@ import {Downloader} from "./downloader/downloader";
 import "./app.css"
 import {RepoLoader} from "./loader/repo-loader";
 import config from "../../config";
+import {TextUploader} from "./uploader/text-uploader";
+
 /** @typedef { 'FROM' | 'TO' | 'BOT' | 'GROUP' } AvatarType */
 
 export default class {
     protected appElement: HTMLDivElement
     protected templateChooser: TemplateSelector
     protected avatarUploader: AvatarUploader
+    protected textUploader: TextUploader
     protected resultArea: ResultArea
 
     protected inputElement = document.createElement('div')
@@ -30,9 +33,11 @@ export default class {
         this.templateChooser.onchange = () => this.update()
         this.avatarUploader = new AvatarUploader()
         this.avatarUploader.onchange = () => this.update()
+        this.textUploader = new TextUploader()
         this.inputElement.append(
             this.templateChooser.render(),
-            this.avatarUploader.render()
+            this.avatarUploader.render(),
+            this.textUploader.render()
         )
 
         this.resultArea = new ResultArea()
@@ -44,7 +49,7 @@ export default class {
         this.update()
     }
 
-    private async init(){
+    private async init() {
         const repoLoader = new RepoLoader(config.server)
         const idMap = await repoLoader.getIdMap()
         const templates = []
@@ -75,13 +80,21 @@ export default class {
 
         const petpet = new PetpetModel(template, template.url)
         const viewer = await petpet.generate(this.avatarUploader.data)
+        this.textUploader.texts = petpet.textModelList
         await viewer.play()
 
         this.resultArea.canvas = viewer.canvas
         const settingElement = document.createElement('div')
         this.resultArea.setting = settingElement
 
-        const viewerSetting = new Setting(viewer.settingObject)
+        const viewerSetting = new Setting(viewer.settingObject, {
+            delay: {
+                type: 'range',
+                min: 1,
+                max: 256,
+                step: 1
+            }
+        })
         settingElement.appendChild(viewerSetting.render())
 
         const downloader = new Downloader(viewer)
