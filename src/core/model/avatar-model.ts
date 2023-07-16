@@ -259,10 +259,10 @@ export class AvatarModel extends ElementModel {
         const pos = this.getPos(frameIndex)
         let {angle, opacity, rotate} = this.template
         ctx.globalAlpha = opacity
-        if (rotate) angle += (360 / pos.length) * frameIndex
+        if (rotate) angle += (360 / this.pos.length) * frameIndex
         switch (this.template.posType) {
             case AvatarPosType.ZOOM:
-                if (angle) frame = rotateImage(frame, angle)
+                if (angle) frame = rotateImage(frame, angle, !this.template.round)
                 switch (this.template.fit) {
                     case AvatarFit.FILL:
                         ctx.drawImage(frame, ...pos as XYWH);
