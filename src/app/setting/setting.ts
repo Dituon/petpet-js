@@ -11,6 +11,7 @@ export class Setting {
     private readonly container: HTMLDivElement
 
     constructor(obj: SettingObject) {
+        // if (!Object.keys(obj).length) return
         this.obj = obj
         this.container = document.createElement('div')
         this.container.classList.add('setting-container')

@@ -1,6 +1,7 @@
 import {AvatarData, AvatarModelList, AvatarTemplate} from "./avatar-model";
 import {BackgroundModel, BackgroundTemplate} from "./background-model";
 import {copyAsCanvas} from "../utils/utils";
+import {TextModelList, TextTemplate} from "./text-model";
 
 export enum PetpetType {
     IMG = 'IMG',
@@ -10,7 +11,7 @@ export enum PetpetType {
 export interface PetpetTemplate {
     type: PetpetType
     avatar: AvatarTemplate[]
-    text: object[]
+    text: TextTemplate[]
     background?: BackgroundTemplate
     delay?: number
     alias?: string[]
@@ -65,10 +66,11 @@ export class PetpetModel {
 
     async generate(avatarData: AvatarData) {
         const avatars = AvatarModelList.createFrom(this.template.avatar, avatarData)
+        const texts = TextModelList.createFrom(this.template.text)
         const avatarSizeMap = await avatars.getSizeMap()
 
         const backgrounds = await this.backgroundModel.generate(avatarSizeMap)
-        return new PetpetModelViewer(this.template, backgrounds, avatars)
+        return new PetpetModelViewer(this.template, backgrounds, avatars, texts)
     }
 }
 
@@ -78,6 +80,7 @@ export class PetpetModelViewer {
     private readonly ctx: CanvasRenderingContext2D
     private readonly backgrounds: HTMLImageElement[] | HTMLCanvasElement[]
     private readonly avatars: AvatarModelList
+    private readonly texts: TextModelList
 
     private length: number
     private intervalId: number;
@@ -92,7 +95,8 @@ export class PetpetModelViewer {
     constructor(
         template: PetpetTemplate,
         backgrounds: HTMLImageElement[] | HTMLCanvasElement[],
-        avatars: AvatarModelList
+        avatars: AvatarModelList,
+        texts: TextModelList
     ) {
         const canvas = document.createElement('canvas')
         this.canvas = canvas
@@ -102,11 +106,14 @@ export class PetpetModelViewer {
         this.template = template
         this.backgrounds = backgrounds
         this.avatars = avatars
+        this.texts = texts
+        this.texts.setCacheArea(this.canvas.width, this.canvas.height)
+
         this.initPromise = this.init()
     }
 
     async init() {
-        const {posLength, frameLength} = await this.avatars.getMaxLength()
+        const {posLength, frameLength = this.backgrounds.length} = await this.avatars.getMaxLength()
         this.length = this.template.type === PetpetType.IMG ? frameLength : this.backgrounds.length
     }
 
@@ -160,6 +167,7 @@ export class PetpetModelViewer {
         if (this.framesCache[index]) {
             this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
             this.ctx.drawImage(this.framesCache[index], 0, 0)
+            this.ctx.drawImage(this.texts.getCachedCanvas(), 0, 0)
             return
         }
         await this.draw(index)
@@ -173,19 +181,20 @@ export class PetpetModelViewer {
         for (const a of this.avatars.bottomAvatars) await a.draw(this.ctx, index)
         this.ctx.drawImage(this.getBackground(index), 0, 0)
         for (const a of this.avatars.topAvatars) await a.draw(this.ctx, index)
+        this.ctx.drawImage(this.texts.getCachedCanvas(), 0, 0)
     }
 
     get settingObject() {
-        const cls = this
-        return {
+        const that = this
+        return this.length === 1 ? {} : {
             set delay(ms: number) {
-                cls.delay = ms
+                that.delay = ms
             },
             get delay(): number {
-                return cls.delay
+                return that.delay
             },
-            play: () => cls.play(),
-            stop: () => cls.stop()
+            play: () => this.play(),
+            stop: () => this.stop()
         }
     }
 }

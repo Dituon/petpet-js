@@ -2,10 +2,13 @@ import {PetpetModel} from "../core/model/petpet-model";
 import {encodeGif, gifSetting} from "../core/gif-synthesis/encoder";
 import {Setting} from "../app/setting/setting";
 
-const baseUrl = './remake' as string
-const avatarUrl = './test.jpg' as string
+const baseUrl = './osu' as string
+const avatarUrl = './avatar.jpg' as string
+const font: FontFace = new FontFace('Aller-Bold', 'url(./Aller-Bold.ttf)') as FontFace
 
 (async () => {
+    // @ts-ignore
+    await document.fonts.add(await font.load())
     const setting = new Setting(gifSetting)
     document.body.appendChild(setting.render())
 

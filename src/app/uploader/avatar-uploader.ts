@@ -19,6 +19,7 @@ export class AvatarUploader {
     constructor() {
         this.#element = document.createElement('div')
         this.#element.className = 'avatar-uploader'
+        this.#element.innerHTML = 'No Avatar'
     }
 
     /** @param {AvatarType[] | null} types */
@@ -42,6 +43,7 @@ export class AvatarUploader {
     }
 
     get ready() {
+        if (!this.#frameItems?.length) return true
         return this.#frameItems.some(i => i.file)
     }
 
@@ -54,6 +56,7 @@ export class AvatarUploader {
     /** @return {AvatarData} */
     get data() {
         const obj = {}
+        if (!this.#frameItems?.length) return obj
         for (const item of this.#frameItems) {
             obj[item.type.toLowerCase()] = item.file
         }

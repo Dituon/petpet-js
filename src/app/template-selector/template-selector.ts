@@ -9,13 +9,14 @@ export class TemplateSelector {
     #modal: TemplateModalSelector
     loading: Loading = new Loading(this.#element)
     #onChangeCallback
+    template
 
     constructor(templates?: PetpetTemplate[]) {
         this.#modal = new TemplateModalSelector(templates)
         this.#element.id = 'template-chooser'
         this.#element.textContent = 'Not Selected'
         this.#element.addEventListener('click', async () => {
-            const template = this.showModal()
+            const template = await this.showModal()
             this.#onChangeCallback && this.#onChangeCallback(template)
         })
         if (!templates) {
@@ -43,6 +44,7 @@ export class TemplateSelector {
     async showModal() {
         const template = await this.#modal.show()
         if (template) this.#element.textContent = template.key
+        this.template = template
         return template
     }
 

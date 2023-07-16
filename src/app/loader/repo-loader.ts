@@ -1,5 +1,5 @@
 export const INDEX_FILE = 'index.json'
-export const DEFAULT_DATA_PATH = '/data/xmmt.dituon.petpet'
+export const DEFAULT_DATA_PATH = './data/xmmt.dituon.petpet'
 export const DEFAULT_PREVIEW_PATH = '/preview'
 
 export interface RepoIndex {
@@ -16,6 +16,7 @@ export class RepoLoader {
     private readonly initPromise: Promise<void>
     private idMap: Map<string, string>
     private fonts: string[]
+    private fontPromises: Promise<void>[] = []
 
     constructor(urls) {
         this.urls = urls
@@ -32,17 +33,26 @@ export class RepoLoader {
 
             for (const id of dataList) {
                 if (idMap.has(id)) continue
-                idMap.set(id, `${url}${dataPath}/${id}`)
+                idMap.set(id, `${url}/${dataPath}/${id}`)
             }
             for (const font of fontList) {
                 if (fontMap.has(font)) continue
-                fontMap.set(font, `${url}${dataPath}/fonts/${font}`)
+                fontMap.set(font, `${url}/${dataPath}/fonts/${font}`)
             }
             this.urlSet.add(url)
         }))
 
         this.idMap = idMap
-        this.fonts = [...fontMap.values()]
+
+        for (let [fontName, fontUrl] of fontMap) {
+            fontName = fontName.split('.')[0]
+            console.log(fontName, fontUrl)
+            const font = new FontFace(fontName, `url(${fontUrl})`)
+            this.fontPromises.push(font.load().then(font => {
+                // @ts-ignore
+                document.fonts.add(font)
+            }))
+        }
     }
 
     async getIdMap() {
@@ -52,10 +62,11 @@ export class RepoLoader {
 
     async getFonts() {
         await this.initPromise
+        await Promise.all(this.fontPromises)
         return this.fonts
     }
 
-    async getUrlSet(){
+    async getUrlSet() {
         await this.initPromise
         return this.urlSet
     }

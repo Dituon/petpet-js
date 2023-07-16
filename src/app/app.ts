@@ -1,42 +1,50 @@
-import config from "../../config.js"
-import {TemplateSelector} from "./template-selector"
+import {TemplateSelector} from "./template-selector";
 import {AvatarUploader} from "./uploader";
-import {ResultArea} from "./result-area/result-area.js";
-
-import "./app.css"
-import {Setting} from "./setting/setting.js";
-import {PetpetModel, PetpetTemplate} from "../core/model/petpet-model.js";
-import {RepoLoader} from "./loader/repo-loader";
+import {PetpetModel, PetpetTemplate} from "../core/model/petpet-model";
+import {ResultArea} from "./result-area/result-area";
+import {Setting} from "./setting/setting";
 import {Downloader} from "./downloader/downloader";
 
+import "./app.css"
+import {RepoLoader} from "./loader/repo-loader";
+import config from "../../config";
 /** @typedef { 'FROM' | 'TO' | 'BOT' | 'GROUP' } AvatarType */
-/** @typedef { { version: number, petData: PetpetTemplate[], url: string } } PetDataDTO */
 
 export default class {
-    #parentElement: HTMLElement
-    #template: PetpetTemplate
-    #templateChooser: TemplateSelector
-    #uploader: AvatarUploader
-    #resultArea: ResultArea
+    protected appElement: HTMLDivElement
+    protected templateChooser: TemplateSelector
+    protected avatarUploader: AvatarUploader
+    protected resultArea: ResultArea
 
-    /** @param { string } id */
-    constructor(id) {
-        this.#constructorAsync(id)
+    protected inputElement = document.createElement('div')
+    protected outputElement = document.createElement('div')
+
+    private prevTemplate: PetpetTemplate
+    private initPromise: Promise<void>
+
+    constructor(id: string) {
+        this.appElement = document.getElementById(id) as HTMLDivElement
+        this.appElement.classList.add('petpet-app')
+
+        this.templateChooser = new TemplateSelector()
+        this.templateChooser.onchange = () => this.update()
+        this.avatarUploader = new AvatarUploader()
+        this.avatarUploader.onchange = () => this.update()
+        this.inputElement.append(
+            this.templateChooser.render(),
+            this.avatarUploader.render()
+        )
+
+        this.resultArea = new ResultArea()
+        this.outputElement.appendChild(this.resultArea.render())
+        this.outputElement.style.display = 'none'
+
+        this.appElement.append(this.inputElement, this.outputElement)
+        this.initPromise = this.init()
+        this.update()
     }
 
-    async #constructorAsync(id) {
-        this.#parentElement = document.getElementById(id)
-        this.#templateChooser = new TemplateSelector()
-        this.#parentElement.appendChild(this.#templateChooser.render())
-
-        await this.#init()
-        const template = await this.#templateChooser.showModal()
-        this.#templateChooser.onchange = async t => this.#updateTemplate(t)
-
-        await this.#updateTemplate(template)
-    }
-
-    async #init() {
+    private async init(){
         const repoLoader = new RepoLoader(config.server)
         const idMap = await repoLoader.getIdMap()
         const templates = []
@@ -46,46 +54,43 @@ export default class {
                 url: url
             })
         }
-        this.#templateChooser.templates = templates
-        if (!(await repoLoader.getUrlSet()).size) this.#templateChooser.loading.error()
-        return true
+        this.templateChooser.templates = templates
+        if (!(await repoLoader.getUrlSet()).size) this.templateChooser.loading.error()
     }
 
-    /** @param {PetpetTemplate} template */
-    #updateTemplate = async template => {
-        if (!template) return
-        template = await template
-        this.#template = template
-        if (!this.#uploader) {
-            this.#uploader = new AvatarUploader()
-            this.#uploader.onchange = () => this.generate()
-            this.#parentElement.appendChild(this.#uploader.render())
+    async update() {
+        await this.initPromise
+
+        const template = this.templateChooser.template || await this.templateChooser.showModal()
+        if (this.prevTemplate !== template) {
+            this.avatarUploader.types = [...new Set(template.avatar.map(a => a.type))]
+        }
+        if (!this.avatarUploader.ready) {
+            this.outputElement.style.display = 'none'
+            return
         }
 
-        this.#uploader.types = [...new Set(template.avatar.map(a => a.type))]
-        await this.generate()
-    }
+        this.outputElement.style.display = 'flex'
+        this.resultArea.showLoading()
 
-    async generate() {
-        if (!this.#uploader || !this.#uploader.ready) return
-        if (!this.#resultArea) {
-            this.#resultArea = new ResultArea()
-            this.#parentElement.appendChild(this.#resultArea.render())
-        }
-        this.#resultArea.showLoading()
-
-        const petpet = new PetpetModel(this.#template, this.#template.url)
-        const viewer = await petpet.generate(this.#uploader.data)
+        const petpet = new PetpetModel(template, template.url)
+        const viewer = await petpet.generate(this.avatarUploader.data)
         await viewer.play()
 
-        this.#resultArea.canvas = viewer.canvas
+        this.resultArea.canvas = viewer.canvas
         const settingElement = document.createElement('div')
-        this.#resultArea.setting = settingElement
+        this.resultArea.setting = settingElement
 
         const viewerSetting = new Setting(viewer.settingObject)
         settingElement.appendChild(viewerSetting.render())
 
         const downloader = new Downloader(viewer)
         settingElement.appendChild(await downloader.renderAsync())
+
+        this.prevTemplate = template
     }
+
+    // render() {
+    //     return this.appElement
+    // }
 }

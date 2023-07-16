@@ -56,6 +56,7 @@ export interface AvatarTemplate {
     cropType?: AvatarCropType
 
     style?: AvatarStyle[]
+    fit: AvatarFit
 
     round?: boolean
     rotate?: boolean
@@ -77,6 +78,7 @@ const defaultTemplate: AvatarTemplate = {
     cropType: AvatarCropType.NONE,
 
     style: [],
+    fit: AvatarFit.FILL,
 
     round: false,
     rotate: false,
@@ -112,7 +114,7 @@ export function compileAvatarTemplate(template: AvatarTemplate): CompiledAvatarT
         case AvatarPosType.DEFORM:
             try {
                 targetPos = originPos.map(ele => assertArrayLength(ele, 5).map(e => assertArrayLength(e, 2)))
-            } catch (ex){
+            } catch (ex) {
                 targetPos = [assertArrayLength(originPos, 5).map(e => assertArrayLength(e, 2))]
             }
 
@@ -176,6 +178,7 @@ export class AvatarModel extends ElementModel {
         if (blob.type.startsWith('video/')) {
             this.frames = await decodeVideo(blob, this.template.pos.length)
         } else if (!blob.type.startsWith('image')) {
+            console.log(blob)
             throw new Error("不支持的格式: " + blob.type)
         }
 
@@ -261,7 +264,20 @@ export class AvatarModel extends ElementModel {
         switch (this.template.posType) {
             case AvatarPosType.ZOOM:
                 if (angle) frame = rotateImage(frame, angle)
-                ctx.drawImage(frame, ...pos as XYWH)
+                switch (this.template.fit) {
+                    case AvatarFit.FILL:
+                        ctx.drawImage(frame, ...pos as XYWH);
+                        break
+                    default:
+                        const [x, y, width, height] = pos as XYWH
+                        const scale = Math[this.template.fit === AvatarFit.CONTAIN ? 'min' : 'max'](width / frame.width, height / frame.height)
+                        const scaledWidth = frame.width * scale
+                        const scaledHeight = frame.height * scale
+                        const offsetX = x + (width - scaledWidth) / 2
+                        const offsetY = y + (height - scaledHeight) / 2
+                        ctx.drawImage(frame, offsetX, offsetY, scaledWidth, scaledHeight)
+                        break
+                }
                 break
             case AvatarPosType.DEFORM:
                 this.deformer.draw(ctx, frame, pos as RO)
@@ -317,7 +333,7 @@ export class AvatarModelList {
 
     async getMaxLength() {
         await this.initPromise
-        return this.maxLength
+        return this.maxLength || {posLength: 0, frameLength: undefined}
     }
 
     static createFrom(objArr: AvatarTemplate[], data: AvatarData): AvatarModelList {
