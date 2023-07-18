@@ -1,4 +1,4 @@
-import * as Croppr from 'croppr'
+import Croppr from 'croppr'
 import 'croppr/dist/croppr.css'
 import {getImageFromBlob} from "../../core/utils/utils"
 import {Mask} from "../utils/ui"

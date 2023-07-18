@@ -1,5 +1,6 @@
 .avatar-cropper {
-    width: max(80vw, 24em);
+    min-width: min(80vw, 20em);
+    max-height: 80vh;
     position: fixed;
     top: 50%;
     left: 50%;

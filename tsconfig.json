@@ -8,6 +8,7 @@
       "es2022",
       "dom"
     ],
-    "sourceMap": true
+    "sourceMap": true,
+    "allowSyntheticDefaultImports": true
   }
 }
