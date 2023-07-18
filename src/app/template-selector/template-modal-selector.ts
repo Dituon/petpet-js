@@ -4,14 +4,25 @@ import {createTitle} from "../utils";
 import {PetpetTemplate} from "../../core/model/petpet-model";
 
 export class TemplateModalSelector {
-    #element: HTMLElement
+    static ICON_SIZE_LIST = ['big', 'medium', 'small']
+
+    #element: HTMLElement = document.createElement('div')
     #templates: PetpetTemplate[]
     #templateDomMap: Map<PetpetTemplate, HTMLDivElement> = new Map()
     #dataListDom: HTMLDivElement
     #selectCallback!: (template: PetpetTemplate | null) => void
+    #iconSizeIndex = 0
     private mask = new Mask()
 
     constructor(templates?: PetpetTemplate[]) {
+        this.#element.classList.add('modal-select', 'hide', TemplateModalSelector.ICON_SIZE_LIST[this.#iconSizeIndex])
+        this.#element.addEventListener('contextmenu', e => {
+            e.preventDefault()
+            this.changeIconSize()
+        })
+
+        document.body.appendChild(this.#element)
+
         this.mask.onclick = () => {
             this.#selectCallback && this.#selectCallback(null)
             this.hide()
@@ -21,8 +32,6 @@ export class TemplateModalSelector {
     }
 
     set templates(templates: PetpetTemplate[]) {
-        this.#element = document.createElement('div')
-        this.#element.className = 'modal-select'
         this.#templates = templates
 
         const templatesDom = document.createElement('div')
@@ -37,6 +46,7 @@ export class TemplateModalSelector {
             const img = document.createElement('img')
             img.src = `${template.url}/0.png`
             img.alt = template.key
+            img.onerror = () => templateDom.remove()
             img.loading = 'lazy'
 
             const h3 = createTitle(template.key)
@@ -62,9 +72,6 @@ export class TemplateModalSelector {
         })
 
         this.#element.append(inputEle, templatesDom)
-        this.#element.classList.add('hide')
-
-        document.body.appendChild(this.#element)
     }
 
     hide() {
@@ -79,6 +86,15 @@ export class TemplateModalSelector {
         return new Promise((res) => (this.#selectCallback = res))
     }
 
+    changeIconSize() {
+        const newIconSize = (this.#iconSizeIndex + 1) % TemplateModalSelector.ICON_SIZE_LIST.length
+        this.#element.classList.replace(
+            TemplateModalSelector.ICON_SIZE_LIST[this.#iconSizeIndex],
+            TemplateModalSelector.ICON_SIZE_LIST[newIconSize]
+        )
+        this.#iconSizeIndex = newIconSize
+    }
+
     search(word: string) {
         this.#dataListDom.innerHTML = ''
         for (let [template, dom] of this.#templateDomMap.entries()) {
@@ -91,7 +107,7 @@ export class TemplateModalSelector {
     }
 }
 
-async function loadTemplate(template: PetpetTemplate): Promise<PetpetTemplate>{
+async function loadTemplate(template: PetpetTemplate): Promise<PetpetTemplate> {
     if (template.type) return template
     const originTemplate = await fetch(template.url + '/data.json').then(p => p.json())
     return {...template, ...originTemplate}
