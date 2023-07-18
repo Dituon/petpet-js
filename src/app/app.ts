@@ -1,6 +1,6 @@
 import {TemplateSelector} from "./template-selector";
 import {AvatarUploader} from "./uploader";
-import {PetpetModel, PetpetTemplate} from "../core/model/petpet-model";
+import {PetpetModel, PetpetModelViewer, PetpetTemplate} from "../core/model/petpet-model";
 import {ResultArea} from "./result-area/result-area";
 import {Setting} from "./setting/setting";
 import {Downloader} from "./downloader/downloader";
@@ -23,7 +23,10 @@ export default class {
     protected outputElement = document.createElement('div')
 
     private prevTemplate: PetpetTemplate
-    private initPromise: Promise<void>
+    private readonly initPromise: Promise<void>
+    private backgroundLengthMap: Map<string, number>
+
+    private viewer: PetpetModelViewer
 
     constructor(id: string) {
         this.appElement = document.getElementById(id) as HTMLDivElement
@@ -52,6 +55,7 @@ export default class {
     private async init() {
         const repoLoader = new RepoLoader(config.server)
         const idMap = await repoLoader.getIdMap()
+        this.backgroundLengthMap = await repoLoader.getLengthMap()
         const templates = []
         for (const [id, url] of idMap.entries()) {
             templates.push({
@@ -65,6 +69,7 @@ export default class {
 
     async update() {
         await this.initPromise
+        if (this.viewer) this.viewer.destroy()
 
         const template = this.templateChooser.template || await this.templateChooser.showModal()
         if (this.prevTemplate !== template) {
@@ -78,8 +83,14 @@ export default class {
         this.outputElement.style.display = 'flex'
         this.resultArea.showLoading()
 
-        const petpet = new PetpetModel(template, template.url)
-        const viewer = await petpet.generate(this.avatarUploader.data)
+        const petpet = new PetpetModel(template)
+        petpet.backgroundLength = this.backgroundLengthMap.get(template.key)
+        petpet.background = template.url
+
+        const viewer = await petpet.generate(
+            this.avatarUploader.data,
+            this.avatarUploader.extraTemplate
+        )
         this.textUploader.texts = petpet.textModelList
         await viewer.play()
 
@@ -101,6 +112,7 @@ export default class {
         settingElement.appendChild(await downloader.renderAsync())
 
         this.prevTemplate = template
+        this.viewer = viewer
     }
 
     // render() {

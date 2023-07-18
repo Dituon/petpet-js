@@ -1,4 +1,4 @@
-import {AvatarData, AvatarModelList, AvatarTemplate} from "./avatar-model";
+import {AvatarData, AvatarModelList, AvatarTemplate, ExtraTemplate} from "./avatar-model";
 import {BackgroundModel, BackgroundTemplate} from "./background-model";
 import {copyAsCanvas} from "../utils/utils";
 import {TextModelList, TextTemplate} from "./text-model";
@@ -42,6 +42,7 @@ export class PetpetModel {
     protected avatarList: AvatarModelList
     protected backgroundModel: BackgroundModel
     textModelList: TextModelList
+    backgroundLength: number
 
     constructor(template: PetpetTemplate, background?: HTMLImageElement[] | HTMLCanvasElement[] | string) {
         this.template = {...defaultPetpetTemplate, ...template}
@@ -54,7 +55,7 @@ export class PetpetModel {
 
     set background(background: HTMLImageElement[] | HTMLCanvasElement[] | string) {
         if (typeof background === 'string') {
-            this.backgroundModel.url = background
+            this.backgroundModel.setUrl(background, this.backgroundLength)
         } else if (Array.isArray(background)) {
             this.backgroundModel.images = background
         } else {
@@ -66,8 +67,8 @@ export class PetpetModel {
 
     }
 
-    async generate(avatarData: AvatarData) {
-        const avatars = AvatarModelList.createFrom(this.template.avatar, avatarData)
+    async generate(avatarData: AvatarData, extraTemplates?: ExtraTemplate){
+        const avatars = AvatarModelList.createFrom(this.template.avatar, avatarData, extraTemplates)
         const avatarSizeMap = await avatars.getSizeMap()
 
         const backgrounds = await this.backgroundModel.generate(avatarSizeMap)
@@ -205,5 +206,10 @@ export class PetpetModelViewer {
             play: () => this.play(),
             stop: () => this.stop()
         }
+    }
+
+    async destroy() {
+        await this.stop()
+        this.canvas.remove()
     }
 }

@@ -1,5 +1,5 @@
 import './modal-selector.css'
-import {mask} from "../utils/ui"
+import {Mask} from "../utils/ui"
 import {createTitle} from "../utils";
 import {PetpetTemplate} from "../../core/model/petpet-model";
 
@@ -9,8 +9,13 @@ export class TemplateModalSelector {
     #templateDomMap: Map<PetpetTemplate, HTMLDivElement> = new Map()
     #dataListDom: HTMLDivElement
     #selectCallback!: (template: PetpetTemplate | null) => void
+    private mask = new Mask()
 
     constructor(templates?: PetpetTemplate[]) {
+        this.mask.onclick = () => {
+            this.#selectCallback && this.#selectCallback(null)
+            this.hide()
+        }
         if (!templates) return
         this.templates = templates
     }
@@ -57,23 +62,19 @@ export class TemplateModalSelector {
         })
 
         this.#element.append(inputEle, templatesDom)
-        mask.onclick = () => {
-            this.hide()
-            this.#selectCallback(null)
-        }
         this.#element.classList.add('hide')
 
         document.body.appendChild(this.#element)
     }
 
     hide() {
-        mask.hide()
+        this.mask.hide()
         this.#element.classList.add('hide')
     }
 
     async show(): Promise<PetpetTemplate> {
         if (!this.#templates) return null
-        mask.show()
+        this.mask.show()
         this.#element && this.#element.classList.remove('hide')
         return new Promise((res) => (this.#selectCallback = res))
     }

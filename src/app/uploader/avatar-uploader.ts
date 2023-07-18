@@ -1,6 +1,7 @@
 import './uploader.css'
 import {AvatarItem} from "./avatar-item.js"
 import {createTitle} from "../utils/utils.js";
+import {AvatarCropType, AvatarData, ExtraTemplate} from "../../core/model/avatar-model";
 
 const TYPES = ['FROM', 'TO', 'BOT', 'GROUP']
 
@@ -13,8 +14,6 @@ export class AvatarUploader {
         TYPES.map(type => [type, new AvatarItem(type)])
     )
     #frameItems: AvatarItem[]
-    /** @type {() => AvatarUploader} */
-    #callback
 
     constructor() {
         this.#element = document.createElement('div')
@@ -53,13 +52,26 @@ export class AvatarUploader {
         }
     }
 
-    /** @return {AvatarData} */
     get data() {
-        const obj = {}
+        const obj: AvatarData = {}
         if (!this.#frameItems?.length) return obj
         for (const item of this.#frameItems) {
             obj[item.type.toLowerCase()] = item.file
         }
         return obj
+    }
+
+    get extraTemplate() {
+        const obj: ExtraTemplate = {}
+        let flag = false
+        if (!this.#frameItems?.length) return obj
+        for (const item of this.#frameItems) {
+            flag = flag || !!item.cropPos
+            obj[item.type.toLowerCase()] = {
+                cropType: AvatarCropType.PIXEL,
+                crop: item.cropPos
+            }
+        }
+        return flag ? obj : undefined
     }
 }

@@ -1,4 +1,5 @@
-import {AvatarType} from "../../core/model/avatar-model";
+import {AvatarType} from "../../core/model/avatar-model"
+import {AvatarCropper} from "./avatar-cropper"
 
 const stopPropagation = e => {
     e.stopPropagation()
@@ -8,17 +9,17 @@ const stopPropagation = e => {
 export class AvatarItem {
     type
     /** @type {HTMLLabelElement} */
-    #element
+    #element = document.createElement('label')
     #file
     #callbcak
     #resolveWaitFilePromise
     #waitFilePromise = new Promise(res => this.#resolveWaitFilePromise = res)
-
+    cropPos
 
     /** @param {AvatarType} type */
     constructor(type) {
         this.type = type
-        this.#element = document.createElement('label')
+        this.#element.title = '右键裁切'
         this.#element.setAttribute('type', type)
         this.#element.addEventListener('dragenter', stopPropagation, false)
         this.#element.addEventListener('dragover', stopPropagation, false)
@@ -26,6 +27,16 @@ export class AvatarItem {
             stopPropagation(e)
             this.setFiles(e.dataTransfer.files)
         }, false)
+        this.#element.addEventListener('contextmenu', async e => {
+            e.preventDefault()
+            if (!this.#file) return
+            const prevCropPos = this.cropPos
+            const cropper = new AvatarCropper(this.#file)
+            this.cropPos = await cropper.show()
+            await cropper.destroy()
+            if (this.cropPos === prevCropPos) return
+            this.#callbcak && this.#callbcak(this)
+        })
         const fileEle = document.createElement('input')
         fileEle.type = 'file'
         fileEle.accept = 'image/*'
@@ -63,6 +74,7 @@ export class AvatarItem {
         this.#element.style.backgroundSize = 'cover'
         this.#file = file
         this.#resolveWaitFilePromise()
+        this.cropPos = undefined
         this.#callbcak && this.#callbcak(this)
     }
 }

@@ -1,7 +1,7 @@
 {
   "name": "petpet-js",
   "private": true,
-  "version": "0.6.0",
+  "version": "0.7.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -10,12 +10,13 @@
   },
   "dependencies": {
     "@dhdbstjr98/gif.js": "^1.0.2",
+    "croppr": "^2.3.1",
     "expr-eval": "^2.0.2",
     "gifuct-js": "^2.1.2",
-    "glfx-es6": "^0.0.3",
-    "vite-plugin-static-copy": "^0.17.0"
+    "glfx-es6": "^0.0.3"
   },
   "devDependencies": {
-    "vite": "^4.3.9"
+    "vite": "^4.3.9",
+    "vite-plugin-static-copy": "^0.17.0"
   }
 }

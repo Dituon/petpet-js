@@ -41,7 +41,7 @@ export class Loading {
     }
 }
 
-export const mask = new class {
+export class Mask {
     /** @type { HTMLElement } */
     element
     /** @type { boolean } */
@@ -50,7 +50,7 @@ export const mask = new class {
 
     constructor() {
         this.element = document.createElement('div')
-        this.element.id = 'mask'
+        this.element.className = 'mask'
         document.body.appendChild(this.element)
         this.showing = false
     }
@@ -59,8 +59,7 @@ export const mask = new class {
      * @param {Function} callback
      */
     set onclick(callback) {
-        if (this.timer) return
-        this.element.addEventListener('click', callback)
+        this.element.onclick = callback
     }
 
     show() {
@@ -81,5 +80,9 @@ export const mask = new class {
 
     toggle() {
         this.showing ? this.hide() : this.show()
+    }
+
+    destroy() {
+        this.element.remove()
     }
 }

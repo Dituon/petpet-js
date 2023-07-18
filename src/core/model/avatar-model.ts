@@ -142,6 +142,14 @@ export interface AvatarData {
     random?: Blob[]
 }
 
+export interface ExtraTemplate {
+    from?: AvatarTemplate,
+    to?: AvatarTemplate,
+    group?: AvatarTemplate,
+    bot?: AvatarTemplate,
+    random?: AvatarTemplate
+}
+
 type P = [number, number]
 type RO = [P, P, P, P, P]
 type XYWH = [number, number, number, number]
@@ -155,10 +163,13 @@ export class AvatarModel extends ElementModel {
     private readonly initPromise: Promise<void>
     private deformer?: ImageDeformer
 
-    constructor(template: AvatarTemplate, data: AvatarData) {
+    constructor(template: AvatarTemplate, data: AvatarData, extraTemplates?: ExtraTemplate) {
         super()
-        this.template = compileAvatarTemplate(template)
         this.type = template.type
+
+        const extraTemplate = extraTemplates && extraTemplates[this.type.toString().toLowerCase()]
+        this.template = compileAvatarTemplate(!extraTemplate ? template : {...template,...extraTemplate})
+
         this.originBlob = data[this.type.toString().toLowerCase()]
         if (!this.originBlob) throw new Error(`no ${this.type} image`)
 
@@ -335,9 +346,9 @@ export class AvatarModelList {
         return this.maxLength || {posLength: 0, frameLength: undefined}
     }
 
-    static createFrom(objArr: AvatarTemplate[], data: AvatarData): AvatarModelList {
+    static createFrom(objArr: AvatarTemplate[], data: AvatarData, extraTemplates?: ExtraTemplate): AvatarModelList {
         return new AvatarModelList(
-            objArr.map(temp => new AvatarModel(temp, data))
+            objArr.map(temp => new AvatarModel(temp, data, extraTemplates))
         )
     }
 }

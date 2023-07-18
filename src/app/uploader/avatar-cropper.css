@@ -1,0 +1,33 @@
+.avatar-cropper {
+    width: max(80vw, 24em);
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: var(--sub-bg);
+    opacity: 1.0;
+    box-shadow: #333 5px 5px 5px;
+    border: 5px solid var(--sub-bg);
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    z-index: 100;
+}
+
+.avatar-cropper img {
+    width: 100%;
+}
+
+.avatar-cropper>.croppr-container{
+    width: 100%;
+}
+
+.avatar-cropper .croppr{
+    width: 100%;
+}
+
+.avatar-cropper>.button-group{
+    width: 100%;
+}

@@ -25,8 +25,8 @@ export class BackgroundModel {
         this.hasTemplate = true
     }
 
-    set url(url: string) {
-        this.loadingPromise = BackgroundModel.fetchImages(url).then(imgs => this.frames = imgs)
+    setUrl(url: string, length?: number) {
+        this.loadingPromise = BackgroundModel.fetchImages(url, length).then(imgs => this.frames = imgs)
     }
 
     set images(imgs) {
@@ -66,10 +66,24 @@ export class BackgroundModel {
         return ctx
     }
 
-    static async fetchImages(baseUrl): Promise<HTMLImageElement[]> {
+    static async fetchImages(baseUrl, length?: number): Promise<HTMLImageElement[]> {
+        if (length !== undefined) {
+            if (length <= 0) return []
+
+            const promises: Promise<HTMLImageElement>[] = []
+            for (let i = 0; i < length; i++) {
+                promises.push(
+                    fetch(`${baseUrl}/${i}.png`)
+                        .then(p => p.blob())
+                        .then(getImageFromBlob)
+                )
+            }
+            return Promise.all(promises)
+        }
+
         let hasError = false
 
-        const queue: Set<Promise<void>> = new Set()
+        let queue: Set<Promise<void>> = new Set()
         const result: HTMLImageElement[] = []
 
         let i = 0

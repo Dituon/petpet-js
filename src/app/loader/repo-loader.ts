@@ -1,4 +1,5 @@
 export const INDEX_FILE = 'index.json'
+export const INDEX_MAP_FILE = 'index.map.json'
 export const DEFAULT_DATA_PATH = './data/xmmt.dituon.petpet'
 export const DEFAULT_PREVIEW_PATH = '/preview'
 
@@ -10,11 +11,18 @@ export interface RepoIndex {
     fontList: string[]
 }
 
+export interface RepoIndexMap {
+    length: {
+        [key: string]: number
+    }
+}
+
 export class RepoLoader {
     private urls: string[]
     private urlSet: Set<string> = new Set()
     private readonly initPromise: Promise<void>
     private idMap: Map<string, string>
+    private lengthMap: Map<string, number> = new Map()
     private fonts: string[]
     private fontPromises: Promise<void>[] = []
 
@@ -30,6 +38,12 @@ export class RepoLoader {
         await Promise.allSettled(this.urls.map(async url => {
             const index = await fetch(`${url}/${INDEX_FILE}`).then(p => p.json())
             const {dataPath = DEFAULT_DATA_PATH, dataList, fontList} = index as RepoIndex
+            try{
+                const indexMap: RepoIndexMap = await fetch(`${url}/${INDEX_MAP_FILE}`).then(p => p.json())
+                Object.entries(indexMap.length).forEach(([k, v]) => this.lengthMap.set(k, v))
+            } catch (e) {
+                console.warn(`no index.map.json in ${url} `)
+            }
 
             for (const id of dataList) {
                 if (idMap.has(id)) continue
@@ -58,6 +72,11 @@ export class RepoLoader {
     async getIdMap() {
         await this.initPromise
         return this.idMap
+    }
+
+    async getLengthMap() {
+        await this.initPromise
+        return this.lengthMap
     }
 
     async getFonts() {

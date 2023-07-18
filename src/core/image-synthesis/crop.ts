@@ -11,18 +11,18 @@ export function cropImage(
             ? [0, 0, cropCoordinates[0], cropCoordinates[1]]
             : cropCoordinates
 
-    const width = usePercentage ? (x2 / 100) * image.width : x2
-    const height = usePercentage ? (y2 / 100) * image.height : y2
+    let w = usePercentage ? ((x2 - x1) / 100) * image.width : (x2 - x1)
+    let h = usePercentage ? ((y2 - y1) / 100) * image.height : (y2 - y1)
 
-    canvas.width = width
-    canvas.height = height
+    canvas.width = usePercentage ? (w / 100) * image.width : w
+    canvas.height = usePercentage ? (h / 100) * image.height : h
 
     ctx.drawImage(
         image,
         x1, y1,
-        width, height,
+        w, h,
         0, 0,
-        width, height
+        w, h
     )
 
     return canvas
