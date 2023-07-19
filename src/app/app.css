@@ -1,7 +1,7 @@
 .petpet-app {
     display: flex;
     flex-direction: row;
-    align-items: flex-start;
+    align-items: stretch;
     text-align: center;
     flex-wrap: wrap;
     justify-content: space-around;
@@ -15,7 +15,7 @@
     padding: 0 0 0.8em;
     border-top: var(--sub-bg) 2px dashed;
     position: relative;
-    width: min(80vw,24em);
+    width: min(80vw, 24em);
 }
 
 .petpet-app h3 {

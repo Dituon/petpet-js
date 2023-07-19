@@ -1,6 +1,7 @@
 .result-area {
-    position: relative;
-    padding: 0 2em;
+    top: 2.4em;
+    bottom: 0;
+    position: sticky;
     min-height: 8em;
     border-radius: 16px;
 }
