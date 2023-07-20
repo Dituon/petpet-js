@@ -316,6 +316,7 @@ export class TextModelList {
     readonly bottomAvatars: TextModel[] = []
     protected sizeMap: { [key: string]: number } = Object.create(null)
     private needUpdate: boolean = false
+    cacheCount: number = 0
 
     constructor(arr: TextModel[]) {
         this.arr = arr
@@ -355,9 +356,10 @@ export class TextModelList {
         this.cacheCtx.clearRect(0, 0, this.cacheCtx.canvas.width, this.cacheCtx.canvas.height)
         this.drawCache()
         this.needUpdate = false
+        this.cacheCount++
     }
 
-    getCachedCanvas() {
+    get cacheCanvas() {
         if (this.needUpdate) this.updateCache()
         return this.cacheCtx.canvas
     }

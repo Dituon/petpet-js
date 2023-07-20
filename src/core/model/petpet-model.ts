@@ -67,7 +67,7 @@ export class PetpetModel {
 
     }
 
-    async generate(avatarData: AvatarData, extraTemplates?: ExtraTemplate){
+    async generate(avatarData: AvatarData, extraTemplates?: ExtraTemplate) {
         const avatars = AvatarModelList.createFrom(this.template.avatar, avatarData, extraTemplates)
         const avatarSizeMap = await avatars.getSizeMap()
 
@@ -93,6 +93,9 @@ export class PetpetModelViewer {
     private framesCache: HTMLCanvasElement[] = []
     private resolveFramesCachedPromise: () => void
     private framesCachedPromise: Promise<void> = new Promise(res => this.resolveFramesCachedPromise = res)
+
+    private prevTextCacheCount: number
+    private prevTextedFramesCache: HTMLCanvasElement[]
 
     constructor(
         template: PetpetTemplate,
@@ -167,8 +170,24 @@ export class PetpetModelViewer {
         return this.framesCache
     }
 
+    async getTextedFrames() {
+        const frames = await this.getFrames()
+        if (this.texts.texts.length === 0) return frames
+
+        if (this.prevTextCacheCount === this.texts.cacheCount) return this.prevTextedFramesCache
+
+        this.prevTextedFramesCache = frames.map(frame => {
+            const f = copyAsCanvas(frame)
+            const ctx = f.getContext('2d')
+            ctx.drawImage(this.texts.cacheCanvas, 0, 0)
+            return f
+        })
+        this.prevTextCacheCount = this.texts.cacheCount
+        return this.prevTextedFramesCache
+    }
+
     private drawTextsCache() {
-        this.ctx.drawImage(this.texts.getCachedCanvas(), 0, 0)
+        this.ctx.drawImage(this.texts.cacheCanvas, 0, 0)
     }
 
     private drawTexts() {

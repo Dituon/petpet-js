@@ -58,8 +58,11 @@ export class Setting {
                 button.textContent = key
                 button.addEventListener('click', async () => {
                     button.disabled = true
-                    await (value as any)()
-                    button.disabled = false
+                    try {
+                        await (value as Function)()
+                    } finally {
+                        button.disabled = false
+                    }
                 })
                 div.appendChild(button)
                 break

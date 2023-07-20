@@ -42,7 +42,7 @@ export class RepoLoader {
                 const indexMap: RepoIndexMap = await fetch(`${url}/${INDEX_MAP_FILE}`).then(p => p.json())
                 Object.entries(indexMap.length).forEach(([k, v]) => this.lengthMap.set(k, v))
             } catch (e) {
-                console.warn(`no index.map.json in ${url} `)
+                console.warn(`cannot find index.map.json in ${url} `)
             }
 
             for (const id of dataList) {

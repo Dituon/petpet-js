@@ -2,10 +2,24 @@ import {PetpetModelViewer} from "../../core/model/petpet-model";
 import {encodeGif, gifSetting} from "../../core/gif-synthesis/encoder";
 import {Setting} from "../setting/setting";
 
+export enum SupportType{
+    PNG = 'image/png',
+    GIF = 'image/gif',
+    WEBM = 'video/webm',
+    // PSD = 'image/vnd.adobe.photoshop'
+}
+
+interface DownloadOptions {
+    blob: Blob,
+    fileName: string
+}
+
 export class Downloader {
     private readonly initPromise
     private readonly viewer: PetpetModelViewer
     private frames: HTMLCanvasElement[]
+    private cache: DownloadOptions
+    private prevFramesCache: HTMLCanvasElement[]
 
     constructor(viewer: PetpetModelViewer) {
         this.viewer = viewer
@@ -16,47 +30,99 @@ export class Downloader {
         this.frames = await this.viewer.getFrames()
     }
 
+    private async getTextFrames() {
+        return await this.viewer.getTextedFrames()
+    }
+
     async renderAsync() {
         await this.initPromise
         const ele = document.createElement('div')
-        if (this.frames.length !== 1){
+        if (this.frames.length !== 1) {
             const gifBuilderSetting = new Setting(gifSetting)
             ele.appendChild(gifBuilderSetting.render())
         }
         const downloadSetting = new Setting({
-            download: async () => await this.download()
+            download: async () => await this.download(),
+            copy: async () => await this.copy(),
+            share: async () => await this.share()
         })
         ele.append(downloadSetting.render())
         return ele
     }
 
-    async download() {
+    protected async getOptions() {
+        await this.initPromise
+
+        const frames = await this.getTextFrames()
+        if (this.cache && this.prevFramesCache === frames) return this.cache
         if (!this.frames) return
-        if (this.frames.length === 1) {
-            const fileName = `${this.viewer.template.key}.png`
-            Downloader.downloadBlob(
-                await new Promise(res => this.frames[0].toBlob(blob => res(blob))),
-                fileName
-            )
-            return
+
+        this.prevFramesCache = frames
+        if (frames.length === 1) {
+            this.cache = {
+                blob: await new Promise(res => frames[0].toBlob(blob => res(blob))),
+                fileName: `${this.viewer.template.key}.png`
+            }
+            return this.cache
         }
-        const delay = this.viewer.delay
-        const blob = await encodeGif(
-            delay > 0 ? this.frames : this.frames.reverse(),
-            Math.abs(delay) || 65
-        )
-        const fileName = `${this.viewer.template.key}.gif`
-        Downloader.downloadBlob(blob, fileName)
+        const delay = this.viewer.delay || 65
+        this.cache = {
+            blob: await encodeGif(
+                delay > 0 ? frames : frames.reverse(),
+                Math.abs(delay)
+            ),
+            fileName: `${this.viewer.template.key}.gif`
+        }
+        return this.cache
     }
 
-    static downloadBlob(blob: Blob, fileName: string) {
+    async download() {
+        const {blob, fileName} = await this.getOptions()
+        Downloader.download(blob, fileName)
+    }
+
+    async copy() {
+        const {blob} = await this.getOptions()
+        if (this.frames.length === 1) {
+            await Downloader.copy(blob)
+            return
+        }
+        const url = URL.createObjectURL(blob)
+        const wf = `width=${this.frames[0].width}, height=${this.frames[0].height}`
+        window.open(url, undefined, wf)
+        URL.revokeObjectURL(url)
+    }
+
+    async share() {
+        const {blob, fileName} = await this.getOptions()
+        const file = new File([blob], fileName, {type: blob.type})
+        await navigator.share({
+            url: document.location.href,
+            title: fileName,
+            files: [file]
+        })
+    }
+
+    static download(blob: Blob, fileName?: string) {
         const url = URL.createObjectURL(blob)
         const link = document.createElement('a')
         link.href = url
         link.download = fileName
-        document.body.appendChild(link);
+        document.body.appendChild(link)
         link.click()
-        document.body.removeChild(link);
-        URL.revokeObjectURL(url);
+        document.body.removeChild(link)
+        URL.revokeObjectURL(url)
+    }
+
+    static async copy(blob: Blob) {
+        try {
+            await navigator.clipboard.write([
+                new ClipboardItem({
+                    [blob.type]: blob
+                })
+            ])
+        } catch (e) {
+            console.error(e, e.message)
+        }
     }
 }

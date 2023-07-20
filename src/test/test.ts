@@ -24,7 +24,7 @@ const font: FontFace = new FontFace('Aller-Bold', 'url(./Aller-Bold.ttf)') as Fo
     const viewerSetting = new Setting(viewer.settingObject as any)
     document.body.appendChild(viewerSetting.render())
 
-    const blob = await encodeGif(await viewer.getFrames(), viewer.delay)
+    const blob = await encodeGif(await viewer.getTextedFrames(), viewer.delay)
 
     const img = new Image()
     img.src = URL.createObjectURL(blob)
