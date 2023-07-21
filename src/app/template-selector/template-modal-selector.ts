@@ -2,6 +2,7 @@ import './modal-selector.css'
 import {Mask} from "../utils/ui"
 import {createTitle} from "../utils";
 import {PetpetTemplate} from "../../core/model/petpet-model";
+import {getLangConfig} from "../lang/lang-loader";
 
 export class TemplateModalSelector {
     static ICON_SIZE_LIST = ['big', 'medium', 'small']
@@ -65,7 +66,7 @@ export class TemplateModalSelector {
         }
 
         const inputEle = document.createElement('input')
-        inputEle.placeholder = '🔍 type to search'
+        inputEle.placeholder = '🔍 ' + getLangConfig().typeToSearch
 
         inputEle.addEventListener('change', (e) => {
             this.search(inputEle.value.trim())

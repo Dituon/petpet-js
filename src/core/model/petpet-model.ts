@@ -122,6 +122,12 @@ export class PetpetModelViewer {
         this.length = this.template.type === PetpetType.IMG ? frameLength : this.backgrounds.length
     }
 
+    async replay(){
+        this.i = 0
+        await this.play()
+        return new Promise(res => setTimeout(res, this.delay * this.length))
+    }
+
     async play() {
         await this.stop()
         if (this.template.reverse) return this.playReverse()
@@ -151,7 +157,7 @@ export class PetpetModelViewer {
 
         this.userDelay = ms
         if (ms > 0) {
-            this.stop().then(() => this.play())
+            this.play()
         } else {
             this.stop().then(() => this.playReverse())
         }

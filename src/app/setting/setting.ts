@@ -1,4 +1,7 @@
 import './setting.css'
+import {getLangConfig} from "../lang/lang-loader";
+
+const lang = getLangConfig()
 
 type SettingValue = string | number | boolean | undefined | SettingObject | (() => void) | (() => Promise<void>)
 
@@ -11,8 +14,11 @@ export interface SettingObject {
 }
 
 export type ValueAttribute = {
-    [key in keyof HTMLInputElement]: HTMLInputElement[key];
-} | {}
+    [key in keyof HTMLInputElement]?: HTMLInputElement[key]
+}
+// & {
+//     tagName ?: keyof HTMLElementTagNameMap,
+// }
 
 export interface ValueAttributeMap {
     [key: string]: ValueAttribute
@@ -44,7 +50,7 @@ export class Setting {
         const attrs: ValueAttribute = this.attrMap[key] ?? {}
         const div = document.createElement('div')
         const span = document.createElement('span')
-        span.textContent = key
+        span.textContent = lang[key] ?? key
         div.appendChild(span)
 
         let type = typeof value

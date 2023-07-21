@@ -3,6 +3,7 @@ import {Loading} from "../utils/ui"
 import {TemplateModalSelector} from "./template-modal-selector"
 import {PetpetTemplate} from "../../core/model/petpet-model";
 import {createTitle} from "../utils";
+import {getLangConfig} from "../lang/lang-loader";
 
 export class TemplateSelector {
     #element: HTMLDivElement = document.createElement('div')
@@ -34,7 +35,7 @@ export class TemplateSelector {
     render() {
         const root = document.createElement('div')
         root.append(
-            createTitle('Select Template'),
+            createTitle(getLangConfig().selectTemplate),
             this.#element
         )
         return root

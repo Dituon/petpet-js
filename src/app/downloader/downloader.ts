@@ -10,6 +10,13 @@ export enum SupportType{
 }
 
 interface DownloadOptions {
+    // type: SupportType
+    download: () => Promise<void>
+    copy: () => Promise<void>
+    share: () => Promise<void>
+}
+
+interface DownloadFile {
     blob: Blob,
     fileName: string
 }
@@ -18,8 +25,14 @@ export class Downloader {
     private readonly initPromise
     private readonly viewer: PetpetModelViewer
     private frames: HTMLCanvasElement[]
-    private cache: DownloadOptions
+    private cache: DownloadFile
     private prevFramesCache: HTMLCanvasElement[]
+    private downloadOptions: DownloadOptions = {
+        // type: frames.length === 1 ? SupportType.PNG : SupportType.GIF,
+        download: async () => await this.download(),
+        copy: async () => await this.copy(),
+        share: async () => await this.share()
+    }
 
     constructor(viewer: PetpetModelViewer) {
         this.viewer = viewer
@@ -41,11 +54,7 @@ export class Downloader {
             const gifBuilderSetting = new Setting(gifSetting)
             ele.appendChild(gifBuilderSetting.render())
         }
-        const downloadSetting = new Setting({
-            download: async () => await this.download(),
-            copy: async () => await this.copy(),
-            share: async () => await this.share()
-        })
+        const downloadSetting = new Setting(this.downloadOptions as any)
         ele.append(downloadSetting.render())
         return ele
     }
@@ -65,7 +74,7 @@ export class Downloader {
             }
             return this.cache
         }
-        const delay = this.viewer.delay || 65
+        const delay = this.viewer.delay
         this.cache = {
             blob: await encodeGif(
                 delay > 0 ? frames : frames.reverse(),

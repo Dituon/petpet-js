@@ -2,6 +2,7 @@ import './uploader.css'
 import {AvatarItem} from "./avatar-item.js"
 import {createTitle} from "../utils/utils.js";
 import {AvatarCropType, AvatarData, ExtraTemplate} from "../../core/model/avatar-model";
+import {getLangConfig} from "../lang/lang-loader";
 
 const TYPES = ['FROM', 'TO', 'BOT', 'GROUP']
 
@@ -35,7 +36,7 @@ export class AvatarUploader {
     render() {
         const root = document.createElement('div')
         root.append(
-            createTitle('Upload Avatar'),
+            createTitle(getLangConfig().uploadAvatar),
             this.#element
         )
         return root

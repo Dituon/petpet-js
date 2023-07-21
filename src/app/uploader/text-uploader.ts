@@ -1,6 +1,7 @@
 import {TextModel, TextModelList} from "../../core/model/text-model";
 import {Setting} from "../setting/setting";
 import {createTitle} from "../utils";
+import {getLangConfig} from "../lang/lang-loader";
 
 export class TextUploader {
     private textModels: TextModelList
@@ -23,7 +24,7 @@ export class TextUploader {
     }
 
     addTextModel(text: TextModel = this.textModels.addTextModel()) {
-        const setting = new Setting(text.settingObject, text.settingAttributes)
+        const setting = new Setting(text.settingObject, text.settingAttributes as any)
         this.textDomList.appendChild(setting.render())
     }
 
@@ -31,7 +32,7 @@ export class TextUploader {
         const root = document.createElement('div')
 
         root.append(
-            createTitle('Set Text'),
+            createTitle(getLangConfig().setText),
             this.textDomList
         )
         return root

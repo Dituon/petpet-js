@@ -1,6 +1,7 @@
 import {Loading} from "../utils/ui.js";
 import './result-area.css'
 import {createTitle} from "../utils";
+import {getLangConfig} from "../lang/lang-loader";
 
 export class ResultArea {
     #parentElement: HTMLDivElement = document.createElement('div')
@@ -12,7 +13,7 @@ export class ResultArea {
     constructor() {
         this.#resultElement.className = 'result-area'
         this.#parentElement.append(
-            createTitle('Result'),
+            createTitle(getLangConfig().result),
             this.#resultElement
         )
 
