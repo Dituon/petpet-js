@@ -1,1 +1,1 @@
-export * from "./gijs-encoder";
+export * from "./gifjs-encoder";
