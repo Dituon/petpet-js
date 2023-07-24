@@ -1,0 +1,64 @@
+@font-face {
+    font-family: "Arial";
+    src: local("Arial"), local("Helvetica");
+}
+
+@font-face {
+    font-family: "Arial Black";
+    src: local("Arial Black"), local("Gadget");
+}
+
+@font-face {
+    font-family: "Comic Sans MS";
+    src: local("Comic Sans MS"), local("cursive");
+}
+
+@font-face {
+    font-family: "Courier New";
+    src: local("Courier New"), local("Courier");
+}
+
+@font-face {
+    font-family: "Georgia";
+    src: local("Georgia");
+}
+
+@font-face {
+    font-family: "Impact";
+    src: local("Impact"), local("Charcoal");
+}
+
+@font-face {
+    font-family: "Lucida Console";
+    src: local("Lucida Console"), local("Monaco");
+}
+
+@font-face {
+    font-family: "Lucida Sans Unicode";
+    src: local("Lucida Sans Unicode"), local("Lucida Grande");
+}
+
+@font-face {
+    font-family: "Palatino Linotype";
+    src: local("Palatino Linotype"), local("Book Antiqua"), local("Palatino");
+}
+
+@font-face {
+    font-family: "Tahoma";
+    src: local("Tahoma"), local("Geneva");
+}
+
+@font-face {
+    font-family: "Times New Roman";
+    src: local("Times New Roman"), local("Times");
+}
+
+@font-face {
+    font-family: "Trebuchet MS";
+    src: local("Trebuchet MS"), local("Helvetica");
+}
+
+@font-face {
+    font-family: "Verdana";
+    src: local("Verdana"), local("Geneva");
+}

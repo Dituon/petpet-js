@@ -17,7 +17,7 @@ export type ValueAttribute = {
     [key in keyof HTMLInputElement]?: HTMLInputElement[key]
 }
 // & {
-//     tagName ?: keyof HTMLElementTagNameMap,
+//     tagName?: keyof HTMLElementTagNameMap,
 // }
 
 export interface ValueAttributeMap {
@@ -49,9 +49,28 @@ export class Setting {
     private createInput(key: string, value: SettingValue): HTMLElement {
         const attrs: ValueAttribute = this.attrMap[key] ?? {}
         const div = document.createElement('div')
-        const span = document.createElement('span')
-        span.textContent = lang[key] ?? key
-        div.appendChild(span)
+        const label = document.createElement('label')
+        label.textContent = lang[key] ?? key
+        div.appendChild(label)
+
+        if (key === 'font') {
+            const fontSelect = document.createElement("select")
+
+            fontSelect.addEventListener("change", () => this.obj[key] = fontSelect.value)
+
+            document.fonts.forEach(font => {
+                const fontFamily = font.family
+                const fontOption = document.createElement("option")
+                fontOption.style.fontFamily = fontFamily
+                fontOption.value = fontFamily
+                fontOption.textContent = fontFamily
+                fontOption.selected = fontFamily === this.obj[key]
+                fontSelect.appendChild(fontOption)
+            })
+
+            div.appendChild(fontSelect)
+            return div
+        }
 
         let type = typeof value
         switch (type) {
@@ -64,10 +83,12 @@ export class Setting {
                 button.textContent = key
                 button.addEventListener('click', async () => {
                     button.disabled = true
+                    button.style.cursor = 'progress'
                     try {
                         await (value as Function)()
                     } finally {
                         button.disabled = false
+                        button.style.cursor = 'pointer'
                     }
                 })
                 div.appendChild(button)

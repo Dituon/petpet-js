@@ -1,8 +1,8 @@
-#template-chooser {
+.template-chooser {
+    font-weight: bolder;
     cursor: pointer;
 
     position: relative;
-    /*width: calc(min(50vw, 24em) + 8em);*/
     padding: 2em 4em;
     border: var(--text) 2px dashed;
     border-radius: 16px;

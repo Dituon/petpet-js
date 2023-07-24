@@ -14,6 +14,8 @@ const zh_CN: LangConfig = {
     y: 'Y',
     text: '文字',
     color: '颜色',
+    size: '大小',
+    font: '字体',
     hidden: '隐藏',
     delete: '删除',
     delay: '延迟',
@@ -25,5 +27,8 @@ const zh_CN: LangConfig = {
     dither: '抖动',
     download: '下载',
     copy: '复制',
-    share: '分享'
+    share: '分享',
+    notSelected: '未选择',
+    noAvatar: '无头像',
+    rightClickOrLongPress: '右键或长按'
 }

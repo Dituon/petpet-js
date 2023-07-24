@@ -14,6 +14,8 @@ const ru: LangConfig = {
     y: 'Y',
     text: 'Текст',
     color: 'Цвет',
+    size: 'Размер',
+    font: 'Шрифт',
     hidden: 'Скрыть',
     delete: 'Удалить',
     delay: 'Задержка',
@@ -25,5 +27,8 @@ const ru: LangConfig = {
     dither: 'Контроль',
     download: 'Скачать',
     copy: 'Копировать',
-    share: 'Поделиться'
+    share: 'Поделиться',
+    notSelected: 'Не выбрано',
+    noAvatar: 'Нет аватара',
+    rightClickOrLongPress: 'Кликните или перетащите мышкой'
 }

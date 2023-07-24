@@ -19,13 +19,13 @@ export class AvatarUploader {
     constructor() {
         this.#element = document.createElement('div')
         this.#element.className = 'avatar-uploader'
-        this.#element.innerHTML = 'No Avatar'
+        this.#element.innerHTML = getLangConfig().noAvatar
     }
 
     /** @param {AvatarType[] | null} types */
     set types(types) {
         if (!types || types.length === 0) {
-            this.#element.innerHTML = 'No Avatar'
+            this.#element.innerHTML = getLangConfig().noAvatar
             return
         }
         this.#element.innerHTML = ''

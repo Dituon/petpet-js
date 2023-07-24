@@ -3,6 +3,23 @@ export const INDEX_MAP_FILE = 'index.map.json'
 export const DEFAULT_DATA_PATH = './data/xmmt.dituon.petpet'
 export const DEFAULT_PREVIEW_PATH = '/preview'
 
+export const WEB_SAFE_FONTS = [
+    'Arial',
+    'Arial Black',
+    'Comic Sans MS',
+    'Courier New',
+    'Georgia',
+    'Impact',
+    'Lucida Console',
+    'Lucida Sans Unicode',
+    'Palatino Linotype',
+    'Tahoma',
+    'Times New Roman',
+    'Trebuchet MS',
+    'Verdana'
+]
+import './websafe-fonts.css'
+
 export interface RepoIndex {
     version: number
     dataPath?: string
@@ -38,7 +55,7 @@ export class RepoLoader {
         await Promise.allSettled(this.urls.map(async url => {
             const index = await fetch(`${url}/${INDEX_FILE}`).then(p => p.json())
             const {dataPath = DEFAULT_DATA_PATH, dataList, fontList} = index as RepoIndex
-            try{
+            try {
                 const indexMap: RepoIndexMap = await fetch(`${url}/${INDEX_MAP_FILE}`).then(p => p.json())
                 Object.entries(indexMap.length).forEach(([k, v]) => this.lengthMap.set(k, v))
             } catch (e) {

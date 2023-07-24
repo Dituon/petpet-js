@@ -14,6 +14,8 @@ const de: LangConfig = {
     y: 'Y',
     text: 'Text',
     color: 'Farbe',
+    size: 'Größe',
+    font: 'Schriftart',
     hidden: 'Verstecken',
     delete: 'Löschen',
     delay: 'Verzögerung',
@@ -25,5 +27,8 @@ const de: LangConfig = {
     dither: 'Dither',
     download: 'Download',
     copy: 'Kopieren',
-    share: 'Teilen'
+    share: 'Teilen',
+    notSelected: 'Nicht ausgewählt',
+    noAvatar: 'Keine Avatar',
+    rightClickOrLongPress: 'Rechtsklick oder Doppelklick'
 }

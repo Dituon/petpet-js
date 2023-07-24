@@ -13,6 +13,8 @@ export const zh_TW: LangConfig = {
     y: 'Y',
     text: '文字',
     color: '顏色',
+    size: '大小',
+    font: '字型',
     hidden: '隱藏',
     delete: '刪除',
     delay: '延遲',
@@ -24,5 +26,8 @@ export const zh_TW: LangConfig = {
     dither: '抖動',
     download: '下載',
     copy: '複製',
-    share: '分享'
+    share: '分享',
+    notSelected: '未選擇',
+    noAvatar: '無頭像',
+    rightClickOrLongPress: '右鍵或長按'
 }

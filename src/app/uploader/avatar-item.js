@@ -1,5 +1,6 @@
 import {AvatarType} from "../../core/model/avatar-model"
 import {AvatarCropper} from "./avatar-cropper"
+import {getLangConfig} from "../lang/lang-loader";
 
 const stopPropagation = e => {
     e.stopPropagation()
@@ -19,7 +20,7 @@ export class AvatarItem {
     /** @param {AvatarType} type */
     constructor(type) {
         this.type = type
-        this.#element.title = '右键裁切'
+        this.#element.title = getLangConfig().rightClickOrLongPress
         this.#element.setAttribute('type', type)
         this.#element.addEventListener('dragenter', stopPropagation, false)
         this.#element.addEventListener('dragover', stopPropagation, false)

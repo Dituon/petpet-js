@@ -271,6 +271,7 @@ export class TextModel {
             set size(size: number) {
                 that.pixelSize = size
             },
+            font: that.template.font,
             get hidden() {
                 return that.disabled
             },

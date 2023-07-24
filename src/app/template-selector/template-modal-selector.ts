@@ -66,7 +66,7 @@ export class TemplateModalSelector {
         }
 
         const inputEle = document.createElement('input')
-        inputEle.placeholder = '🔍 ' + getLangConfig().typeToSearch
+        inputEle.placeholder = `🔍 ${getLangConfig().typeToSearch} / ${getLangConfig().rightClickOrLongPress}`
 
         inputEle.addEventListener('change', (e) => {
             this.search(inputEle.value.trim())

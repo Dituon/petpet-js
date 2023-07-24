@@ -1,14 +1,14 @@
+import {RepoLoader} from "./loader/repo-loader";
 import {TemplateSelector} from "./template-selector";
 import {AvatarUploader} from "./uploader";
+import {TextUploader} from "./uploader/text-uploader";
 import {PetpetModel, PetpetModelViewer, PetpetTemplate} from "../core/model/petpet-model";
 import {ResultArea} from "./result-area/result-area";
 import {Setting} from "./setting/setting";
 import {Downloader} from "./downloader/downloader";
+import config from "../../config";
 
 import "./app.css"
-import {RepoLoader} from "./loader/repo-loader";
-import config from "../../config";
-import {TextUploader} from "./uploader/text-uploader";
 
 /** @typedef { 'FROM' | 'TO' | 'BOT' | 'GROUP' } AvatarType */
 

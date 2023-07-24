@@ -23,6 +23,8 @@ export interface LangConfig {
     y: string
     text: string
     color: string
+    size: string
+    font: string
     hidden: string
     delete: string
 
@@ -38,6 +40,10 @@ export interface LangConfig {
     download: string
     copy: string
     share: string
+
+    notSelected: string
+    noAvatar: string
+    rightClickOrLongPress: string
 }
 
 export const supportedLangMap = [

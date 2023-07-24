@@ -14,6 +14,8 @@ const ko: LangConfig = {
     y: 'Y',
     text: '텍스트',
     color: '색',
+    size: '크기',
+    font: '글꼴',
     hidden: '숨김',
     delete: '삭제',
     delay: '연속',
@@ -25,5 +27,8 @@ const ko: LangConfig = {
     dither: '쓰레드',
     download: '다운로드',
     copy: '복사',
-    share: '공유'
+    share: '공유',
+    notSelected: '선택되지 않음',
+    noAvatar: '아바타 없음',
+    rightClickOrLongPress: '마우스 오른쪽클릭',
 }

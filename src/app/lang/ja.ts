@@ -13,6 +13,8 @@ export const ja: LangConfig = {
     y: 'Y',
     text: 'テキスト',
     color: '色',
+    size: 'サイズ',
+    font: 'フォント',
     hidden: '隠す',
     delete: '削除',
     delay: '遅延',
@@ -24,5 +26,8 @@ export const ja: LangConfig = {
     dither: '抖動',
     download: 'ダウンロード',
     copy: 'コピー',
-    share: 'シェア'
+    share: 'シェア',
+    notSelected: '未選択',
+    noAvatar: 'アバターなし',
+    rightClickOrLongPress: '右クリックまたは長押し'
 }

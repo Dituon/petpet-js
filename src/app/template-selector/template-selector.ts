@@ -14,8 +14,8 @@ export class TemplateSelector {
 
     constructor(templates?: PetpetTemplate[]) {
         this.#modal = new TemplateModalSelector(templates)
-        this.#element.id = 'template-chooser'
-        this.#element.textContent = 'Not Selected'
+        this.#element.classList.add('template-chooser')
+        this.#element.textContent = getLangConfig().notSelected
         this.#element.addEventListener('click', async () => {
             const template = await this.showModal()
             this.#onChangeCallback && this.#onChangeCallback(template)

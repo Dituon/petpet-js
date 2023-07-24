@@ -68,7 +68,7 @@ export interface AvatarTemplate {
     opacity?: number
 }
 
-const defaultTemplate: AvatarTemplate = {
+export const defaultAvatarTemplate: AvatarTemplate = {
     type: undefined,
 
     pos: undefined,
@@ -99,7 +99,7 @@ export function compileAvatarTemplate(template: AvatarTemplate): CompiledAvatarT
     // @ts-ignore return if compiled
     if (template.compiled) return template
 
-    const t: AvatarTemplate = {...defaultTemplate, ...template}
+    const t: AvatarTemplate = {...defaultAvatarTemplate, ...template}
     const originPos = t.pos
     let targetPos
     switch (t.posType) {

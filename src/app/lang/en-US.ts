@@ -13,6 +13,8 @@ export const en_US: LangConfig = {
     y: 'Y',
     text: 'Text',
     color: 'Color',
+    size: 'Size',
+    font: 'Font',
     hidden: 'Hidden',
     delete: 'Delete',
     delay: 'Delay',
@@ -24,5 +26,8 @@ export const en_US: LangConfig = {
     dither: 'Dither',
     download: 'Download',
     copy: 'Copy',
-    share: 'Share'
+    share: 'Share',
+    notSelected: 'Not Selected',
+    noAvatar: 'No Avatar',
+    rightClickOrLongPress: 'Right Click or Long Press'
 }

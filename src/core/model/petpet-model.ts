@@ -23,7 +23,7 @@ export interface PetpetTemplate {
     url?: string
 }
 
-const defaultPetpetTemplate: PetpetTemplate = {
+export const defaultPetpetTemplate: PetpetTemplate = {
     type: undefined,
     avatar: [],
     text: [],
