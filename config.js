@@ -1,7 +1,7 @@
 export default {
     server: [
         window.location.origin + window.location.pathname,
-        'https://dituon.github.io/petpet'
+        'https://d2n.moe/petpet'
     ],
     alternateFont: [
         'MiSans-Bold',
