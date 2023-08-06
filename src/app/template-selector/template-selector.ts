@@ -1,6 +1,6 @@
 import './template-selector.css'
 import {Loading} from "../utils/ui"
-import {TemplateModalSelector} from "./template-modal-selector"
+import {PetpetTemplatePreview, TemplateModalSelector} from "./template-modal-selector"
 import {PetpetTemplate} from "../../core/model/petpet-model";
 import {createTitle} from "../utils";
 import {getLangConfig} from "../lang/lang-loader";
@@ -12,7 +12,7 @@ export class TemplateSelector {
     #onChangeCallback
     template
 
-    constructor(templates?: PetpetTemplate[]) {
+    constructor(templates?: PetpetTemplatePreview[]) {
         this.#modal = new TemplateModalSelector(templates)
         this.#element.classList.add('template-chooser')
         this.#element.textContent = getLangConfig().notSelected
@@ -27,7 +27,7 @@ export class TemplateSelector {
         this.templates = templates
     }
 
-    set templates(templates: PetpetTemplate[]) {
+    set templates(templates: PetpetTemplatePreview[]) {
         this.loading.hide()
         this.#modal.templates = templates
     }
@@ -41,7 +41,6 @@ export class TemplateSelector {
         return root
     }
 
-    /** @return {Promise<PetpetTemplate>} */
     async showModal() {
         const template = await this.#modal.show()
         if (template) this.#element.textContent = template.key

@@ -54,16 +54,8 @@ export default class {
 
     private async init() {
         const repoLoader = new RepoLoader(config.server)
-        const idMap = await repoLoader.getIdMap()
         this.backgroundLengthMap = await repoLoader.getLengthMap()
-        const templates = []
-        for (const [id, url] of idMap.entries()) {
-            templates.push({
-                key: id,
-                url: url
-            })
-        }
-        this.templateChooser.templates = templates
+        this.templateChooser.templates = await repoLoader.getPreviewList()
         if (!(await repoLoader.getUrlSet()).size) this.templateChooser.loading.error()
     }
 

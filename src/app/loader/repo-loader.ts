@@ -1,3 +1,6 @@
+import {PetpetTemplatePreview} from "../template-selector";
+import './websafe-fonts.css'
+
 export const INDEX_FILE = 'index.json'
 export const INDEX_MAP_FILE = 'index.map.json'
 export const DEFAULT_DATA_PATH = './data/xmmt.dituon.petpet'
@@ -18,7 +21,6 @@ export const WEB_SAFE_FONTS = [
     'Trebuchet MS',
     'Verdana'
 ]
-import './websafe-fonts.css'
 
 export interface RepoIndex {
     version: number
@@ -32,6 +34,12 @@ export interface RepoIndexMap {
     length: {
         [key: string]: number
     }
+    alias: {
+        [key: string]: string[]
+    }
+    type: {
+        [key: string]: string
+    }
 }
 
 export class RepoLoader {
@@ -39,7 +47,8 @@ export class RepoLoader {
     private urlSet: Set<string> = new Set()
     private readonly initPromise: Promise<void>
     private idMap: Map<string, string>
-    private lengthMap: Map<string, number> = new Map()
+    private readonly lengthMap: Map<string, number> = new Map()
+    private readonly aliasMap: Map<string, string[]> = new Map()
     private fonts: string[]
     private fontPromises: Promise<void>[] = []
 
@@ -58,6 +67,7 @@ export class RepoLoader {
             try {
                 const indexMap: RepoIndexMap = await fetch(`${url}/${INDEX_MAP_FILE}`).then(p => p.json())
                 Object.entries(indexMap.length).forEach(([k, v]) => this.lengthMap.set(k, v))
+                Object.entries(indexMap.alias).forEach(([k, v]) => this.aliasMap.set(k, v))
             } catch (e) {
                 console.warn(`cannot find index.map.json in ${url} `)
             }
@@ -94,6 +104,19 @@ export class RepoLoader {
     async getLengthMap() {
         await this.initPromise
         return this.lengthMap
+    }
+
+    async getPreviewList(): Promise<PetpetTemplatePreview[]> {
+        const idMap = await this.getIdMap()
+        const templates = []
+        for (const [id, url] of idMap.entries()) {
+            templates.push({
+                key: id,
+                url: url,
+                alias: this.aliasMap.get(id)
+            })
+        }
+        return templates
     }
 
     async getFonts() {

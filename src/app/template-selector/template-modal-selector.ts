@@ -4,18 +4,24 @@ import {createTitle} from "../utils";
 import {PetpetTemplate} from "../../core/model/petpet-model";
 import {getLangConfig} from "../lang/lang-loader";
 
+export interface PetpetTemplatePreview extends PetpetTemplate {
+    key: string
+    url: string
+    alias?: string[]
+}
+
 export class TemplateModalSelector {
     static ICON_SIZE_LIST = ['big', 'medium', 'small']
 
     #element: HTMLElement = document.createElement('div')
-    #templates: PetpetTemplate[]
-    #templateDomMap: Map<PetpetTemplate, HTMLDivElement> = new Map()
+    #templates: PetpetTemplatePreview[]
+    #templateDomMap: Map<PetpetTemplatePreview, HTMLDivElement> = new Map()
     #dataListDom: HTMLDivElement
-    #selectCallback!: (template: PetpetTemplate | null) => void
+    #selectCallback!: (template: PetpetTemplatePreview | null) => void
     #iconSizeIndex = 0
     private mask = new Mask()
 
-    constructor(templates?: PetpetTemplate[]) {
+    constructor(templates?: PetpetTemplatePreview[]) {
         this.#element.classList.add('modal-select', 'hide', TemplateModalSelector.ICON_SIZE_LIST[this.#iconSizeIndex])
         this.#element.addEventListener('contextmenu', e => {
             e.preventDefault()
@@ -32,7 +38,7 @@ export class TemplateModalSelector {
         this.templates = templates
     }
 
-    set templates(templates: PetpetTemplate[]) {
+    set templates(templates: PetpetTemplatePreview[]) {
         this.#templates = templates
 
         const templatesDom = document.createElement('div')
@@ -40,9 +46,6 @@ export class TemplateModalSelector {
         this.#dataListDom = templatesDom
 
         for (const template of templates) {
-            // template.key = key
-            // template.url = url
-
             const templateDom = document.createElement('div')
             const img = document.createElement('img')
             img.src = `${template.url}/0.png`
@@ -80,7 +83,7 @@ export class TemplateModalSelector {
         this.#element.classList.add('hide')
     }
 
-    async show(): Promise<PetpetTemplate> {
+    async show(): Promise<PetpetTemplatePreview> {
         if (!this.#templates) return null
         this.mask.show()
         this.#element && this.#element.classList.remove('hide')
@@ -108,7 +111,7 @@ export class TemplateModalSelector {
     }
 }
 
-async function loadTemplate(template: PetpetTemplate): Promise<PetpetTemplate> {
+async function loadTemplate(template: PetpetTemplatePreview): Promise<PetpetTemplatePreview> {
     if (template.type) return template
     const originTemplate = await fetch(template.url + '/data.json').then(p => p.json())
     return {...template, ...originTemplate}
