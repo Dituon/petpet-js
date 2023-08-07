@@ -1,5 +1,6 @@
 import {defineConfig} from 'vite'
 import {viteStaticCopy} from "vite-plugin-static-copy";
+import buildDataIndex from './vite-plugin-index-builder.js'
 
 export default defineConfig({
     base: './',
@@ -7,6 +8,7 @@ export default defineConfig({
         outDir: './dist'
     },
     plugins: [
+        buildDataIndex('./data/moe.d2n.petpet-js'),
         viteStaticCopy({
             targets: [
                 {
@@ -15,6 +17,10 @@ export default defineConfig({
                 },
                 {
                     src: './index.json',
+                    dest: './'
+                },
+                {
+                    src: './index.map.json',
                     dest: './'
                 }
             ]

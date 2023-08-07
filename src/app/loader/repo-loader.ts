@@ -52,8 +52,8 @@ export class RepoLoader {
     private fonts: string[]
     private fontPromises: Promise<void>[] = []
 
-    constructor(urls) {
-        this.urls = urls
+    constructor(urls: string[]) {
+        this.urls = [...new Set(urls)]
         this.initPromise = this.init()
     }
 

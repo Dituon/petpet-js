@@ -18,6 +18,9 @@ export interface PetpetTemplate {
     inRandomList?: boolean
     reverse?: boolean
     hidden?: boolean
+
+    key?: string
+    url?: string
 }
 
 export const defaultPetpetTemplate: PetpetTemplate = {
