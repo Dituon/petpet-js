@@ -46,6 +46,7 @@ export default function buildDataIndex(dataPath) {
 
             const jsonData = {
                 version: 0.1,
+                dataPath,
                 dataList: dataTemplateNames,
                 fontList: fontsNames
             }

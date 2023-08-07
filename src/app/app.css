@@ -24,6 +24,7 @@ body, html {
 
 h1,
 h2 {
+    text-align: center;
     padding-left: 10px;
     padding-right: 10px;
 }
