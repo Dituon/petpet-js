@@ -1,8 +1,7 @@
 {
-  "version": 1.0,
-  "dataPath": "./data/moe.d2n.petpet-js",
-  "dataList": [
-    "osu"
-  ],
-  "fontList": []
+    "version": 0.1,
+    "dataList": [
+        "osu"
+    ],
+    "fontList": []
 }
