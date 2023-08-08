@@ -4,10 +4,11 @@ on:
   push:
     branches:
       - main
+      - preview
 
 jobs:
   build:
-    name: Build
+    name: Build app
     runs-on: ubuntu-latest
 
     steps:
@@ -35,7 +36,7 @@ jobs:
 
     steps:
       - name: Checkout preview branch
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           ref: preview
 
@@ -46,7 +47,7 @@ jobs:
           path: ./preview
 
   deploy:
-    name: Deploy
+    name: Deploy to github page
     needs: [ build, copy ]
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main'
