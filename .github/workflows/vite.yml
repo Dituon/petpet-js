@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - preview
 
 jobs:
   build:
@@ -29,21 +30,29 @@ jobs:
           name: production-files
           path: ./dist
 
-  deploy:
-    name: Deploy
-    needs: build
+  deploy_gh_pages:
+    name: Deploy to GitHub Pages
+    needs:
+      - build
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main'
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/preview'
 
     steps:
-      - name: Download artifact
+      - name: Download production files
         uses: actions/download-artifact@v3
         with:
           name: production-files
           path: ./dist
 
-      - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v3
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./dist
+      - name: Copy preview files
+        run: cp -r preview/* ./production-files
+        if: github.ref == 'refs/heads/preview'
+
+      - name: Commit and push changes
+        run: |
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "actions@github.com"
+          git add -A
+          git commit -m "Update gh-pages with main and preview files"
+          git push origin HEAD
+
