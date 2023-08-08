@@ -15,6 +15,8 @@ export const ja: LangConfig = {
     color: '色',
     size: 'サイズ',
     font: 'フォント',
+    strokeSize: '線の太さ',
+    strokeColor: '線の色',
     hidden: '隠す',
     delete: '削除',
     delay: '遅延',

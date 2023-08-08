@@ -16,6 +16,8 @@ const zh_CN: LangConfig = {
     color: '颜色',
     size: '大小',
     font: '字体',
+    strokeSize: '描边大小',
+    strokeColor: '描边颜色',
     hidden: '隐藏',
     delete: '删除',
     delay: '延迟',

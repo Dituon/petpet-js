@@ -16,6 +16,8 @@ const de: LangConfig = {
     color: 'Farbe',
     size: 'Größe',
     font: 'Schriftart',
+    strokeSize: 'Konturgröße',
+    strokeColor: 'Konturfarbe',
     hidden: 'Verstecken',
     delete: 'Löschen',
     delay: 'Verzögerung',

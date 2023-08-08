@@ -15,6 +15,8 @@ export const en_US: LangConfig = {
     color: 'Color',
     size: 'Size',
     font: 'Font',
+    strokeSize: 'Stroke Size',
+    strokeColor: 'Stroke Color',
     hidden: 'Hidden',
     delete: 'Delete',
     delay: 'Delay',

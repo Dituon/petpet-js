@@ -55,7 +55,7 @@ export const defaultTextTemplate: TextTemplate = {
     wrap: TextWrap.NONE,
     align: TextAlign.CENTER,
     position: [TextPosition.LEFT, TextPosition.TOP],
-    strokeColor: '',
+    strokeColor: '#ffffff',
     strokeSize: 0
 }
 
@@ -272,6 +272,8 @@ export class TextModel {
                 that.pixelSize = size
             },
             font: that.template.font,
+            strokeSize: that.template.strokeSize,
+            strokeColor: that.template.strokeColor,
             get hidden() {
                 return that.disabled
             },
@@ -295,12 +297,13 @@ export class TextModel {
         const range = {
             type: 'range',
             min: 0,
-            step: 1,
+            step: 1
         }
         return {
             x: {...range, max: this.backgroundSize ? this.backgroundSize[0] : 1000},
             y: {...range, max: this.backgroundSize ? this.backgroundSize[1] : 1000},
-            size: {...range, max: 256}
+            size: {...range, max: 256},
+            strokeSize: {...range, max: 16}
         }
     }
 

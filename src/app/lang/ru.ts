@@ -16,6 +16,8 @@ const ru: LangConfig = {
     color: 'Цвет',
     size: 'Размер',
     font: 'Шрифт',
+    strokeSize: 'Толщина обводки',
+    strokeColor: 'Цвет обводки',
     hidden: 'Скрыть',
     delete: 'Удалить',
     delay: 'Задержка',

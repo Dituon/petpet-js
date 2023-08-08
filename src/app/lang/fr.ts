@@ -15,6 +15,8 @@ export const fr: LangConfig = {
     color: 'Couleur',
     size: 'Taille',
     font: 'Police',
+    strokeSize: 'Taille du contour',
+    strokeColor: 'Couleur du contour',
     hidden: 'Cacher',
     delete: 'Supprimer',
     delay: 'Délai',

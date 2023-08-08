@@ -16,6 +16,8 @@ const ko: LangConfig = {
     color: '색',
     size: '크기',
     font: '글꼴',
+    strokeSize: '선 굵기',
+    strokeColor: '선 색상',
     hidden: '숨김',
     delete: '삭제',
     delay: '연속',

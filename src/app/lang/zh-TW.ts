@@ -15,6 +15,8 @@ export const zh_TW: LangConfig = {
     color: '顏色',
     size: '大小',
     font: '字型',
+    strokeSize: '描邊大小',
+    strokeColor: '描邊顏色',
     hidden: '隱藏',
     delete: '刪除',
     delay: '延遲',

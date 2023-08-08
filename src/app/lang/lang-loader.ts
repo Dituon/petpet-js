@@ -25,6 +25,8 @@ export interface LangConfig {
     color: string
     size: string
     font: string
+    strokeSize: string
+    strokeColor: string
     hidden: string
     delete: string
 
