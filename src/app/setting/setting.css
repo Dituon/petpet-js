@@ -9,6 +9,24 @@
     border-radius: 16px;
 }
 
+.setting-container > .setting-container {
+    margin: 0;
+}
+
+.setting-container > legend {
+    font-size: 0.8em;
+    padding: 0.2em 0.8em;
+    border-radius: 16px;
+    border: transparent 2px solid;
+    transition: border-color 0.2s, color 0.4s, background-color 0.2s;
+}
+
+.setting-container:hover > legend {
+    border-color: var(--sub-bg);
+    color: var(--sub-bg);
+    background-color: var(--text);
+}
+
 .setting-container > div {
     display: flex;
     align-items: center;

@@ -1,9 +1,18 @@
 import './setting.css'
 import {getLangConfig} from "../lang/lang-loader";
+import {createTitle} from "../utils";
 
 const lang = getLangConfig()
 
-type SettingValue = string | number | boolean | undefined | SettingObject | (() => void) | (() => Promise<void>)
+type SettingValue =
+    string
+    | number
+    | boolean
+    | object
+    | undefined
+    | SettingObject
+    | (() => void)
+    | (() => Promise<void>)
 
 // type SettingDescription = string | number | boolean |
 
@@ -21,18 +30,20 @@ export type ValueAttribute = {
 // }
 
 export interface ValueAttributeMap {
-    [key: string]: ValueAttribute
+    [key: string]: ValueAttribute & { options?: [] }
 }
 
 export class Setting {
     private readonly obj: SettingObject
-    private readonly container: HTMLDivElement
+    private readonly container: HTMLDivElement | HTMLFieldSetElement
     private readonly attrMap: ValueAttributeMap
+    private readonly elementMap: Map<string, HTMLInputElement | HTMLSelectElement> = new Map()
 
-    constructor(obj: SettingObject, attrMap?: ValueAttributeMap) {
+    constructor(obj: SettingObject, attrMap?: ValueAttributeMap, title?: string) {
         // if (!Object.keys(obj).length) return
         this.obj = obj
-        this.container = document.createElement('div')
+        this.container = document.createElement(title ? 'fieldset' : 'div')
+        if (title) this.container.appendChild(createTitle(title, 'legend'))
         this.container.classList.add('setting-container')
         this.attrMap = attrMap ?? {}
 
@@ -44,39 +55,81 @@ export class Setting {
                 this.container.remove()
             }
         }
+
+        for (const [key, value] of Object.entries(this.obj)) {
+            if (value === undefined || value === null) continue
+            const element = this.createElement(key, value)
+            this.container.appendChild(element)
+        }
+
+        const that = this
+        for (let [key, value] of Object.entries(obj)) {
+            let realValue = value
+            Object.defineProperty(obj, key, {
+                get(){
+                    return realValue
+                },
+                set(v){
+                    that.elementMap.get(key).value = v
+                    realValue = v
+                }
+            })
+        }
     }
 
-    private createInput(key: string, value: SettingValue): HTMLElement {
+    private createElement(key: string, value: SettingValue): HTMLElement {
         const attrs: ValueAttribute = this.attrMap[key] ?? {}
-        const div = document.createElement('div')
+        let div: HTMLDivElement | HTMLFieldSetElement = document.createElement('div')
         const label = document.createElement('label')
         label.textContent = lang[key] ?? key
         div.appendChild(label)
 
-        if (key === 'font') {
-            const fontSelect = document.createElement("select")
+        switch (attrs.type) {
+            case 'font':
+                const fontSelect = document.createElement("select")
 
-            fontSelect.addEventListener("change", () => this.obj[key] = fontSelect.value)
+                fontSelect.addEventListener("change", () => this.obj[key] = fontSelect.value)
+                this.elementMap.set(key, fontSelect)
 
-            document.fonts.forEach(font => {
-                const fontFamily = font.family
-                const fontOption = document.createElement("option")
-                fontOption.style.fontFamily = fontFamily
-                fontOption.value = fontFamily
-                fontOption.textContent = fontFamily
-                fontOption.selected = fontFamily === this.obj[key]
-                fontSelect.appendChild(fontOption)
-            })
+                document.fonts.forEach(font => {
+                    const fontFamily = font.family
+                    const fontOption = document.createElement("option")
+                    fontOption.style.fontFamily = fontFamily
+                    fontOption.value = fontFamily
+                    fontOption.textContent = fontFamily
+                    fontOption.selected = fontFamily === this.obj[key]
+                    fontSelect.appendChild(fontOption)
+                })
 
-            div.appendChild(fontSelect)
-            return div
+                div.appendChild(fontSelect)
+                return div
+            case 'select':
+                const selectElement = document.createElement("select")
+
+                selectElement.addEventListener("change", () => this.obj[key] = selectElement.value)
+                this.elementMap.set(key, selectElement)
+
+                // @ts-ignore
+                attrs.options.forEach(option => {
+                    const optionElement = document.createElement("option")
+                    optionElement.value = option
+                    optionElement.textContent = option
+                    optionElement.selected = option === value
+                    selectElement.appendChild(optionElement)
+                })
+
+                div.appendChild(selectElement)
+                return div
         }
 
         let type = typeof value
         switch (type) {
             case "object":
-                const nestedContainer = new Setting(value as any).render()
-                div.appendChild(nestedContainer)
+                div = new Setting(
+                    value as any,
+                    attrs[key],
+                    key
+                ).render()
                 break
             case "function":
                 const button = document.createElement('button')
@@ -95,6 +148,7 @@ export class Setting {
                 break
             default:
                 const input = document.createElement('input')
+                this.elementMap.set(key, input)
                 let callbackFun: () => unknown = () => this.obj[key] = input.value
                 switch (typeof value) {
                     case "number":
@@ -107,6 +161,7 @@ export class Setting {
                     case 'boolean' :
                         // @ts-ignore
                         type = 'checkbox'
+                        input.checked = value
                         callbackFun = () => this.obj[key] = input.checked
                         break
                 }
@@ -122,12 +177,7 @@ export class Setting {
         return div
     }
 
-    public render(): HTMLDivElement {
-        for (const [key, value] of Object.entries(this.obj)) {
-            if (value === undefined || value === null) continue
-            const element = this.createInput(key, value) as HTMLInputElement
-            this.container.appendChild(element)
-        }
+    public render(): HTMLDivElement | HTMLFieldSetElement {
         return this.container
     }
 }

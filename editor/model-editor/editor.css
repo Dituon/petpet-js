@@ -1,0 +1,39 @@
+.lower-canvas {
+    position: relative !important;
+}
+
+.canvas-container {
+    position: sticky !important;
+    /*width: min(80vw, 32em) !important;*/
+    top: 0;
+    z-index: 50;
+}
+
+.frame-editor {
+    position: sticky;
+    top: 0 ;
+    height: 100%;
+}
+
+.frame-list {
+    /*position: sticky;*/
+    top: 0;
+    padding: 0!important;
+    display: flex;
+    /*width: min(80vw, 32em) !important;*/
+    max-width: 100%;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+}
+
+.frame-list canvas {
+    width: 6em;
+    margin: 0;
+    cursor: pointer;
+    border: var(--text) 2px solid;
+}
+
+.frame-list canvas[data-checked="checked"] {
+    border: var(--hl-text) 4px solid;
+    filter: blur(1px);
+}

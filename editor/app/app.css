@@ -1,0 +1,12 @@
+.output-area pre{
+    /*width: 100%;*/
+    text-align: left;
+    padding: 0.4em 1.6em;
+    background: var(--sub-bg);
+    border: var(--text) 2px dashed;
+    border-radius: 16px;
+}
+
+.output-area canvas{
+    width: 100%;
+}

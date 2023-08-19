@@ -27,7 +27,7 @@ export const defaultPetpetTemplate: PetpetTemplate = {
     type: undefined,
     avatar: [],
     text: [],
-    background: null,
+    background: undefined,
     delay: 65,
     alias: [],
     inRandomList: true,
@@ -131,14 +131,14 @@ export class PetpetModelViewer {
     async play() {
         await this.stop()
         if (this.template.reverse) return this.playReverse()
-        this.intervalId = setInterval(async () => {
+        this.intervalId = window.setInterval(async () => {
             await this.drawAvatarsCache(this.i++ % this.length)
             this.drawTextsCache()
         }, Math.abs(this.delay))
     }
 
     private playReverse() {
-        this.intervalId = setInterval(async () => {
+        this.intervalId = window.setInterval(async () => {
             await this.drawAvatarsCache(this.length - 1 - (this.i++ % this.length))
             this.drawTextsCache()
         }, Math.abs(this.delay))

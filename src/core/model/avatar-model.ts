@@ -7,8 +7,7 @@ import {
     flipImage,
     grayImage,
     ImageDeformer,
-    mirrorImage,
-    rotateImage
+    mirrorImage
 } from "../image-synthesis";
 import {Expression, Parser} from "expr-eval";
 import {decodeGif} from "../gif-synthesis/decoder";
@@ -67,6 +66,10 @@ export interface AvatarTemplate {
     angle?: number
     opacity?: number
 }
+
+type P = [number, number]
+export type RO = [P, P, P, P, P]
+export type XYWH = [number, number, number, number]
 
 export const defaultAvatarTemplate: AvatarTemplate = {
     type: undefined,
@@ -150,10 +153,6 @@ export interface ExtraTemplate {
     random?: AvatarTemplate
 }
 
-type P = [number, number]
-type RO = [P, P, P, P, P]
-type XYWH = [number, number, number, number]
-
 export class AvatarModel extends ElementModel {
     public readonly type: AvatarType
     protected template: CompiledAvatarTemplate
@@ -168,7 +167,7 @@ export class AvatarModel extends ElementModel {
         this.type = template.type
 
         const extraTemplate = extraTemplates && extraTemplates[this.type.toString().toLowerCase()]
-        this.template = compileAvatarTemplate(!extraTemplate ? template : {...template,...extraTemplate})
+        this.template = compileAvatarTemplate(!extraTemplate ? template : {...template, ...extraTemplate})
 
         this.originBlob = data[this.type.toString().toLowerCase()]
         if (!this.originBlob) throw new Error(`no ${this.type} image`)
@@ -178,6 +177,10 @@ export class AvatarModel extends ElementModel {
 
     protected async init() {
         await this.loadFile()
+        await this.updateTemplate()
+    }
+
+    async updateTemplate() {
         await this.setCrop()
         await this.setStyle()
         await this.setRound()
@@ -273,21 +276,42 @@ export class AvatarModel extends ElementModel {
         if (rotate) angle += (360 / this.pos.length) * frameIndex
         switch (this.template.posType) {
             case AvatarPosType.ZOOM:
-                if (angle) frame = rotateImage(frame, angle, !this.template.round)
+                const [x, y, w, h] = pos as XYWH
+                if (angle) {
+                    ctx.save();
+                    ctx.translate(x + w / 2, y + h / 2);
+                    ctx.rotate(angle * Math.PI / 180.0);
+                    ctx.translate(-x - w / 2, -y - h / 2);
+                }
                 switch (this.template.fit) {
                     case AvatarFit.FILL:
-                        ctx.drawImage(frame, ...pos as XYWH);
+                        ctx.drawImage(frame, x, y, w, h);
                         break
                     default:
-                        const [x, y, width, height] = pos as XYWH
-                        const scale = Math[this.template.fit === AvatarFit.CONTAIN ? 'min' : 'max'](width / frame.width, height / frame.height)
+                        const scale = Math[this.template.fit === AvatarFit.CONTAIN ? 'min' : 'max']
+                        (w / frame.width, h / frame.height)
                         const scaledWidth = frame.width * scale
                         const scaledHeight = frame.height * scale
-                        const offsetX = x + (width - scaledWidth) / 2
-                        const offsetY = y + (height - scaledHeight) / 2
-                        ctx.drawImage(frame, offsetX, offsetY, scaledWidth, scaledHeight)
+                        const offsetX = x + (w - scaledWidth) / 2
+                        const offsetY = y + (h - scaledHeight) / 2
+                        if (this.template.fit === AvatarFit.CONTAIN) {
+                            ctx.drawImage(frame, offsetX, offsetY, scaledWidth, scaledHeight)
+                        } else {
+                            const dx = (scaledWidth - w),
+                                dy = (scaledHeight - h),
+                                pdx = dx / scale / 2,
+                                pdy = dy / scale / 2
+                            ctx.drawImage(
+                                cropImage(frame, [pdx, pdy, frame.width - pdx, frame.height - pdy]),
+                                offsetX + dx / 2,
+                                offsetY + dy / 2,
+                                scaledWidth - dx,
+                                scaledHeight - dy
+                            )
+                        }
                         break
                 }
+                ctx.restore()
                 break
             case AvatarPosType.DEFORM:
                 this.deformer.draw(ctx, frame, pos as RO)

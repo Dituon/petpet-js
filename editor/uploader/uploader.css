@@ -1,0 +1,12 @@
+.uploader {
+    font-weight: bolder;
+    cursor: pointer;
+    position: relative;
+    padding: 2em 2em;
+    border: var(--text) 2px dashed;
+    border-radius: 16px;
+}
+
+.uploader>label>input[type="file"] {
+    display: none;
+}

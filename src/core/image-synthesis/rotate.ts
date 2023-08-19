@@ -1,3 +1,6 @@
+/**
+ * @deprecated
+ */
 export function rotateImage(avatarImage: HTMLCanvasElement, angle: number, scaling = true): HTMLCanvasElement {
     const rotated = document.createElement('canvas')
     const ctx = rotated.getContext('2d')

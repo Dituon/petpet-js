@@ -303,7 +303,8 @@ export class TextModel {
             x: {...range, max: this.backgroundSize ? this.backgroundSize[0] : 1000},
             y: {...range, max: this.backgroundSize ? this.backgroundSize[1] : 1000},
             size: {...range, max: 256},
-            strokeSize: {...range, max: 16}
+            strokeSize: {...range, max: 16},
+            font: {type: 'font'}
         }
     }
 

@@ -51,10 +51,10 @@ export class Downloader {
         await this.initPromise
         const ele = document.createElement('div')
         if (this.frames.length !== 1) {
-            const gifBuilderSetting = new Setting(gifSetting)
+            const gifBuilderSetting = new Setting(gifSetting, undefined, 'GIF Render')
             ele.appendChild(gifBuilderSetting.render())
         }
-        const downloadSetting = new Setting(this.downloadOptions as any)
+        const downloadSetting = new Setting(this.downloadOptions as any, undefined, 'Save & Share')
         ele.append(downloadSetting.render())
         return ele
     }

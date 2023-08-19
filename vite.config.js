@@ -6,7 +6,13 @@ import buildDataIndex from './vite-plugin-index-builder.js'
 export default defineConfig({
     base: './',
     build: {
-        outDir: './dist'
+        outDir: './dist',
+        rollupOptions: {
+            input: {
+                main: './index.html',
+                editor: '/editor/index.html',
+            }
+        }
     },
     plugins: [
         buildDataIndex('./data/moe.d2n.petpet-js'),

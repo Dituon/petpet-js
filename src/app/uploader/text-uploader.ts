@@ -24,7 +24,11 @@ export class TextUploader {
     }
 
     addTextModel(text: TextModel = this.textModels.addTextModel()) {
-        const setting = new Setting(text.settingObject, text.settingAttributes as any)
+        const setting = new Setting(
+            text.settingObject,
+            text.settingAttributes as any,
+            'Text' + ` - ${this.textModels.texts.length}`
+        )
         this.textDomList.appendChild(setting.render())
     }
 
