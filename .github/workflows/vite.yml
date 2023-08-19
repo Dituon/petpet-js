@@ -21,6 +21,9 @@ jobs:
       - name: Install dependencies
         uses: bahmutov/npm-install@v1
 
+      - name: Install Editor dependencies
+        run: npm run install_editor
+
       - name: Build project
         run: npm run build
 
