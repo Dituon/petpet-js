@@ -37,7 +37,6 @@ export class Setting {
     private readonly obj: SettingObject
     private readonly container: HTMLDivElement | HTMLFieldSetElement
     private readonly attrMap: ValueAttributeMap
-    private readonly elementMap: Map<string, HTMLInputElement | HTMLSelectElement> = new Map()
 
     constructor(obj: SettingObject, attrMap?: ValueAttributeMap, title?: string) {
         // if (!Object.keys(obj).length) return
@@ -61,20 +60,6 @@ export class Setting {
             const element = this.createElement(key, value)
             this.container.appendChild(element)
         }
-
-        const that = this
-        for (let [key, value] of Object.entries(obj)) {
-            let realValue = value
-            Object.defineProperty(obj, key, {
-                get(){
-                    return realValue
-                },
-                set(v){
-                    that.elementMap.get(key).value = v
-                    realValue = v
-                }
-            })
-        }
     }
 
     private createElement(key: string, value: SettingValue): HTMLElement {
@@ -89,7 +74,6 @@ export class Setting {
                 const fontSelect = document.createElement("select")
 
                 fontSelect.addEventListener("change", () => this.obj[key] = fontSelect.value)
-                this.elementMap.set(key, fontSelect)
 
                 document.fonts.forEach(font => {
                     const fontFamily = font.family
@@ -107,7 +91,6 @@ export class Setting {
                 const selectElement = document.createElement("select")
 
                 selectElement.addEventListener("change", () => this.obj[key] = selectElement.value)
-                this.elementMap.set(key, selectElement)
 
                 // @ts-ignore
                 attrs.options.forEach(option => {
@@ -148,7 +131,6 @@ export class Setting {
                 break
             default:
                 const input = document.createElement('input')
-                this.elementMap.set(key, input)
                 let callbackFun: () => unknown = () => this.obj[key] = input.value
                 switch (typeof value) {
                     case "number":
