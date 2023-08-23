@@ -83,7 +83,7 @@ export default defineConfig({
                 },
                 {
                     src: './video',
-                    dest: './'
+                    dest: './assets'
                 },
                 {
                     src: './index.json',
