@@ -51,7 +51,17 @@ export class Downloader {
         await this.initPromise
         const ele = document.createElement('div')
         if (this.frames.length !== 1) {
-            const gifBuilderSetting = new Setting(gifSetting, undefined, 'GIF Render')
+            const gifBuilderSetting = new Setting(gifSetting,
+                {
+                    quality: {
+                        type: 'range',
+                        min: '1',
+                        max: '20',
+                        className: 'reversed'
+                    }
+                },
+                'GIF Render'
+            )
             ele.appendChild(gifBuilderSetting.render())
         }
         const downloadSetting = new Setting(this.downloadOptions as any, undefined, 'Save & Share')

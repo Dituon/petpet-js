@@ -1,0 +1,3 @@
+.reversed input[type="range"]{
+    direction: rtl;
+}

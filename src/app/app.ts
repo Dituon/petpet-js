@@ -9,6 +9,7 @@ import {Downloader} from "./downloader/downloader";
 import config from "../../config";
 
 import "./app.css"
+import {initReadme, showReadme} from "./utils/show-readme";
 
 /** @typedef { 'FROM' | 'TO' | 'BOT' | 'GROUP' } AvatarType */
 
@@ -53,6 +54,7 @@ export default class {
     }
 
     private async init() {
+        initReadme()
         const repoLoader = new RepoLoader(config.server)
         this.backgroundLengthMap = await repoLoader.getLengthMap()
         this.templateChooser.templates = await repoLoader.getPreviewList()

@@ -232,6 +232,15 @@ export class AvatarEditor {
         this.canvas.renderAll()
     }
 
+    get angle(): number {
+        switch (this.template.posType) {
+            case AvatarPosType.ZOOM:
+                return this.containerRect.angle
+            case AvatarPosType.DEFORM:
+                return 0
+        }
+    }
+
     set opacity(num: number) {
         this.template.opacity = num
         this.avatarImage.opacity = num
@@ -350,7 +359,6 @@ export class AvatarEditor {
     }
 
     set hideInThisFrame(bool: boolean) {
-        console.log(bool)
         if (bool) {
             switch (this.template.posType) {
                 case AvatarPosType.ZOOM:
@@ -450,6 +458,6 @@ export class AvatarEditor {
     }
 
     get compiledTemplate(): AvatarTemplate{
-        return {...this.template, pos: this.pos}
+        return {...this.template, pos: this.pos, angle: this.angle}
     }
 }
