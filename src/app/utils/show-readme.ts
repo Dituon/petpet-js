@@ -24,6 +24,6 @@ export function showReadme() {
 window['showReadme'] = showReadme
 
 export function initReadme() {
-    if (!localStorage.getItem('readme')) return
+    if (localStorage.getItem('readme')) return
     showReadme()
 }
