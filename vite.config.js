@@ -82,6 +82,10 @@ export default defineConfig({
                     dest: './'
                 },
                 {
+                    src: './video',
+                    dist: './'
+                },
+                {
                     src: './index.json',
                     dest: './'
                 },
