@@ -15,7 +15,7 @@ https://dituon.github.io/petpet-js/
 - [ ] 补充 `README`
 - [x] `Avatar.fit`
 - [x] `Text.*`
-- [ ] 优化前端页面
+- [x] 优化前端页面
 
 ## Keywords
 

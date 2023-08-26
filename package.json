@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "npm run install_editor & vite build",
     "preview": "vite preview",
     "install_editor": "cd ./editor && npm i"
   },

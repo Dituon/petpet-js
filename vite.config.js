@@ -10,7 +10,8 @@ export default defineConfig({
         rollupOptions: {
             input: {
                 main: './index.html',
-                editor: '/editor/index.html',
+                readme: './readme.html',
+                editor: '/editor/index.html'
             }
         }
     },
