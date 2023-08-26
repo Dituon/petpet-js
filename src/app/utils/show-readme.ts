@@ -1,5 +1,6 @@
-//@ts-ignore
-import readmeHtml from '../../../readme.html?url'
+// //@ts-ignore
+// import readmeHtml from '../../../readme.html?url'
+const readmeHtml = './readme.html'
 import './readme-dialog.css'
 
 export function showReadme() {

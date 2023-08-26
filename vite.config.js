@@ -10,6 +10,7 @@ export default defineConfig({
         rollupOptions: {
             input: {
                 main: './index.html',
+                readme: './readme.html',
                 editor: '/editor/index.html'
             }
         }
@@ -80,10 +81,6 @@ export default defineConfig({
                 {
                     src: './icons',
                     dest: './'
-                },
-                {
-                    src: './video',
-                    dest: './assets'
                 },
                 {
                     src: './index.json',

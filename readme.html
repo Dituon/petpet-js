@@ -5,17 +5,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 
     <meta name="theme-color" content="#ff8ba7"/>
+    <link rel="apple-touch-icon" sizes="192x192" href="./icons/icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="./icons/icon-96x96.png">
+    <link rel="icon" href="./icons/icon-128x128.png">
 
+    <link rel="stylesheet" type="text/css" href="./src/app/app.css">
     <style>
         .readme {
             display: flex;
             flex-direction: column;
             align-items: center;
             text-align: center;
+            background: var(--sub-bg);
         }
 
         .readme > div, details {
-            background-color: var(--sub-bg);
+            background-color: var(--bg);
             width: min(26em, 80vw);
             margin-top: 2em;
             border-radius: 16px;
@@ -35,7 +40,7 @@
             display:table;
             width: 100%;
             border-radius: 0 0 16px 16px;
-            border-top: var(--bg) 2px dashed;
+            border-top: var(--sub-bg) 2px dashed;
         }
     </style>
     <title>readme</title>
@@ -62,5 +67,6 @@
     <h3>调整头像尺寸</h3>
     <video src="./video/edit-avatar.mp4" autoplay muted loop></video>
 </details>
+<script type="module" src="./src/app/utils/show-readme.ts"></script>
 </body>
 </html>

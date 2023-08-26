@@ -1,3 +1,5 @@
+@import "../app.css";
+
 dialog.readme[open] {
     border-radius: 16px;
     border: none;
