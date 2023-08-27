@@ -32,5 +32,18 @@ export const ja: LangConfig = {
     share: 'シェア',
     notSelected: '未選択',
     noAvatar: 'アバターなし',
-    rightClickOrLongPress: '右クリックまたは長押し'
+    rightClickOrLongPress: '右クリックまたは長押し',
+    type: 'タイプ',
+    deform: '変形',
+    round: 'ラウンド',
+    rotate: '回転',
+    avatarOnTop: '上にアバター',
+    opacity: '不透明度',
+    fit: 'フィット',
+    style: 'スタイル',
+    FLIP: '反転',
+    MIRROR: 'ミラー',
+    GRAY: 'グレー',
+    BINARIZATION: '二値化'
+
 }

@@ -34,4 +34,17 @@ const ko: LangConfig = {
     notSelected: '선택되지 않음',
     noAvatar: '아바타 없음',
     rightClickOrLongPress: '마우스 오른쪽클릭',
+    type: '유형',
+    deform: '변형',
+    round: '둥근',
+    rotate: '회전',
+    avatarOnTop: '상단 아바타',
+    opacity: '불투명도',
+    fit: '맞춤',
+    style: '스타일',
+    FLIP: '뒤집기',
+    MIRROR: '거울상',
+    GRAY: '그레이',
+    BINARIZATION: '이진화'
+
 }

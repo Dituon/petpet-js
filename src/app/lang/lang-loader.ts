@@ -47,6 +47,19 @@ export interface LangConfig {
     notSelected: string
     noAvatar: string
     rightClickOrLongPress: string
+
+    type: string,
+    deform: string,
+    round: string,
+    rotate: string,
+    avatarOnTop: string,
+    opacity: string,
+    fit: string,
+    style: string,
+    FLIP: string,
+    MIRROR: string,
+    GRAY: string,
+    BINARIZATION: string
 }
 
 export const supportedLangMap = [

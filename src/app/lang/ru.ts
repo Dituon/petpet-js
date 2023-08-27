@@ -33,5 +33,18 @@ const ru: LangConfig = {
     share: 'Поделиться',
     notSelected: 'Не выбрано',
     noAvatar: 'Нет аватара',
-    rightClickOrLongPress: 'Кликните или перетащите мышкой'
+    rightClickOrLongPress: 'Кликните или перетащите мышкой',
+    type: 'Тип',
+    deform: 'Деформация',
+    round: 'Круглый',
+    rotate: 'Поворот',
+    avatarOnTop: 'Аватар сверху',
+    opacity: 'Непрозрачность',
+    fit: 'Подгонка',
+    style: 'Стиль',
+    FLIP: 'Перевернуть',
+    MIRROR: 'Зеркало',
+    GRAY: 'Серый',
+    BINARIZATION: 'Бинаризация'
+
 }

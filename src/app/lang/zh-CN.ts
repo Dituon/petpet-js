@@ -33,5 +33,18 @@ const zh_CN: LangConfig = {
     share: '分享',
     notSelected: '未选择',
     noAvatar: '无头像',
-    rightClickOrLongPress: '右键或长按'
+    rightClickOrLongPress: '右键或长按',
+    type: '类型',
+    deform: '变形',
+    round: '圆形',
+    rotate: '旋转',
+    avatarOnTop: '头像置顶',
+    opacity: '透明度',
+    fit: '适应',
+    style: '风格',
+    FLIP: '翻转',
+    MIRROR: '镜像',
+    GRAY: '灰阶',
+    BINARIZATION: '二值化'
+
 }

@@ -32,5 +32,17 @@ export const en_US: LangConfig = {
     share: 'Share',
     notSelected: 'Not Selected',
     noAvatar: 'No Avatar',
-    rightClickOrLongPress: 'Right Click or Long Press'
+    rightClickOrLongPress: 'Right Click or Long Press',
+    type: 'Type',
+    deform: 'Deform',
+    round: 'Round',
+    rotate: 'Rotate',
+    avatarOnTop: 'Avatar on Top',
+    opacity: 'Opacity',
+    fit: 'Fit',
+    style: 'Style',
+    FLIP: 'Flip',
+    MIRROR: 'Mirror',
+    GRAY: 'Gray',
+    BINARIZATION: 'Binarization'
 }

@@ -33,5 +33,18 @@ const de: LangConfig = {
     share: 'Teilen',
     notSelected: 'Nicht ausgewählt',
     noAvatar: 'Keine Avatar',
-    rightClickOrLongPress: 'Rechtsklick oder Doppelklick'
+    rightClickOrLongPress: 'Rechtsklick oder Doppelklick',
+    type: 'Typ',
+    deform: 'Verformung',
+    round: 'Rund',
+    rotate: 'Drehen',
+    avatarOnTop: 'Avatar oben',
+    opacity: 'Deckkraft',
+    fit: 'Anpassen',
+    style: 'Stil',
+    FLIP: 'Umdrehen',
+    MIRROR: 'Spiegeln',
+    GRAY: 'Grau',
+    BINARIZATION: 'Binarisierung'
+
 }

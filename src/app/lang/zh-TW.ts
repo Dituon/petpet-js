@@ -32,5 +32,18 @@ export const zh_TW: LangConfig = {
     share: '分享',
     notSelected: '未選擇',
     noAvatar: '無頭像',
-    rightClickOrLongPress: '右鍵或長按'
+    rightClickOrLongPress: '右鍵或長按',
+    type: '類型',
+    deform: '變形',
+    round: '圓形',
+    rotate: '旋轉',
+    avatarOnTop: '頭像置顶',
+    opacity: '透明度',
+    fit: '適應',
+    style: '風格',
+    FLIP: '翻轉',
+    MIRROR: '鏡像',
+    GRAY: '灰階',
+    BINARIZATION: '二值化'
+
 }
