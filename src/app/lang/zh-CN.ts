@@ -1,4 +1,4 @@
-import {LangConfig} from "./lang-loader";
+import {LangConfig} from './lang-loader';
 
 export
 const zh_CN: LangConfig = {
@@ -16,6 +16,7 @@ const zh_CN: LangConfig = {
     color: '颜色',
     size: '大小',
     font: '字体',
+    fontStyle: '字体风格',
     strokeSize: '描边大小',
     strokeColor: '描边颜色',
     hidden: '隐藏',

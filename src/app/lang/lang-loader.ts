@@ -1,11 +1,11 @@
-import {en_US} from "./en-US";
-import {zh_TW} from "./zh-TW";
-import {zh_CN} from "./zh-CN";
-import {de} from "./de";
-import {ja} from "./ja";
-import {ko} from "./ko";
-import {ru} from "./ru";
-import {fr} from "./fr";
+import {en_US} from './en-US';
+import {zh_TW} from './zh-TW';
+import {zh_CN} from './zh-CN';
+import {de} from './de';
+import {ja} from './ja';
+import {ko} from './ko';
+import {ru} from './ru';
+import {fr} from './fr';
 
 export interface LangConfig {
     selectTemplate: string
@@ -25,6 +25,7 @@ export interface LangConfig {
     color: string
     size: string
     font: string
+    fontStyle: string
     strokeSize: string
     strokeColor: string
     hidden: string
@@ -66,7 +67,7 @@ export const supportedLangMap = [
             'es-EC', 'es-CL', 'es-UY', 'es-PY', 'es-BO', 'es-SV', 'es-HN', 'es-NI', 'es-PR'
         ]
     },
-    {id: 'fr', text: 'Français', alias: ["fr-BE", "fr-CA", "fr-CH", "fr-LU"]},
+    {id: 'fr', text: 'Français', alias: ['fr-BE', 'fr-CA', 'fr-CH', 'fr-LU']},
     // {id: 'id', text: 'bahasa Indonesia', alias: []},
     {id: 'ja', text: '日本語', alias: ['ja-JP']},
     {id: 'ko', text: '한국어', alias: ['ko-KR']},

@@ -1,4 +1,4 @@
-import {LangConfig} from "./lang-loader";
+import {LangConfig} from './lang-loader';
 
 export const en_US: LangConfig = {
     selectTemplate: 'Select template',
@@ -15,6 +15,7 @@ export const en_US: LangConfig = {
     color: 'Color',
     size: 'Size',
     font: 'Font',
+    fontStyle: 'Font Style',
     strokeSize: 'Stroke Size',
     strokeColor: 'Stroke Color',
     hidden: 'Hidden',

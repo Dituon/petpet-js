@@ -1,4 +1,4 @@
-import {LangConfig} from "./lang-loader";
+import {LangConfig} from './lang-loader';
 
 export
 const de: LangConfig = {
@@ -16,6 +16,7 @@ const de: LangConfig = {
     color: 'Farbe',
     size: 'Größe',
     font: 'Schriftart',
+    fontStyle: 'Schriftstil',
     strokeSize: 'Konturgröße',
     strokeColor: 'Konturfarbe',
     hidden: 'Verstecken',

@@ -1,4 +1,4 @@
-import {LangConfig} from "./lang-loader";
+import {LangConfig} from './lang-loader';
 
 export
 const ru: LangConfig = {
@@ -16,6 +16,7 @@ const ru: LangConfig = {
     color: 'Цвет',
     size: 'Размер',
     font: 'Шрифт',
+    fontStyle: 'Стиль шрифта',
     strokeSize: 'Толщина обводки',
     strokeColor: 'Цвет обводки',
     hidden: 'Скрыть',

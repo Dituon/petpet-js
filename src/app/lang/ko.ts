@@ -1,4 +1,4 @@
-import {LangConfig} from "./lang-loader";
+import {LangConfig} from './lang-loader';
 
 export
 const ko: LangConfig = {
@@ -16,6 +16,7 @@ const ko: LangConfig = {
     color: '색',
     size: '크기',
     font: '글꼴',
+    fontStyle: '글꼴 스타일',
     strokeSize: '선 굵기',
     strokeColor: '선 색상',
     hidden: '숨김',

@@ -1,4 +1,4 @@
-import {LangConfig} from "./lang-loader";
+import {LangConfig} from './lang-loader';
 
 export const ja: LangConfig = {
     selectTemplate: 'テンプレートを選択',
@@ -15,6 +15,7 @@ export const ja: LangConfig = {
     color: '色',
     size: 'サイズ',
     font: 'フォント',
+    fontStyle: 'フォントスタイル',
     strokeSize: '線の太さ',
     strokeColor: '線の色',
     hidden: '隠す',

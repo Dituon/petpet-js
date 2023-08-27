@@ -1,4 +1,4 @@
-import {LangConfig} from "./lang-loader";
+import {LangConfig} from './lang-loader';
 
 export const fr: LangConfig = {
     selectTemplate: 'Sélectionnez un modèle',
@@ -15,6 +15,7 @@ export const fr: LangConfig = {
     color: 'Couleur',
     size: 'Taille',
     font: 'Police',
+    fontStyle: 'Style de police',
     strokeSize: 'Taille du contour',
     strokeColor: 'Couleur du contour',
     hidden: 'Cacher',

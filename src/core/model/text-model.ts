@@ -66,7 +66,7 @@ export class TextModel {
     static readonly DEFAULT_MAX_WIDTH = 300
     public static dpiScale = ((window.devicePixelRatio || 1) * 96) / 72
     private readonly template: TextTemplate
-    private textStyle?: 'normal' | 'bold' | 'italic'
+    fontStyle?: 'normal' | 'bold' | 'italic' | 'bold italic'
     pixelSize: number
     private defaultPixelSize: number
     width: number
@@ -82,7 +82,7 @@ export class TextModel {
         this.pixelSize = this.defaultPixelSize
         this.template.color = getColor(this.template.color)
         // @ts-ignore
-        this.textStyle = this.template.style === TextStyle.PLAIN ? 'normal' : this.template.style.toLowerCase()
+        this.fontStyle = this.template.style === TextStyle.PLAIN ? 'normal' : this.template.style.toLowerCase()
         this.template.font = this.template.font.replace(' ', '-')
         this.template.text = this.template.text.replace(TextModel.TEXT_VAR_REGEX, (_, capturedText) => capturedText)
         this.setDrawOptions()
@@ -96,11 +96,11 @@ export class TextModel {
     setDrawOptions(): DrawTextOptions {
         let {
             font,
-            style,
             wrap
         } = this.template
 
-        staticCtx.font = `${this.textStyle} ${this.pixelSize}px ${font.replace(' ', '-')}`
+        staticCtx.font = `${this.fontStyle} ${this.pixelSize}px ${font.replace(' ', '-')}`
+        console.log(`${this.fontStyle} ${this.pixelSize}px ${font.replace(' ', '-')}`)
 
         this.width = 0
         this.height = 0
@@ -170,12 +170,12 @@ export class TextModel {
             }
             case TextWrap.ZOOM: {
                 const maxWidth = this.template.pos[2] || TextModel.DEFAULT_MAX_WIDTH
-                staticCtx.font = `${this.textStyle} ${this.defaultPixelSize}px ${font}`
+                staticCtx.font = `${this.fontStyle} ${this.defaultPixelSize}px ${font}`
                 let originWidth = Math.max(...lines.map(line => staticCtx.measureText(line).width))
                 const scale = maxWidth / (originWidth || 1)
                 const newSize = scale * this.defaultPixelSize
                 this.pixelSize = newSize
-                staticCtx.font = `${this.textStyle} ${newSize}px ${font}`
+                staticCtx.font = `${this.fontStyle} ${newSize}px ${font}`
                 for (const line of lines) {
                     const [x, y, w, h] = this.getPosition(
                         staticCtx.measureText(line),
@@ -231,7 +231,7 @@ export class TextModel {
             strokeSize
         } = this.template
 
-        ctx.font = `${this.textStyle} ${this.pixelSize}px ${font}`
+        ctx.font = `${this.fontStyle} ${this.pixelSize}px ${font}`
         ctx.fillStyle = color
         ctx.textBaseline = align === TextAlign.CENTER ? 'middle' : 'alphabetic'
 
@@ -272,6 +272,12 @@ export class TextModel {
                 that.pixelSize = size
             },
             font: that.template.font,
+            set fontStyle(style) {
+                that.fontStyle = style
+            },
+            get fontStyle() {
+                return that.fontStyle
+            },
             strokeSize: that.template.strokeSize,
             strokeColor: that.template.strokeColor,
             get hidden() {
@@ -285,6 +291,7 @@ export class TextModel {
             set: (target, prop, value) => {
                 target[prop] = value
                 that.template[prop] = value
+                console.log(target)
                 if (that.disabled) return true
                 this.setDrawOptions()
                 that.onChangeCallback && that.onChangeCallback(this)
@@ -303,6 +310,12 @@ export class TextModel {
             x: {...range, max: this.backgroundSize ? this.backgroundSize[0] : 1000},
             y: {...range, max: this.backgroundSize ? this.backgroundSize[1] : 1000},
             size: {...range, max: 256},
+            fontStyle: {
+                type: 'select',
+                options: [
+                    'normal', 'bold', 'italic', 'bold italic'
+                ]
+            },
             strokeSize: {...range, max: 16},
             font: {type: 'font'}
         }

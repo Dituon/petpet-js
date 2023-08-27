@@ -1,4 +1,4 @@
-import {LangConfig} from "./lang-loader";
+import {LangConfig} from './lang-loader';
 
 export const zh_TW: LangConfig = {
     selectTemplate: '選擇模板',
@@ -15,6 +15,7 @@ export const zh_TW: LangConfig = {
     color: '顏色',
     size: '大小',
     font: '字型',
+    fontStyle: '字型風格',
     strokeSize: '描邊大小',
     strokeColor: '描邊顏色',
     hidden: '隱藏',
