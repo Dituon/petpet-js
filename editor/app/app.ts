@@ -45,6 +45,7 @@ export default class App {
         this.editor = new PetpetEditor(this.frames)
         const [settingElement, framesElement] = this.editor.render()
         this.settingElement.innerHTML = ''
+        if (this.editorElement) this.editorElement.remove()
         this.editorElement = framesElement
         this.settingElement.append(this.uploader.render(), settingElement)
 

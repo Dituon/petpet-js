@@ -34,8 +34,10 @@ export class PetpetEditor {
 
         this.frameAreaElement.appendChild(this.baseCanvas)
 
+        this.frameAreaElement.classList.add('frame-editor')
+        if (this.frames[0].width * 1.2 > this.frames[0].height) this.frameAreaElement.classList.add('sticky')
+
         if (this.template.type === PetpetType.GIF) {
-            this.frameAreaElement.classList.add('frame-editor')
             this.frameList = this.frameListElement
             this.frameAreaElement.appendChild(this.frameList)
         }
@@ -43,6 +45,7 @@ export class PetpetEditor {
             e.preventDefault()
             this.frameAreaElement.classList.toggle('sticky')
         })
+
         this.editorElement.appendChild(this.frameAreaElement)
 
         this.settingElement.append(
