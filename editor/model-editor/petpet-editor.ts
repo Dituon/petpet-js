@@ -115,6 +115,10 @@ export class PetpetEditor {
         this.frameIndex = num
     }
 
+    get key(){
+        return this.template.key
+    }
+
     get compiledTemplate(): PetpetTemplate {
         return {
             ...this.template,
