@@ -436,7 +436,7 @@ export class AvatarEditor {
                 return true
             }
         })
-        console.log(JSON.stringify(this.settingProxyObject))
+        return this.settingProxyObject
     }
 
     get settingAttributes() {

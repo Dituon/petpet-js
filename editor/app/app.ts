@@ -2,13 +2,13 @@ import {Uploader} from "../uploader/uploader"
 import '../../src/app/app.css'
 import {PetpetEditor} from "../model-editor/petpet-editor";
 import {saveAs} from 'file-saver'
-//@ts-ignore
-import avatarURL from '../avatar.png'
 import {Setting} from "../../src/app/setting/setting";
 import {PetpetModel} from "../../src/core/model/petpet-model";
+import JSZip from "jszip"
 
 import './app.css'
-import JSZip from "jszip"
+//@ts-ignore
+import avatarURL from '../avatar.png'
 
 let avatarBlob: Blob
 
@@ -20,7 +20,7 @@ async function getAvatar(): Promise<Blob> {
 export default class App {
     protected parentElement: HTMLDivElement
     protected settingElement: HTMLDivElement = document.createElement('div')
-    protected editorElement: HTMLDivElement = document.createElement('div')
+    protected editorElement: HTMLDivElement
     protected uploader: Uploader = new Uploader()
     protected previewCanvasArea: HTMLDivElement = document.createElement('div')
     protected previewJsonTextArea: HTMLPreElement = document.createElement('pre')
@@ -45,7 +45,7 @@ export default class App {
         this.editor = new PetpetEditor(this.frames)
         const [settingElement, framesElement] = this.editor.render()
         this.settingElement.innerHTML = ''
-        this.editorElement.innerHTML = ''
+        this.editorElement = framesElement
         this.settingElement.append(this.uploader.render(), settingElement)
 
         const previewElement = document.createElement('div')
@@ -60,7 +60,6 @@ export default class App {
             previewElement
         )
 
-        this.editorElement.appendChild(framesElement)
         this.parentElement.appendChild(this.editorElement)
     }
 

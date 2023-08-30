@@ -10,7 +10,7 @@ export class PetpetEditor {
         ...defaultPetpetTemplate,
         avatar: undefined,
         text: undefined,
-        key: "my-petpet"
+        key: 'my-petpet'
     }
     private readonly baseCanvas = document.createElement('canvas')
     protected fabricCanvas: fabric.Canvas
@@ -20,7 +20,8 @@ export class PetpetEditor {
 
     protected settingElement = document.createElement('div')
     private elementSettingsDiv = document.createElement('div')
-    protected frameElement = document.createElement('div')
+    protected editorElement = document.createElement('div')
+    protected frameAreaElement = document.createElement('div')
 
     protected frameList: HTMLDivElement
     private frameIndex = 0
@@ -31,13 +32,18 @@ export class PetpetEditor {
         this.template.type = frames.length === 1 ? PetpetType.IMG : PetpetType.GIF
         this.frames = frames
 
-        this.frameElement.appendChild(this.baseCanvas)
+        this.frameAreaElement.appendChild(this.baseCanvas)
 
         if (this.template.type === PetpetType.GIF) {
-            this.frameElement.classList.add('frame-editor')
+            this.frameAreaElement.classList.add('frame-editor')
             this.frameList = this.frameListElement
-            this.frameElement.appendChild(this.frameList)
+            this.frameAreaElement.appendChild(this.frameList)
         }
+        this.frameAreaElement.addEventListener('contextmenu', e => {
+            e.preventDefault()
+            this.frameAreaElement.classList.toggle('sticky')
+        })
+        this.editorElement.appendChild(this.frameAreaElement)
 
         this.settingElement.append(
             new Setting(this.settingObject).render(),
@@ -58,7 +64,6 @@ export class PetpetEditor {
     addAvatar() {
         const editor = new AvatarEditor(this.fabricCanvas)
         this.avatarEditors.push(editor)
-        console.log(editor.settingObject)
         this.elementSettingsDiv.appendChild(new Setting(
             editor.settingObject,
             editor.settingAttributes as any,
@@ -129,6 +134,6 @@ export class PetpetEditor {
     }
 
     render() {
-        return [this.settingElement, this.frameElement]
+        return [this.settingElement, this.editorElement]
     }
 }

@@ -4,8 +4,9 @@
     gap: 1em;
     margin: 2em auto;
     padding: 1.2em;
+    padding-top: 1.2em !important;
     background-color: var(--sub-bg);
-    border: var(--text) 2px dashed;
+    border: var(--text) 2px dashed !important;
     border-radius: 16px;
 }
 

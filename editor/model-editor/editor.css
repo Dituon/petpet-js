@@ -3,16 +3,17 @@
 }
 
 .canvas-container {
-    position: sticky !important;
-    /*width: min(80vw, 32em) !important;*/
     top: 0;
     z-index: 50;
 }
 
+.sticky {
+    position: sticky !important;
+}
+
 .frame-editor {
-    position: sticky;
     top: 0 ;
-    height: 100%;
+    z-index: 100;
 }
 
 .frame-list {
