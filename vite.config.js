@@ -9,8 +9,8 @@ export default defineConfig({
         outDir: './dist',
         rollupOptions: {
             input: {
-                main: './index.html',
-                readme: './readme.html',
+                main: '/index.html',
+                readme: '/readme.html',
                 editor: '/editor/index.html'
             }
         }
@@ -80,6 +80,10 @@ export default defineConfig({
                 },
                 {
                     src: './icons',
+                    dest: './'
+                },
+                {
+                    src: './inject.js',
                     dest: './'
                 },
                 {
