@@ -93,6 +93,9 @@ export default defineConfig({
                 {
                     src: './index.map.json',
                     dest: './'
+                },{
+                    src: './README.md',
+                    dest: './'
                 }
             ]
         })

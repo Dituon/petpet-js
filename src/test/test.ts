@@ -1,5 +1,5 @@
-import {PetpetModel} from "../core/model/petpet-model";
-import {encodeGif, gifSetting} from "../core/gif-synthesis/encoder";
+import {PetpetModel} from "../core";
+import {encodeGif, gifSetting} from "../core";
 import {Setting} from "../app/setting/setting";
 
 const baseUrl = './osu' as string
