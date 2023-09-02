@@ -18,7 +18,7 @@ const cssText = `
     right: 0;
     top: 0;
     cursor: pointer;
-    background: url(${new URL("/icons/icon-128x128.png", rootUrl)}) center/100%;
+    background: url(${new URL('./icons/icon-128x128.png', rootUrl)}) center/100%;
     width: 3.6em;
     height: 3.6em;
     z-index: 9999;
@@ -27,16 +27,16 @@ const cssText = `
     right: -24.2em;
 }
 `
-const iframeUrl =  new URL("index.html", rootUrl).toString()
+const iframeUrl =  new URL('./index.html', rootUrl).toString()
 console.log(iframeUrl)
 
 const style = document.createElement('style')
 style.innerText = cssText
 document.head.appendChild(style)
 
-const iframe = document.createElement('object')
+const iframe = document.createElement('iframe')
 iframe.classList.add('petpet-iframe', 'petpet-hide')
-iframe.data = iframeUrl
+iframe.src = iframeUrl
 
 const logo = document.createElement('div')
 logo.classList.add('petpet-logo')
