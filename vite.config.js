@@ -19,7 +19,11 @@ export default defineConfig({
         buildDataIndex('./data/moe.d2n.petpet-js'),
         VitePWA({
             registerType: 'autoUpdate',
-            injectRegister: 'inline',
+            injectRegister: 'auto',
+            workbox: {
+                globPatterns: ['**/*']
+            },
+            includeAssets: ['**/*'],
             manifest: {
                 short_name: 'Petpet!',
                 name: 'petpet-js',
