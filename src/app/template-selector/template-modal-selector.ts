@@ -111,7 +111,7 @@ export class TemplateModalSelector {
     }
 }
 
-async function loadTemplate(template: PetpetTemplatePreview): Promise<PetpetTemplatePreview> {
+export async function loadTemplate(template: PetpetTemplatePreview): Promise<PetpetTemplatePreview> {
     if (template.type) return template
     const originTemplate = await fetch(template.url + '/data.json').then(p => p.json())
     return {...template, ...originTemplate}

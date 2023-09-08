@@ -199,13 +199,6 @@ export class AvatarEditor {
                         } as Point,
                         polygon.calcTransformMatrix()
                     )
-                    console.log(absolutePoint, {
-                            x: (polygon.points[i].x - polygon.pathOffset.x),
-                            y: (polygon.points[i].y - polygon.pathOffset.y)
-                        },
-                        polygon.pathOffset,
-                        polygon.points[i]
-                    )
                     newPosArr[i] = [Math.round(absolutePoint.x - x), Math.round(absolutePoint.y - y)]
                 }
                 newPosArr[4] = [x, y]

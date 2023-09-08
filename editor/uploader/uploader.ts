@@ -3,7 +3,6 @@ import {decodeGif} from "../../src/core/gif-synthesis/decoder";
 import {getCanvasFromBlob} from "../../src/core/utils/utils";
 
 import './uploader.css'
-import {getLangConfig} from "../../src/app/lang/lang-loader";
 
 export class Uploader {
     private element = document.createElement('div')

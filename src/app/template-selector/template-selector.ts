@@ -1,16 +1,17 @@
 import './template-selector.css'
 import {Loading} from "../utils/ui"
-import {PetpetTemplatePreview, TemplateModalSelector} from "./template-modal-selector"
-import {PetpetTemplate} from "../../core/model/petpet-model";
+import {loadTemplate, PetpetTemplatePreview, TemplateModalSelector} from "./template-modal-selector"
+import {PetpetTemplate} from "../../core";
 import {createTitle} from "../utils";
 import {getLangConfig} from "../lang/lang-loader";
 
 export class TemplateSelector {
     #element: HTMLDivElement = document.createElement('div')
     #modal: TemplateModalSelector
+    #templates: PetpetTemplatePreview[]
     loading: Loading = new Loading(this.#element)
     #onChangeCallback
-    template
+    template: PetpetTemplate
 
     constructor(templates?: PetpetTemplatePreview[]) {
         this.#modal = new TemplateModalSelector(templates)
@@ -29,7 +30,20 @@ export class TemplateSelector {
 
     set templates(templates: PetpetTemplatePreview[]) {
         this.loading.hide()
+        this.#templates = templates
         this.#modal.templates = templates
+    }
+
+    async setTemplate(key: string) {
+        if (!key) return
+        const template = this.#templates.find(t => t.key === key)
+        if (!template) throw new Error(`key ${key} not found`)
+        this.#element.textContent = template.key
+        this.template = await loadTemplate(template)
+    }
+
+    get templateKey() {
+        return this.template?.key
     }
 
     render() {

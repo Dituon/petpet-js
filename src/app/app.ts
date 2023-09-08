@@ -6,10 +6,10 @@ import {PetpetModel, PetpetModelViewer, PetpetTemplate} from "../core/model/petp
 import {ResultArea} from "./result-area/result-area";
 import {Setting} from "./setting/setting";
 import {Downloader} from "./downloader/downloader";
-import config from "../../config";
 
 import "./app.css"
 import {initReadme, showReadme} from "./utils/show-readme";
+import {config} from "./loader/config-loader";
 
 /** @typedef { 'FROM' | 'TO' | 'BOT' | 'GROUP' } AvatarType */
 
@@ -58,6 +58,7 @@ export default class {
         const repoLoader = new RepoLoader(config.server)
         this.backgroundLengthMap = await repoLoader.getLengthMap()
         this.templateChooser.templates = await repoLoader.getPreviewList()
+        await this.templateChooser.setTemplate(config.template)
         if (!(await repoLoader.getUrlSet()).size) this.templateChooser.loading.error()
     }
 
@@ -66,8 +67,9 @@ export default class {
         if (this.viewer) this.viewer.destroy()
 
         const template = this.templateChooser.template || await this.templateChooser.showModal()
+        config.template = this.templateChooser.templateKey
         if (this.prevTemplate !== template) {
-            this.avatarUploader.types = [...new Set(template.avatar.map(a => a.type))]
+            this.avatarUploader.types = [...new Set(template.avatar?.map(a => a.type))]
         }
         if (!this.avatarUploader.ready) {
             this.outputElement.style.display = 'none'

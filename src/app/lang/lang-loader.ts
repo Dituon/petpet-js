@@ -6,6 +6,9 @@ import {ja} from './ja';
 import {ko} from './ko';
 import {ru} from './ru';
 import {fr} from './fr';
+import {zh_DZ} from "./zh-DZ";
+
+import {config} from '../loader/config-loader'
 
 export interface LangConfig {
     selectTemplate: string
@@ -89,7 +92,9 @@ export const supportedLangMap = [
     // {id: 'th', text: 'ภาษาไทย', alias: []},
 ]
 
-let cLang
+export const supportedLang = {en_US, zh_TW, zh_CN, de, fr, ja, ko, ru, zh_DZ};
+
+let cLang = supportedLang[config.lang]
 
 export function getLangConfig(): LangConfig {
     if (cLang) return cLang
@@ -109,6 +114,3 @@ export function getLangConfig(): LangConfig {
     cLang = supportedLang[langId]
     return supportedLang[langId]
 }
-
-
-export const supportedLang = {en_US, zh_TW, zh_CN, de, fr, ja, ko, ru};

@@ -100,7 +100,6 @@ export class TextModel {
         } = this.template
 
         staticCtx.font = `${this.fontStyle} ${this.pixelSize}px ${font.replace(' ', '-')}`
-        console.log(`${this.fontStyle} ${this.pixelSize}px ${font.replace(' ', '-')}`)
 
         this.width = 0
         this.height = 0
@@ -291,7 +290,6 @@ export class TextModel {
             set: (target, prop, value) => {
                 target[prop] = value
                 that.template[prop] = value
-                console.log(target)
                 if (that.disabled) return true
                 this.setDrawOptions()
                 that.onChangeCallback && that.onChangeCallback(this)
