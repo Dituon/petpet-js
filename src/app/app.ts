@@ -9,8 +9,7 @@ import {Downloader} from "./downloader/downloader";
 
 import "./app.css"
 import {initReadme} from "./utils/show-readme";
-import {config} from "./loader/config-loader";
-import {setURLParam} from "./loader/url-param-loader";
+import {config, setURLParam} from "./loader/config-loader";
 
 /** @typedef { 'FROM' | 'TO' | 'BOT' | 'GROUP' } AvatarType */
 

@@ -1,14 +1,5 @@
-import {en_US} from '../lang/en-US';
-import {zh_TW} from '../lang/zh-TW';
-import {zh_CN} from '../lang/zh-CN';
-import {de} from '../lang/de';
-import {ja} from '../lang/ja';
-import {ko} from '../lang/ko';
-import {ru} from '../lang/ru';
-import {fr} from '../lang/fr';
-import {zh_DZ} from "../lang/zh-DZ";
-
 import {config} from './config-loader'
+import {de, en_US, fr, ja, ko, ru, zh_CN, zh_DZ, zh_TW} from "../lang";
 
 export interface LangConfig {
     selectTemplate: string
