@@ -6,7 +6,8 @@ https://dituon.github.io/petpet-js/
 
 ## Intro
 
-对我另一个 [Java后端项目](https://github.com/Dituon/petpet) 的前端实现, 模板引用自 [Petpet](https://github.com/Dituon/petpet)
+对我另一个 [Java后端项目](https://github.com/Dituon/petpet) 的前端实现,
+模板引用自 [Petpet](https://github.com/Dituon/petpet)
 
 项目结构
 
@@ -25,13 +26,33 @@ https://dituon.github.io/petpet-js/
 ```
 
 - `src`
-  - `core`: 程序核心
-  - `app`: 前端页面
-  - `test`: 核心测试
+    - `core`: 程序核心
+    - `app`: 前端页面
+    - `test`: 核心测试
 - `editor`: 模板编辑器
 - `data`: 模板数据
 - `index.json`: 模板数据索引
 - `config.js`: 网站默认配置
+
+## Config
+
+可修改 `/config.js` 或直接在 `URL` 中携带 `GET` 参数
+
+| key        | type                                                                                                                                             | description                                      |
+|------------|--------------------------------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------|
+| `server`   | `string[]` `URL[]`                                                                                                                               | URL中 使用 `,` 分割多个参数                               |
+| `lang`     | [`"en-US"`](https://datatracker.ietf.org/doc/html/rfc5646) [`navigator.language`](https://developer.mozilla.org/docs/Web/API/Navigator/language) | 支持语言参见 [`/src/app/lang`](/src/app/lang/index.ts) |
+| `template` | `string`                                                                                                                                         | 默认模板                                             |
+
+##### Examples
+
+> - `https://d2n.moe/petpet-js?server=https%3A%2F%2Fexample.com%2petpet`
+>
+> 从 `https://example.com/petpet` 导入模板 (`encodeURIComponent`)
+
+> - `https://d2n.moe/petpet-js?lang=zh-CN&template=osu`
+> 
+> 程序语言为 `zh-CN`(简体中文), 默认模板为 `osu`
 
 ## Deploy
 
@@ -67,7 +88,7 @@ const petpetModel = new PetpetModel(template, [backgroundImg])
 
 // 获取预览对象 (异步方法)
 const viewer = await petpet.generate({
-  to: await fetch(avatarUrl).then(p => p.blob()) // 传入头像Blob, type与模板中对应
+    to: await fetch(avatarUrl).then(p => p.blob()) // 传入头像Blob, type与模板中对应
 })
 
 document.body.appendChild(viewer.canvas) // 添加预览画布
@@ -75,6 +96,7 @@ viewer.play() // 开始播放预览
 ```
 
 读取现有模板
+
 ```javascript
 import {PetpetModel} from '/core'
 
@@ -92,7 +114,7 @@ const avatarBlob = await fetch('/avatar.gif').then(p => p.blob())
 
 // 获取预览对象
 const viewer = await petpet.generate({
-  to: avatarBlob
+    to: avatarBlob
 })
 
 document.body.appendChild(viewer.canvas) // 添加预览画布
@@ -100,6 +122,7 @@ viewer.play() // 开始播放预览
 ```
 
 保存图片
+
 ```javascript
 import {encodeGif} from '/src/core'
 
@@ -118,7 +141,7 @@ document.body.appendChild(img)
 
 ### App
 
-1. 在网页目录部署Petpet生产环境 
+1. 在网页目录部署Petpet生产环境
 
     ```shell
     git clone -b gh-pages https://github.com/Dituon/petpet-js.git
