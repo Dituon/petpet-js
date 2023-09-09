@@ -1,4 +1,4 @@
-import {LangConfig} from './lang-loader';
+import {LangConfig} from '../loader/lang-loader';
 
 export
 const ru: LangConfig = {

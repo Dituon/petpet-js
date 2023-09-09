@@ -1,5 +1,5 @@
 import './setting.css'
-import {getLangConfig} from "../lang/lang-loader";
+import {getLangConfig} from "../loader/lang-loader";
 import {createTitle} from "../utils";
 
 const lang = getLangConfig()

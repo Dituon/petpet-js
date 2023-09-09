@@ -1,6 +1,6 @@
 import defaultConfig from "../../../config.js";
 
-interface PetpetConfig {
+export interface PetpetConfig {
     server?: string[]
     lang?: string
     template?: string
@@ -11,7 +11,7 @@ export const config = getConfig()
 function getConfig(): PetpetConfig & { save: () => void } {
     let config = {
         ...defaultConfig,
-        ...(JSON.parse(localStorage.getItem('config')) || {})
+        ...(JSON.parse(localStorage.getItem('config') || '{}'))
     }
 
     function saveConfigToLocalStorage() {

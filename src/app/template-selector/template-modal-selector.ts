@@ -2,7 +2,7 @@ import './modal-selector.css'
 import {Mask} from "../utils/ui"
 import {createTitle} from "../utils";
 import {PetpetTemplate} from "../../core/model/petpet-model";
-import {getLangConfig} from "../lang/lang-loader";
+import {getLangConfig} from "../loader/lang-loader";
 
 export interface PetpetTemplatePreview extends PetpetTemplate {
     key: string
@@ -83,7 +83,7 @@ export class TemplateModalSelector {
         this.#element.classList.add('hide')
     }
 
-    async show(): Promise<PetpetTemplatePreview> {
+    async show(): Promise<PetpetTemplatePreview | null> {
         if (!this.#templates) return null
         this.mask.show()
         this.#element && this.#element.classList.remove('hide')

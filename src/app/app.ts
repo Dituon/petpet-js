@@ -2,14 +2,15 @@ import {RepoLoader} from "./loader/repo-loader";
 import {TemplateSelector} from "./template-selector";
 import {AvatarUploader} from "./uploader";
 import {TextUploader} from "./uploader/text-uploader";
-import {PetpetModel, PetpetModelViewer, PetpetTemplate} from "../core/model/petpet-model";
+import {PetpetModel, PetpetModelViewer, PetpetTemplate} from "../core";
 import {ResultArea} from "./result-area/result-area";
 import {Setting} from "./setting/setting";
 import {Downloader} from "./downloader/downloader";
 
 import "./app.css"
-import {initReadme, showReadme} from "./utils/show-readme";
+import {initReadme} from "./utils/show-readme";
 import {config} from "./loader/config-loader";
+import {setURLParam} from "./loader/url-param-loader";
 
 /** @typedef { 'FROM' | 'TO' | 'BOT' | 'GROUP' } AvatarType */
 
@@ -67,11 +68,16 @@ export default class {
         if (this.viewer) this.viewer.destroy()
 
         const template = this.templateChooser.template || await this.templateChooser.showModal()
-        config.template = this.templateChooser.templateKey
+        if (!template) return
+
+        const templateKey = this.templateChooser.templateKey
+        config.template = templateKey
+        setURLParam('template', templateKey)
+
         if (this.prevTemplate !== template) {
             this.avatarUploader.types = [...new Set(template.avatar?.map(a => a.type))]
         }
-        if (!this.avatarUploader.ready) {
+        if (template.avatar?.length && !this.avatarUploader.ready) {
             this.outputElement.style.display = 'none'
             return
         }

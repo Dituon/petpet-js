@@ -1,6 +1,6 @@
 import {AvatarType} from "../../core/model/avatar-model"
 import {AvatarCropper} from "./avatar-cropper"
-import {getLangConfig} from "../lang/lang-loader";
+import {getLangConfig} from "../loader/lang-loader";
 
 const stopPropagation = e => {
     e.stopPropagation()

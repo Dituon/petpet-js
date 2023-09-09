@@ -2,7 +2,7 @@ import './uploader.css'
 import {AvatarItem} from "./avatar-item.js"
 import {createTitle} from "../utils/utils.js";
 import {AvatarCropType, AvatarData, ExtraTemplate} from "../../core/model/avatar-model";
-import {getLangConfig} from "../lang/lang-loader";
+import {getLangConfig} from "../loader/lang-loader";
 
 const TYPES = ['FROM', 'TO', 'BOT', 'GROUP']
 

@@ -1,7 +1,7 @@
 import {TextModel, TextModelList} from "../../core/model/text-model";
 import {Setting} from "../setting/setting";
 import {createTitle} from "../utils";
-import {getLangConfig} from "../lang/lang-loader";
+import {getLangConfig} from "../loader/lang-loader";
 
 export class TextUploader {
     private textModels: TextModelList

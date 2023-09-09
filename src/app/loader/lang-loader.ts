@@ -1,14 +1,14 @@
-import {en_US} from './en-US';
-import {zh_TW} from './zh-TW';
-import {zh_CN} from './zh-CN';
-import {de} from './de';
-import {ja} from './ja';
-import {ko} from './ko';
-import {ru} from './ru';
-import {fr} from './fr';
-import {zh_DZ} from "./zh-DZ";
+import {en_US} from '../lang/en-US';
+import {zh_TW} from '../lang/zh-TW';
+import {zh_CN} from '../lang/zh-CN';
+import {de} from '../lang/de';
+import {ja} from '../lang/ja';
+import {ko} from '../lang/ko';
+import {ru} from '../lang/ru';
+import {fr} from '../lang/fr';
+import {zh_DZ} from "../lang/zh-DZ";
 
-import {config} from '../loader/config-loader'
+import {config} from './config-loader'
 
 export interface LangConfig {
     selectTemplate: string
@@ -94,7 +94,7 @@ export const supportedLangMap = [
 
 export const supportedLang = {en_US, zh_TW, zh_CN, de, fr, ja, ko, ru, zh_DZ};
 
-let cLang = supportedLang[config.lang]
+let cLang = supportedLang[config?.lang?.replace('-', '_')]
 
 export function getLangConfig(): LangConfig {
     if (cLang) return cLang

@@ -1,4 +1,4 @@
-import {LangConfig} from './lang-loader';
+import {LangConfig} from '../loader/lang-loader';
 
 export const zh_TW: LangConfig = {
     selectTemplate: '選擇模板',

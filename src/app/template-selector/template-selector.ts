@@ -3,7 +3,7 @@ import {Loading} from "../utils/ui"
 import {loadTemplate, PetpetTemplatePreview, TemplateModalSelector} from "./template-modal-selector"
 import {PetpetTemplate} from "../../core";
 import {createTitle} from "../utils";
-import {getLangConfig} from "../lang/lang-loader";
+import {getLangConfig} from "../loader/lang-loader";
 
 export class TemplateSelector {
     #element: HTMLDivElement = document.createElement('div')
@@ -55,11 +55,13 @@ export class TemplateSelector {
         return root
     }
 
-    async showModal() {
+    async showModal()   {
         const template = await this.#modal.show()
-        if (template) this.#element.textContent = template.key
-        this.template = template
-        return template
+        if (template) {
+            this.#element.textContent = template.key
+            this.template = template
+        }
+        return template ?? this.template
     }
 
     /** @param {(PetpetTemplate)=>void} callback */
