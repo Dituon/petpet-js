@@ -38,9 +38,9 @@ export class Setting {
     private readonly container: HTMLDivElement | HTMLFieldSetElement
     private readonly attrMap: ValueAttributeMap
 
-    constructor(obj: SettingObject, attrMap?: ValueAttributeMap, title?: string) {
+    constructor(obj: SettingObject | object, attrMap?: ValueAttributeMap, title?: string) {
         // if (!Object.keys(obj).length) return
-        this.obj = obj
+        this.obj = obj as SettingObject
         this.container = document.createElement(title ? 'fieldset' : 'div')
         if (title) this.container.appendChild(createTitle(title, 'legend'))
         this.container.classList.add('setting-container')
