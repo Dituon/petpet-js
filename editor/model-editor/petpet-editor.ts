@@ -4,6 +4,7 @@ import {AvatarEditor} from "./avatar-editor";
 import {Setting} from "../../src/app/setting/setting";
 
 import './editor.css'
+import {TextEditor} from "./text-editor";
 
 export class PetpetEditor {
     protected template: PetpetTemplate = {
@@ -15,6 +16,7 @@ export class PetpetEditor {
     private readonly baseCanvas = document.createElement('canvas')
     protected fabricCanvas: fabric.Canvas
     protected avatarEditors: AvatarEditor[] = []
+    protected textEditors: TextEditor[] = []
 
     protected frames: HTMLCanvasElement[]
 
@@ -74,6 +76,16 @@ export class PetpetEditor {
         ).render())
     }
 
+    addText(){
+        const editor = new TextEditor(this.fabricCanvas)
+        this.textEditors.push(editor)
+        this.elementSettingsDiv.appendChild(new Setting(
+            editor.settingObject,
+            editor.settingAttributes as any,
+            `Text - ${this.textEditors.length}`
+        ).render())
+    }
+
     get settingObject() {
         const that = this
         return new Proxy({
@@ -93,7 +105,8 @@ export class PetpetEditor {
             inRandomList: this.template.inRandomList,
             reverse: this.template.reverse,
 
-            addAvatar: () => this.addAvatar()
+            addAvatar: () => this.addAvatar(),
+            addText: () => this.addText()
         }, {
             set(target, key: string, value: any) {
                 that.template[key] = value
@@ -116,6 +129,7 @@ export class PetpetEditor {
     set index(num: number) {
         this.fabricCanvas.backgroundImage = new fabric.Image(this.frames[num])
         this.avatarEditors.forEach(a => a.index = num)
+        // this.textEditors.forEach(t => t.draw())
         this.fabricCanvas.renderAll()
         if (this.template.type === PetpetType.IMG)  return
         this.frames[this.frameIndex].dataset.checked = ''

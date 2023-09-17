@@ -59,16 +59,33 @@ export const defaultTextTemplate: TextTemplate = {
     strokeSize: 0
 }
 
-type DrawTextOptions = [string, number, number][]
+export type DrawTextOptions = [string, number, number][]
+
+export interface TextSettingOptions {
+    x: number
+    y: number
+    text: string
+    color: string
+    size?: number
+    font: string
+    fontStyle: FontStyle
+    strokeSize: number
+    strokeColor: string
+    hidden: boolean
+    _delete: () => void
+}
+
+export type FontStyle = 'normal' | 'bold' | 'italic' | 'bold italic'
+
 
 export class TextModel {
     static readonly TEXT_VAR_REGEX = /\$txt\d+\[(.*?)]/g
     static readonly DEFAULT_MAX_WIDTH = 300
     public static dpiScale = ((window.devicePixelRatio || 1) * 96) / 72
     private readonly template: TextTemplate
-    fontStyle?: 'normal' | 'bold' | 'italic' | 'bold italic'
+    fontStyle?: FontStyle
     pixelSize: number
-    private defaultPixelSize: number
+    private readonly defaultPixelSize: number
     width: number
     height: number
     backgroundSize: [number, number]
@@ -81,8 +98,7 @@ export class TextModel {
         this.defaultPixelSize = template.size * TextModel.dpiScale
         this.pixelSize = this.defaultPixelSize
         this.template.color = getColor(this.template.color)
-        // @ts-ignore
-        this.fontStyle = this.template.style === TextStyle.PLAIN ? 'normal' : this.template.style.toLowerCase()
+        this.style = this.template.style
         this.template.font = this.template.font.replace(' ', '-')
         this.template.text = this.template.text.replace(TextModel.TEXT_VAR_REGEX, (_, capturedText) => capturedText)
         this.setDrawOptions()
@@ -220,6 +236,16 @@ export class TextModel {
         return this.template.size
     }
 
+    set style(style: TextStyle) {
+        // @ts-ignore
+        this.fontStyle = style === TextStyle.PLAIN ? 'normal' : style.toLowerCase()
+        this.template.style = style
+    }
+
+    get style(){
+        return this.template.style
+    }
+
     public draw(ctx: CanvasRenderingContext2D) {
         if (this.disabled) return
         let {
@@ -247,7 +273,7 @@ export class TextModel {
         }
     }
 
-    get settingObject() {
+    get settingObject(): TextSettingOptions {
         const that = this
         return new Proxy({
             get x() {
