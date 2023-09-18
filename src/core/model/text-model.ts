@@ -2,7 +2,7 @@ import {getColor} from "../utils/utils"
 
 const staticCanvas = document.createElement('canvas')
 const staticCtx = staticCanvas.getContext('2d')
-staticCtx.textBaseline = 'alphabetic'
+staticCtx.textBaseline = 'bottom'
 staticCtx.textAlign = 'left'
 
 export enum TextAlign {
@@ -258,7 +258,7 @@ export class TextModel {
 
         ctx.font = `${this.fontStyle} ${this.pixelSize}px ${font}`
         ctx.fillStyle = color
-        ctx.textBaseline = align === TextAlign.CENTER ? 'middle' : 'alphabetic'
+        ctx.textBaseline = align === TextAlign.CENTER ? 'middle' : 'bottom'
 
         for (let drawOption of this.drawOptions) {
             ctx.fillText(...drawOption)

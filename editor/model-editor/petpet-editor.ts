@@ -76,7 +76,7 @@ export class PetpetEditor {
         ).render())
     }
 
-    addText(){
+    addText() {
         const editor = new TextEditor(this.fabricCanvas)
         this.textEditors.push(editor)
         this.elementSettingsDiv.appendChild(new Setting(
@@ -96,10 +96,10 @@ export class PetpetEditor {
             get fps() {
                 return Math.round(1000 / that.template.delay)
             },
-            set alias(str){
+            set alias(str) {
                 that.template.alias = str.split(/\s+/)
             },
-            get alias(){
+            get alias() {
                 return that.template.alias.join('  ')
             },
             inRandomList: this.template.inRandomList,
@@ -131,13 +131,13 @@ export class PetpetEditor {
         this.avatarEditors.forEach(a => a.index = num)
         // this.textEditors.forEach(t => t.draw())
         this.fabricCanvas.renderAll()
-        if (this.template.type === PetpetType.IMG)  return
+        if (this.template.type === PetpetType.IMG) return
         this.frames[this.frameIndex].dataset.checked = ''
         this.frames[num].dataset.checked = 'checked'
         this.frameIndex = num
     }
 
-    get key(){
+    get key() {
         return this.template.key
     }
 
@@ -145,7 +145,7 @@ export class PetpetEditor {
         return {
             ...this.template,
             avatar: this.avatarEditors.map(a => a.compiledTemplate),
-            text: [],
+            text: this.textEditors.map(t => t.compiledTemplate),
             key: undefined
         }
     }

@@ -1,4 +1,4 @@
-import {TextAlign, TextModel, TextSettingOptions, TextStyle, TextWrap} from "../../src/core"
+import {TextAlign, TextModel, TextSettingOptions, TextStyle, TextTemplate, TextWrap} from "../../src/core"
 import {fabric} from "fabric";
 import {ITextboxOptions, ITextOptions} from "fabric/fabric-impl";
 
@@ -6,18 +6,6 @@ export interface TextEditorSettingOptions extends TextSettingOptions {
     style: TextStyle
     align: TextAlign
     wrap: TextWrap
-}
-
-interface TextDTO {
-    text: string;
-    pos: [number, number] | [number, number, number];
-    color: string;
-    size: number;
-    align: TextAlign;
-    wrap: TextWrap;
-    style: TextStyle;
-    strokeColor: string;
-    strokeSize: number;
 }
 
 export const defaultTextOption: ITextOptions | ITextboxOptions = {
@@ -42,12 +30,10 @@ export class TextEditor {
     #align: TextAlign = TextAlign.LEFT
     #wrap: TextWrap = TextWrap.NONE
     #style: TextStyle = TextStyle.PLAIN
-    #maxWidth: number
     #prevWidth: number
 
     constructor(canvas: fabric.Canvas, text = 'Petpet!') {
         this.canvas = canvas
-        this.#maxWidth = canvas.width
         this.itext = new fabric.IText(text, defaultTextOption)
         this.textBox = new fabric.Textbox(text, defaultTextOption)
         this.itext.setControlsVisibility({
@@ -91,17 +77,17 @@ export class TextEditor {
 
     get pos(): [number, number] | [number, number, number] {
         let x = Math.round(this.text.left)
-        let y = Math.round(this.text.top)
+        let y = Math.round(this.text.top + this.text.height)
         switch (this.#align) {
             case TextAlign.RIGHT:
                 x += Math.round(this.text.getScaledWidth())
-                break;
+                break
             case TextAlign.CENTER:
                 x += Math.round(this.text.getScaledWidth() / 2)
                 y += Math.round(this.text.getScaledHeight() / 2)
-                break;
+                break
         }
-        return this.#maxWidth ? [x, y, this.#maxWidth] : [x, y]
+        return this.wrap === TextWrap.NONE ? [x, y] : [x, y, this.textBox.width]
     }
 
     set style(style: TextStyle) {
@@ -252,7 +238,7 @@ export class TextEditor {
         this.canvas.renderAll()
     }
 
-    get DTO(): TextDTO {
+    get compiledTemplate(): TextTemplate {
         return {
             text: this.text.text as string,
             pos: this.pos,
