@@ -1,12 +1,6 @@
 import {TextAlign, TextModel, TextSettingOptions, TextStyle, TextTemplate, TextWrap} from "../../src/core"
-import {fabric} from "fabric";
-import {ITextboxOptions, ITextOptions} from "fabric/fabric-impl";
-
-export interface TextEditorSettingOptions extends TextSettingOptions {
-    style: TextStyle
-    align: TextAlign
-    wrap: TextWrap
-}
+import {fabric} from "fabric"
+import {ITextboxOptions, ITextOptions} from "fabric/fabric-impl"
 
 export const defaultTextOption: ITextOptions | ITextboxOptions = {
     fill: '#191919',
@@ -31,6 +25,7 @@ export class TextEditor {
     #wrap: TextWrap = TextWrap.NONE
     #style: TextStyle = TextStyle.PLAIN
     #prevWidth: number
+    private isRemoved = false
 
     constructor(canvas: fabric.Canvas, text = 'Petpet!') {
         this.canvas = canvas
@@ -60,7 +55,7 @@ export class TextEditor {
     }
 
     set pos(pos: [number, number] | [number, number, number]) {
-        let [x, y] = pos;
+        let [x, y] = pos
         switch (this.#align) {
             case TextAlign.RIGHT:
                 x -= this.text.getScaledWidth()
@@ -68,7 +63,7 @@ export class TextEditor {
             case TextAlign.CENTER:
                 x -= this.text.getScaledWidth() / 2
                 y -= this.text.getScaledHeight() / 2
-                break;
+                break
         }
         this.text.left = x
         this.text.top = y
@@ -236,10 +231,11 @@ export class TextEditor {
     remove() {
         this.canvas.remove(this.text)
         this.canvas.renderAll()
+        this.isRemoved = true
     }
 
-    get compiledTemplate(): TextTemplate {
-        return {
+    get compiledTemplate(): TextTemplate | null {
+        return this.isRemoved ? null : {
             text: this.text.text as string,
             pos: this.pos,
             color: this.color,

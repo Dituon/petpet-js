@@ -100,7 +100,7 @@ export class PetpetEditor {
                 that.template.alias = str.split(/\s+/)
             },
             get alias() {
-                return that.template.alias.join('  ')
+                return that.template.alias.join(' ')
             },
             inRandomList: this.template.inRandomList,
             reverse: this.template.reverse,
@@ -144,8 +144,8 @@ export class PetpetEditor {
     get compiledTemplate(): PetpetTemplate {
         return {
             ...this.template,
-            avatar: this.avatarEditors.map(a => a.compiledTemplate),
-            text: this.textEditors.map(t => t.compiledTemplate),
+            avatar: this.avatarEditors.map(a => a.compiledTemplate).filter(Boolean),
+            text: this.textEditors.map(t => t.compiledTemplate).filter(Boolean),
             key: undefined
         }
     }

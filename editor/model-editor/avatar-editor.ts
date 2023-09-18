@@ -78,6 +78,7 @@ export class AvatarEditor {
 
     protected frameIndex: number = 0
     protected settingProxyObject
+    private isRemoved = false
 
     constructor(canvas: fabric.Canvas) {
         this.canvas = canvas
@@ -300,6 +301,7 @@ export class AvatarEditor {
         this.avatarImage.dispose()
         this.canvas.remove(this.avatarImage, this.containerRect, this.containerPolygon)
         this.canvas.renderAll()
+        this.isRemoved = true
     }
 
     set index(num: number) {
@@ -451,7 +453,7 @@ export class AvatarEditor {
         }
     }
 
-    get compiledTemplate(): AvatarTemplate{
-        return {...this.template, pos: this.pos, angle: this.angle}
+    get compiledTemplate(): AvatarTemplate | null{
+        return this.isRemoved ? null : {...this.template, pos: this.pos, angle: this.angle}
     }
 }
