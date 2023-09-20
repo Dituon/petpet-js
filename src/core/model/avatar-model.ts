@@ -86,8 +86,6 @@ export const defaultAvatarTemplate: AvatarTemplate = {
     round: false,
     rotate: false,
     avatarOnTop: true,
-    antialias: true,
-    resampling: false,
 
     angle: 0,
     opacity: 1

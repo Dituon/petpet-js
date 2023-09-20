@@ -13,7 +13,7 @@ import {
 import avatar from '../avatar.png'
 import {IBaseFilter, IImageOptions, IPolylineOptions, IRectOptions, Point} from "fabric/fabric-impl"
 import {registerFilter} from '../util/fabric-filter-binarization'
-import {roundedCorners, actionHandler, anchorWrapper, polygonPositionHandler} from "../util/fabric-avatar-util";
+import {actionHandler, anchorWrapper, polygonPositionHandler, roundedCorners} from "../util/fabric-avatar-util";
 
 registerFilter()
 
@@ -384,11 +384,16 @@ export class AvatarEditor {
             !!(this.zoomPos[i]?.[2] && this.zoomPos[i]?.[3]) : !!Math.max(...(this.deformPos[i] ?? [0]).flat(1))
     }
 
-    get pos(): XYWH[] | RO[] {
-        return this.template.posType === AvatarPosType.ZOOM ? this.zoomPos : this.deformPos
+    get pos(): XYWH[] | RO[] | RO {
+        switch (this.template.posType) {
+            case AvatarPosType.ZOOM:
+                return this.zoomPos
+            case AvatarPosType.DEFORM:
+                return this.deformPos.length === 1 ? this.deformPos[0] : this.deformPos
+        }
     }
 
-    set pos(p: XYWH[] | RO[]) {
+    set pos(p: XYWH[] | RO[] | RO) {
         if (this.template.posType === AvatarPosType.ZOOM) {
             this.zoomPos = p as XYWH[]
         } else {
@@ -425,7 +430,7 @@ export class AvatarEditor {
             _delete: () => this.remove()
         }, {
             set: (target, key, value) => {
-                that.template[key] = value
+                if (key in that.template) that.template[key] = value
                 target[key] = value
                 that[key] = value
                 return true
@@ -453,7 +458,7 @@ export class AvatarEditor {
         }
     }
 
-    get compiledTemplate(): AvatarTemplate | null{
+    get compiledTemplate(): AvatarTemplate | null {
         return this.isRemoved ? null : {...this.template, pos: this.pos, angle: this.angle}
     }
 }
