@@ -1,6 +1,8 @@
-import {TextAlign, TextModel, TextSettingOptions, TextStyle, TextTemplate, TextWrap} from "../../src/core"
+import {TextAlign, TextModel, TextStyle, TextTemplate, TextWrap} from "../../src/core"
 import {fabric} from "fabric"
 import {ITextboxOptions, ITextOptions} from "fabric/fabric-impl"
+
+import '../../src/app/loader/websafe-fonts.css'
 
 export const defaultTextOption: ITextOptions | ITextboxOptions = {
     fill: '#191919',
