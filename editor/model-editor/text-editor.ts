@@ -7,6 +7,7 @@ import '../../src/app/loader/websafe-fonts.css'
 export const defaultTextOption: ITextOptions | ITextboxOptions = {
     fill: '#191919',
     fontSize: 56,
+    fontFamily: TextModel.DEFAULT_FONT_FAMILY,
     stroke: '#ffffff',
     strokeWidth: 1,
     splitByGrapheme: true,
@@ -47,6 +48,15 @@ export class TextEditor {
 
     get text(): fabric.IText | fabric.Textbox {
         return this.#wrap === TextWrap.NONE ? this.itext : this.textBox
+    }
+
+    get font(): string{
+        return this.text.fontFamily
+    }
+
+    set font(font: string){
+        this.text.fontFamily = font
+        this.canvas.renderAll()
     }
 
     updateWidth() {
@@ -187,7 +197,7 @@ export class TextEditor {
         return new Proxy({
             // size: that.size,
             color: that.color,
-            font: '',
+            font: that.font,
             // maxWidth: that.maxWidth,
             style: TextStyle.PLAIN,
             align: TextAlign.LEFT,
@@ -242,6 +252,7 @@ export class TextEditor {
             pos: this.pos,
             color: this.color,
             size: Math.round(this.size),
+            font: this.font === TextModel.DEFAULT_FONT_FAMILY ? undefined : this.font,
             align: this.#align,
             wrap: this.#wrap,
             style: this.style,

@@ -81,7 +81,9 @@ export type FontStyle = 'normal' | 'bold' | 'italic' | 'bold italic'
 export class TextModel {
     static readonly TEXT_VAR_REGEX = /\$txt\d+\[(.*?)]/g
     static readonly DEFAULT_MAX_WIDTH = 300
+    static readonly DEFAULT_FONT_FAMILY = 'Arial'
     public static dpiScale = ((window.devicePixelRatio || 1) * 96) / 72
+
     private readonly template: TextTemplate
     fontStyle?: FontStyle
     pixelSize: number
@@ -99,7 +101,7 @@ export class TextModel {
         this.pixelSize = this.defaultPixelSize
         this.template.color = getColor(this.template.color)
         this.style = this.template.style
-        this.template.font = this.template.font.replace(' ', '-')
+        this.template.font = this.template?.font?.replace(' ', '-') || TextModel.DEFAULT_FONT_FAMILY
         this.template.text = this.template.text.replace(TextModel.TEXT_VAR_REGEX, (_, capturedText) => capturedText)
         this.setDrawOptions()
     }
