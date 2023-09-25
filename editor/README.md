@@ -14,16 +14,16 @@
 
 由于纯静态页面会泄露 [**Github OAuth App** `client_secret`](https://github.com/settings/applications), 且受限于 `CORS` 策略; 需要服务端进行反向代理, 详见 (`./api`)[./api]
 
-服务端基于 (**Cloudflare Workers**)[https://developers.cloudflare.com/workers/] 实现, 并由 `Github Action` 自动部署, 可轻松改写为本地代理
+服务端基于 [**Cloudflare Workers**](https://developers.cloudflare.com/workers/) 实现, 并由 `Github Action` 自动部署, 可轻松改写为本地代理
 
 为防止 `client_secret` 泄露, 可配置 `Repository Setting/Actions/Repository secrets` 隐藏敏感数据
 
 | 名称               | 来源                                                                                                     | 描述                                                                                      |
 | ------------------ | -------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------- |
-| `CF_ACCOUNT_ID`    | (Cloudflare Account ID)[https://developers.cloudflare.com/fundamentals/setup/find-account-and-zone-ids/] | 用于 Action 自动部署, 手动部署或本地代理可忽略                                            |
-| `CF_API_TOKEN`     | (Workers API Token)[https://dash.cloudflare.com/profile/api-tokens]                                      | 用于 Action 自动部署, 手动部署或本地代理可忽略                                            |
-| `GH_CLIENT_ID`     | (Github OAuth App)[https://github.com/settings/developers]                                               | 用于用户登录程序, 可直接更改 (`github-oauth-config.json`)[./api/github-oauth-config.json] |
-| `GH_CLIENT_SECRET` | (Github OAuth App)[https://github.com/settings/developers]                                               | 用于认证用户登录, 可直接更改 (`github-oauth-config.json`)[./api/github-oauth-config.json] |
+| `CF_ACCOUNT_ID`    | [Cloudflare Account ID](https://developers.cloudflare.com/fundamentals/setup/find-account-and-zone-ids/) | 用于 Action 自动部署, 手动部署或本地代理可忽略                                            |
+| `CF_API_TOKEN`     | [Workers API Token](https://dash.cloudflare.com/profile/api-tokens)                                      | 用于 Action 自动部署, 手动部署或本地代理可忽略                                            |
+| `GH_CLIENT_ID`     | [Github OAuth App](https://github.com/settings/developers)                                               | 用于用户登录程序, 可直接更改 [`github-oauth-config.json`](./api/github-oauth-config.json) |
+| `GH_CLIENT_SECRET` | [Github OAuth App](https://github.com/settings/developers)                                               | 用于认证用户登录, 可直接更改 [`github-oauth-config.json`](./api/github-oauth-config.json) |
 
 详细部署步骤见下文
 
@@ -39,7 +39,7 @@
 
 #### Github OAuth App
 
-1. 创建 (Github OAuth 应用)[https://github.com/settings/developers]
+1. 创建 [Github OAuth 应用](https://github.com/settings/developers)
 2. 设置环境变量 `GH_CLIENT_ID` `GH_CLIENT_SECRET`
 
 #### Github Action
