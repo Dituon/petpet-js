@@ -1,0 +1,3 @@
+name = "github-app-oauth"
+main = "github-app-oauth.js"
+compatibility_date = "2023-09-25"

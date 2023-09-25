@@ -1,0 +1,28 @@
+name: Deploy Editor API
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'editor/api/**'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    name: Deploy
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Deploy
+        uses: cloudflare/wrangler-action@v3
+        with:
+          wranglerVersion: latest
+          apiToken: ${{ secrets.CF_API_TOKEN }}
+          accountId: ${{ secrets.CF_ACCOUNT_ID }}
+          secrets: |
+            GH_CLIENT_ID
+            GH_CLIENT_SECRET
+        env:
+          GH_CLIENT_ID: ${{ secrets.GH_CLIENT_ID }}
+          GH_CLIENT_SECRET: ${{ secrets.GH_CLIENT_SECRET }}
