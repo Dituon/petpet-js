@@ -21,7 +21,7 @@ export default {
               headers: defaultHeaders
           })
       } catch (ex) {
-          return new Response(ex, {status: 400, headers: defaultHeaders})
+          return new Response(JSON.stringify(ex), {status: 400, headers: defaultHeaders})
       }
     }
 }
@@ -42,9 +42,7 @@ async function exchangeAuthorizationCodeForAccessToken(authorizationCode, env) {
             client_secret: clientSecret
         }).toString()
     })
-    if (response.status !== 200) {
-        throw await response.text()
-    }
-    const { access_token } = await response.json()
-    return access_token
+    const data = await response.json()
+    if (data.error) throw data
+    return data.access_token
 }
