@@ -1,21 +1,23 @@
 import config from './github-oauth-config.json'
 
+export const defaultHeaders = {
+    "Content-Type": "application/json",
+    "Access-Control-Allow-Origin": "*"
+}
+
 export default {
     async fetch(request, env) {
       const url = new URL(request.url)
       const authorizationCode = url.searchParams.get("code")
       if (!authorizationCode) {
-        return new Response("Authorization code not found.", { status: 400 })
+        return new Response("Authorization code not found.", { status: 400, headers: defaultHeaders })
       }
       const accessToken = await exchangeAuthorizationCodeForAccessToken(authorizationCode, env)
       if (!accessToken) {
-        return new Response("Authorization code errorr.", { status: 400 })
+        return new Response("Authorization code errorr.", { status: 400, headers: defaultHeaders })
       }
       return new Response(JSON.stringify({ access_token: accessToken }), {
-        headers: {
-            "Content-Type": "application/json",
-            "Access-Control-Allow-Origin": "*"
-        }
+        headers: defaultHeaders
       })
     }
 }
