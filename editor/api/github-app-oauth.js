@@ -12,13 +12,19 @@ export default {
       if (!authorizationCode) {
         return new Response("Authorization code not found.", { status: 400, headers: defaultHeaders })
       }
-      const accessToken = await exchangeAuthorizationCodeForAccessToken(authorizationCode, env)
-      if (!accessToken) {
-        return new Response("Authorization code errorr.", { status: 400, headers: defaultHeaders })
+      try {
+          const accessToken = await exchangeAuthorizationCodeForAccessToken(authorizationCode, env)
+          if (!accessToken) {
+              return new Response("Authorization code error.", { status: 400, headers: defaultHeaders })
+          }
+          return new Response(JSON.stringify({ access_token: accessToken }), {
+              headers: defaultHeaders
+          })
+      } catch (e) {
+          return new Response(JSON.stringify(e), {
+              headers: defaultHeaders
+          })
       }
-      return new Response(JSON.stringify({ access_token: accessToken }), {
-        headers: defaultHeaders
-      })
     }
 }
 
@@ -38,6 +44,6 @@ async function exchangeAuthorizationCodeForAccessToken(authorizationCode, env) {
             client_secret: clientSecret
         }).toString()
     })
-    const data = await response.json()
-    return data.access_token
+    const {access_token} = await response.json()
+    return access_token
 }
