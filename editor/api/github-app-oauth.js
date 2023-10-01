@@ -13,7 +13,7 @@ export default {
             return new Response("Authorization code not found.", {status: 400, headers: defaultHeaders})
         }
         try {
-            const client_id = env.GH_CLIENT_SECRET || config.clientId
+            const client_id = env.GH_CLIENT_ID || config.clientId
             const client_secret = env.GH_CLIENT_SECRET || config.clientSecret
 
             const response = await fetch(
