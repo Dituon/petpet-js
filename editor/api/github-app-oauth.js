@@ -44,6 +44,9 @@ async function exchangeAuthorizationCodeForAccessToken(authorizationCode, env) {
             client_secret: clientSecret
         }).toString()
     })
-    const {access_token} = await response.json()
-    return access_token
+    const data = await response.json()
+    if (response.status !== 200) {
+        throw await response.json()
+    }
+    return data.access_token
 }
