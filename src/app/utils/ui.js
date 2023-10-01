@@ -1,6 +1,24 @@
 import './loading.css'
 import './ui.css'
 
+const showMessage = (value, time = 1000) => {
+    const message = document.getElementById('message')
+    if (message) message.remove()
+
+    const div = document.createElement('div')
+    div.id = 'message'
+    div.innerText = value
+    document.body.appendChild(div)
+    setTimeout(() => {
+        div.style.top = '0px'
+    }, 1)
+    setTimeout(() => {
+        div.style.top = ''
+    }, time)
+}
+
+export {showMessage}
+
 const div = () => document.createElement('div')
 
 export class Loading {
@@ -36,7 +54,7 @@ export class Loading {
         throw new Error(errText)
     }
 
-    #onclick(e){
+    #onclick(e) {
         e.stopPropagation()
     }
 }

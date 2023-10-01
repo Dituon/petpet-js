@@ -3,12 +3,13 @@ import '../../src/app/app.css'
 import {PetpetEditor} from "../model-editor/petpet-editor";
 import {saveAs} from 'file-saver'
 import {Setting} from "../../src/app/setting/setting";
-import {PetpetModel} from "../../src/core/model/petpet-model";
+import {PetpetModel, PetpetTemplate} from "../../src/core/model/petpet-model";
 import JSZip from "jszip"
-
 import './app.css'
-//@ts-ignore
 import avatarURL from '../avatar.png'
+import TemplateUploader from "../push/templateUploader";
+import {urlParam} from "../push/config";
+
 
 let avatarBlob: Blob
 
@@ -25,7 +26,10 @@ export default class App {
     protected previewCanvasArea: HTMLDivElement = document.createElement('div')
     protected previewJsonTextArea: HTMLPreElement = document.createElement('pre')
     protected editor: PetpetEditor
-    protected frames: HTMLCanvasElement[]
+    protected templateUploader: TemplateUploader
+    protected userCode = ''
+    protected frames: HTMLCanvasElement[] //expor
+    protected bc = new BroadcastChannel('code_channel')
 
     private initPromise: Promise<unknown>
 
@@ -39,10 +43,22 @@ export default class App {
         }
         this.settingElement.appendChild(this.uploader.render())
         this.uploader.show()
+
+        if (urlParam.get('code')) {
+            console.log('code', urlParam.get('code'))
+
+            this.bc.postMessage(urlParam.get('code'))
+            console.log('sended')
+            this.bc.close()
+            window.close()
+        }
+
+
     }
 
     protected async init() {
         this.editor = new PetpetEditor(this.frames)
+        this.templateUploader = new TemplateUploader(this.editor.key, this.editor.compiledTemplate, this.frames)
         const [settingElement, framesElement] = this.editor.render()
         this.settingElement.innerHTML = ''
         if (this.editorElement) this.editorElement.remove()
@@ -56,7 +72,8 @@ export default class App {
         framesElement.append(
             new Setting({
                 preview: () => this.preview(),
-                download: () => this.download()
+                download: () => this.download(),
+                upload: () => this.upload()
             }).render(),
             previewElement
         )
@@ -91,5 +108,14 @@ export default class App {
         root.file('data.json', JSON.stringify(template))
         const blob = await zip.generateAsync({type: 'blob'})
         saveAs(blob, `${this.editor.key}.zip`)
+    }
+
+    protected async upload() {
+        this.templateUploader.handleShowLogin()
+        // await this.templateUploader.update(
+        //     this.editor.key,
+        //     this.editor.compiledTemplate,
+        //     this.frames
+        // )
     }
 }
