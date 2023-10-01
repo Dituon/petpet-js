@@ -12,7 +12,10 @@ export default {
         return new Response("Authorization code errorr.", { status: 400 })
       }
       return new Response(JSON.stringify({ access_token: accessToken }), {
-        headers: { "Content-Type": "application/json" }
+        headers: {
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*"
+        }
       })
     }
   }
