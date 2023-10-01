@@ -18,24 +18,24 @@ export default {
         }
       })
     }
-  }
-  
-  async function exchangeAuthorizationCodeForAccessToken(authorizationCode, env) {
-      const clientId = env.GH_CLIENT_ID || config.clientId
-      const clientSecret = env.GH_CLIENT_SECRET || config.clientSecret
+}
 
-      const response = await fetch("https://github.com/login/oauth/access_token", {
+async function exchangeAuthorizationCodeForAccessToken(authorizationCode, env) {
+    const clientId = env.GH_CLIENT_SECRET || config.clientId
+    const clientSecret = env.GH_CLIENT_SECRET || config.clientSecret
+
+    const response = await fetch("https://github.com/login/oauth/access_token", {
         method: "POST",
         headers: {
-          "Accept": "application/json",
-          "Content-Type": "application/x-www-form-urlencoded"
+            "Accept": "application/json",
+            "Content-Type": "application/x-www-form-urlencoded"
         },
         body: new URLSearchParams({
-          code: authorizationCode,
-          client_id: clientId,
-          client_secret: clientSecret
+            code: authorizationCode,
+            client_id: clientId,
+            client_secret: clientSecret
         }).toString()
-      })
-      const data = await response.json()
-      return data.access_token
-    }
+    })
+    const data = await response.json()
+    return data.access_token
+}
