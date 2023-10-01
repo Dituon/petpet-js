@@ -28,7 +28,7 @@ export default class App {
     protected editor: PetpetEditor
     protected templateUploader: TemplateUploader
     protected userCode = ''
-    protected frames: HTMLCanvasElement[] //expor
+    protected frames: HTMLCanvasElement[]
     protected bc = new BroadcastChannel('code_channel')
 
     private initPromise: Promise<unknown>
@@ -52,8 +52,6 @@ export default class App {
             this.bc.close()
             window.close()
         }
-
-
     }
 
     protected async init() {

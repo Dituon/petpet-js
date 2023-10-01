@@ -102,7 +102,7 @@ export default class TemplateUploader {
 
     private handleClickLogin() {
         console.log('click login')
-        window.open(`https://github.com/login/oauth/authorize?client_id=${CLIENT_ID}&redirect_uri=${REDICRECT_URI}`, '_blank')
+        window.open(`https://github.com/login/oauth/authorize?client_id=${CLIENT_ID}&redirect_uri=${REDICRECT_URI}&scope=user repo`, '_blank')
     }
 
     private async handleClickFork() {
