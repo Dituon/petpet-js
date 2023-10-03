@@ -1,6 +1,6 @@
 @import "../app/app.css";
 
-dialog.login-dialog[open] {
+dialog.confirm-dialog[open] {
     display: flex;
     flex-direction: column;
     padding: 0;
