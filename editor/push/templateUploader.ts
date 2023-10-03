@@ -107,7 +107,6 @@ export default class TemplateUploader {
     private async handleClickLogin() {
         config.code ? await this.fetchToken()
             : window.open(`https://github.com/login/oauth/authorize?client_id=${CLIENT_ID}&redirect_uri=${REDICRECT_URI}&scope=user repo`, '_blank')
-
     }
 
     private async handleClickFork() {
