@@ -7,6 +7,7 @@ export interface PetpetConfig {
     code?: string
     access_token?: string
     owner?: string
+    full_name?: string
 }
 
 export const supportedConfigParam: (keyof PetpetConfig)[] = ['lang', 'template', 'server']

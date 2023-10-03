@@ -1,14 +1,14 @@
 import {Uploader} from "../uploader/uploader"
 import '../../src/app/app.css'
-import {PetpetEditor} from "../model-editor/petpet-editor";
+import {PetpetEditor} from "../model-editor/petpet-editor"
 import {saveAs} from 'file-saver'
-import {Setting} from "../../src/app/setting/setting";
-import {PetpetModel, PetpetTemplate} from "../../src/core/model/petpet-model";
+import {Setting} from "../../src/app/setting/setting"
+import {PetpetModel} from "../../src/core/model/petpet-model"
 import JSZip from "jszip"
 import './app.css'
 import avatarURL from '../avatar.png'
-import TemplateUploader from "../push/templateUploader";
-import {urlParam} from "../push/config";
+import TemplateUploader from "../push/templateUploader"
+import {urlParam} from "../push/config"
 
 
 let avatarBlob: Blob
@@ -36,6 +36,8 @@ export default class App {
     constructor(id: string) {
         this.parentElement = document.getElementById(id) as HTMLDivElement
         this.parentElement.classList.add('petpet-app')
+        this.templateUploader = new TemplateUploader()
+
         this.parentElement.appendChild(this.settingElement)
         this.uploader.onchange = frames => {
             this.frames = frames
@@ -58,7 +60,7 @@ export default class App {
 
     protected async init() {
         this.editor = new PetpetEditor(this.frames)
-        this.templateUploader = new TemplateUploader(this.editor.key, this.editor.compiledTemplate, this.frames)
+
         const [settingElement, framesElement] = this.editor.render()
         this.settingElement.innerHTML = ''
         if (this.editorElement) this.editorElement.remove()
@@ -111,6 +113,7 @@ export default class App {
     }
 
     protected async upload() {
+        this.templateUploader.setInfo(this.editor.key, this.editor.compiledTemplate, this.frames)
         this.templateUploader.handleShowLogin()
         // await this.templateUploader.update(
         //     this.editor.key,
