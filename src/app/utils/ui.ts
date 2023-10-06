@@ -40,12 +40,14 @@ export class Loading {
         this.#element.appendChild(mask)
         mask.addEventListener('click', this.#onclick)
         this.#maskElement = mask
+        return this
     }
 
     hide() {
         if (!this.#maskElement) return
         this.#maskElement.remove()
         this.#maskElement = null
+        return this
     }
 
     error() {

@@ -1,14 +1,15 @@
-import {Uploader} from "../uploader/uploader"
+import {ImageUploader} from "../image-uploader/image-uploader"
 import '../../src/app/app.css'
 import {PetpetEditor} from "../model-editor/petpet-editor"
 import {saveAs} from 'file-saver'
 import {Setting} from "../../src/app/setting/setting"
 import {PetpetModel} from "../../src/core/model/petpet-model"
-import JSZip from "jszip"
 import './app.css'
 import avatarURL from '../avatar.png'
-import TemplateUploader from "../push/templateUploader"
-import {urlParam} from "../push/config"
+import BaseTemplateUploader from "../template-uploader/base-template-uploader"
+import {urlParam} from "../template-uploader/config"
+import {buildZip} from "../util/build-zip";
+import {TemplateUploader} from "../template-uploader/template-uploader";
 
 
 let avatarBlob: Blob
@@ -18,15 +19,15 @@ async function getAvatar(): Promise<Blob> {
     return avatarBlob = await fetch(avatarURL).then(p => p.blob())
 }
 
-export default class App {
+export default class EditorApp {
     protected parentElement: HTMLDivElement
     protected settingElement: HTMLDivElement = document.createElement('div')
     protected editorElement: HTMLDivElement
-    protected uploader: Uploader = new Uploader()
+    protected uploader: ImageUploader = new ImageUploader()
     protected previewCanvasArea: HTMLDivElement = document.createElement('div')
     protected previewJsonTextArea: HTMLPreElement = document.createElement('pre')
     protected editor: PetpetEditor
-    protected templateUploader: TemplateUploader
+    protected templateUploader: BaseTemplateUploader
     protected userCode = ''
     protected frames: HTMLCanvasElement[]
     protected bc = new BroadcastChannel('code_channel')
@@ -34,6 +35,12 @@ export default class App {
     private initPromise: Promise<unknown>
 
     constructor(id: string) {
+        if (urlParam.get('code')) {
+            this.bc.postMessage(urlParam.get('code'))
+            this.bc.close()
+            window.close()
+        }
+
         this.parentElement = document.getElementById(id) as HTMLDivElement
         this.parentElement.classList.add('petpet-app')
         this.templateUploader = new TemplateUploader()
@@ -45,15 +52,6 @@ export default class App {
         }
         this.settingElement.appendChild(this.uploader.render())
         this.uploader.show()
-
-        if (urlParam.get('code')) {
-            console.log('code', urlParam.get('code'))
-
-            this.bc.postMessage(urlParam.get('code'))
-            console.log('sended')
-            this.bc.close()
-            window.close()
-        }
     }
 
     protected async init() {
@@ -97,22 +95,14 @@ export default class App {
     }
 
     protected async download() {
-        const template = this.editor.compiledTemplate
-        const zip = new JSZip()
-        const root = zip.folder(this.editor.key)
-        let i = 0
-        for (let frame of this.frames) {
-            //@ts-ignore
-            root.file(`${i++}.png`, await new Promise(res => frame.toBlob(res)))
-        }
-        root.file('data.json', JSON.stringify(template))
+        const zip = await buildZip(this.editor.key, this.editor.compiledTemplate, this.frames)
         const blob = await zip.generateAsync({type: 'blob'})
         saveAs(blob, `${this.editor.key}.zip`)
     }
 
     protected async upload() {
-        this.templateUploader.setInfo(this.editor.key, this.editor.compiledTemplate, this.frames)
-        this.templateUploader.handleShowLogin()
+        this.templateUploader.update(this.editor.key, this.editor.compiledTemplate, this.frames)
+        // this.templateUploader.handleShowLogin()
         // await this.templateUploader.update(
         //     this.editor.key,
         //     this.editor.compiledTemplate,

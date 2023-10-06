@@ -2,9 +2,9 @@ import {createTitle} from "../../src/app/utils";
 import {decodeGif} from "../../src/core/gif-synthesis/decoder";
 import {getCanvasFromBlob} from "../../src/core/utils/utils";
 
-import './uploader.css'
+import './image-uploader.css'
 
-export class Uploader {
+export class ImageUploader {
     private element = document.createElement('div')
     private labelElement = document.createElement('label')
     private fileInputElement = document.createElement('input')

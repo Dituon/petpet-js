@@ -1,4 +1,4 @@
-import {Loading} from "../utils/ui.js";
+import {Loading} from "../utils/ui";
 import './result-area.css'
 import {createTitle} from "../utils";
 import {getLangConfig} from "../loader/lang-loader";

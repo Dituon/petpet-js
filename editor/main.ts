@@ -1,3 +1,3 @@
-import App from "./app/app";
+import EditorApp from "./app/app";
 
-new App('app')
+new EditorApp('app')

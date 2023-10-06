@@ -10,3 +10,19 @@
     transition: opacity 1s;
     z-index: 50;
 }
+
+#message {
+    position: fixed;
+    width: 100vw;
+    left: 0;
+    height: 30px;
+    top: -60px;
+    transition: top 500ms;
+    text-align: center;
+    background-color: var(--card-bg);
+    padding: 10px;
+    color: var(--sub-text);
+    font-weight: 600;
+
+    z-index: 150;
+}
