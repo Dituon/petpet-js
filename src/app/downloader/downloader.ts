@@ -109,7 +109,9 @@ export class Downloader {
         const url = URL.createObjectURL(blob)
         const wf = `width=${this.frames[0].width}, height=${this.frames[0].height}`
         window.open(url, undefined, wf)
-        URL.revokeObjectURL(url)
+        setTimeout(() => {
+            URL.revokeObjectURL(url)
+        }, 3000)
     }
 
     async share() {
@@ -130,7 +132,9 @@ export class Downloader {
         document.body.appendChild(link)
         link.click()
         document.body.removeChild(link)
-        URL.revokeObjectURL(url)
+        setTimeout(() => {
+            URL.revokeObjectURL(url)
+        }, 10000)
     }
 
     static async copy(blob: Blob) {
