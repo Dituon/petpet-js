@@ -53,10 +53,24 @@ export class TemplateUploader extends BaseTemplateUploader {
         }) as Promise<void>
     }
 
+    protected async getToken(code?: string): Promise<string> {
+        const token = super.getToken(code)
+        showMessage('获取 Token 成功')
+        return token
+    }
+
+    protected async forkRepo(): Promise<string> {
+        const fork = super.forkRepo()
+        showMessage('创建仓库成功')
+        return fork
+    }
+
     async update(key: string, template: PetpetTemplate, frames: HTMLCanvasElement[]): Promise<void> {
         if (!config.access_token || !config.full_name) {
             await (this.initPromise = this.init())
         }
-        return super.update(key, template, frames)
+        const update = super.update(key, template, frames)
+        showMessage('上传模板成功')
+        return update
     }
 }

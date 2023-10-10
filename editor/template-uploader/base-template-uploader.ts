@@ -82,6 +82,7 @@ export default class BaseTemplateUploader {
         if (!forkRes.ok) throw new Error('can not forks repos')
 
         const repoInfo = await forkRes.json()
+        await new Promise(res => setTimeout(res, 500))
         return config.full_name = repoInfo.full_name
     }
 
@@ -119,7 +120,7 @@ export default class BaseTemplateUploader {
             throw new Error('Can not upload the same files');
         }
 
-        const responseData = await response.json()
+        return await response.json()
     }
 
 }
