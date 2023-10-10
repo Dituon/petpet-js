@@ -1,10 +1,8 @@
 import {PetpetTemplate} from "../../src/core"
 import './loginDialog.css'
-import {CLIENT_ID, GITHUB_API_URL, OAUTH_PROXY_URL, REDICRECT_URI, TEMPLATE_REPO, TEMPLATE_REPO_NAME} from "./config"
+import {GITHUB_API_URL, LOGIN_URL, OAUTH_PROXY_URL, TEMPLATE_REPO, TEMPLATE_REPO_NAME} from "./config"
 import {config} from '../../src/app/loader'
 import {buildZip} from "../util/build-zip";
-
-console.log(config)
 
 export default class BaseTemplateUploader {
     protected bc = new BroadcastChannel('code_channel')
@@ -12,13 +10,11 @@ export default class BaseTemplateUploader {
     protected initPromise: Promise<unknown>
 
     protected async getOAuthCode(): Promise<string> {
-        window.open(
-            `https://github.com/login/oauth/authorize?client_id=${CLIENT_ID}&redirect_uri=${REDICRECT_URI}&scope=user repo`,
-            '_blank'
-        )
+        window.open(LOGIN_URL, '_blank')
 
         return new Promise(res => this.bc.addEventListener(
-            'message', e => res(e.data),
+            'message',
+            e => res(e.data),
             {once: true}
         ))
     }
@@ -77,7 +73,7 @@ export default class BaseTemplateUploader {
         })
 
         if (forkRes.status === 422) {
-            console.log('data repository has been created')
+            console.warn('data repository has been created')
             const userName = await this.getUserName()
             return config.full_name = `${userName}/${TEMPLATE_REPO_NAME}`
         }

@@ -11,3 +11,11 @@ export const OAUTH_PROXY_URL = 'https://d2n.moe/github/oauth'
 export const REDICRECT_URI = location.href
 
 export const urlParam = new URL(location.href).searchParams
+
+export const LOGIN_PARAM = new URLSearchParams({
+    client_id: CLIENT_ID,
+    redirect_uri: REDICRECT_URI,
+    scope: 'user repo'
+})
+
+export const LOGIN_URL = `https://github.com/login/oauth/authorize?${LOGIN_PARAM.toString()}`

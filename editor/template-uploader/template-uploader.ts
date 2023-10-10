@@ -1,7 +1,8 @@
 import BaseTemplateUploader from "./base-template-uploader";
 import {PetpetTemplate} from "../../src/core";
-import {config} from "../../src/app/loader";
+import {config, getLangConfig} from "../../src/app/loader";
 import {Loading, showMessage} from "../../src/app/utils";
+import readmeHTML from './readme.html?raw'
 
 export class TemplateUploader extends BaseTemplateUploader {
     protected dialog = document.createElement('dialog')
@@ -13,13 +14,17 @@ export class TemplateUploader extends BaseTemplateUploader {
     constructor() {
         super()
 
-        this.cancelButton.innerHTML = 'Cancel'
+        this.dialog.classList.add('readme')
+        this.descriptionArea.innerHTML = readmeHTML
+
+        this.cancelButton.innerHTML = getLangConfig().cancel
         this.cancelButton.addEventListener('click', () => {
             this.dialog.close()
             throw new Error('Cancel clicked')
         })
-        this.nextButton.innerHTML = 'Next'
+        this.nextButton.innerHTML = 'OK'
 
+        this.btnGroup.classList.add('button-group')
         this.btnGroup.append(this.cancelButton, this.nextButton)
 
         this.dialog.append(
@@ -33,14 +38,18 @@ export class TemplateUploader extends BaseTemplateUploader {
         if (config.access_token && config.full_name) return super.init()
         this.dialog.showModal()
         return new Promise(res => {
-            this.nextButton.addEventListener('click', async () => {
-                const loading = new Loading(this.dialog).show()
-                await super.init()
-                loading.hide()
-                showMessage('初始化完成')
-                this.dialog.close()
-                res()
-            }, {once: true})
+            this.nextButton.addEventListener(
+                'click',
+                async () => {
+                    const loading = new Loading(this.dialog).show()
+                    await super.init()
+                    loading.hide()
+                    showMessage('初始化完成')
+                    this.dialog.close()
+                    res()
+                },
+                {once: true}
+            )
         }) as Promise<void>
     }
 
