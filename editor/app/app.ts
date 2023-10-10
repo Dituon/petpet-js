@@ -10,6 +10,7 @@ import BaseTemplateUploader from "../template-uploader/base-template-uploader"
 import {urlParam} from "../template-uploader/config"
 import {buildZip} from "../util/build-zip";
 import {TemplateUploader} from "../template-uploader/template-uploader";
+import {showMessage} from "../../src/app/utils";
 
 
 let avatarBlob: Blob
@@ -20,6 +21,8 @@ async function getAvatar(): Promise<Blob> {
 }
 
 export default class EditorApp {
+    static readonly bc = new BroadcastChannel('petpet-channel')
+
     protected parentElement: HTMLDivElement
     protected settingElement: HTMLDivElement = document.createElement('div')
     protected editorElement: HTMLDivElement
@@ -30,14 +33,13 @@ export default class EditorApp {
     protected templateUploader: BaseTemplateUploader
     protected userCode = ''
     protected frames: HTMLCanvasElement[]
-    protected bc = new BroadcastChannel('code_channel')
 
     private initPromise: Promise<unknown>
 
     constructor(id: string) {
         if (urlParam.get('code')) {
-            this.bc.postMessage(urlParam.get('code'))
-            this.bc.close()
+            EditorApp.bc.postMessage(urlParam.get('code'))
+            EditorApp.bc.close()
             window.close()
         }
 
@@ -101,12 +103,7 @@ export default class EditorApp {
     }
 
     protected async upload() {
-        this.templateUploader.update(this.editor.key, this.editor.compiledTemplate, this.frames)
-        // this.templateUploader.handleShowLogin()
-        // await this.templateUploader.update(
-        //     this.editor.key,
-        //     this.editor.compiledTemplate,
-        //     this.frames
-        // )
+        await this.templateUploader.update(this.editor.key, this.editor.compiledTemplate, this.frames)
+        showMessage('上传成功')
     }
 }

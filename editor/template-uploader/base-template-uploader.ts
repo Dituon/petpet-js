@@ -3,20 +3,21 @@ import './loginDialog.css'
 import {GITHUB_API_URL, LOGIN_URL, OAUTH_PROXY_URL, TEMPLATE_REPO, TEMPLATE_REPO_NAME} from "./config"
 import {config} from '../../src/app/loader'
 import {buildZip} from "../util/build-zip";
+import EditorApp from "../app/app";
 
 export default class BaseTemplateUploader {
-    protected bc = new BroadcastChannel('code_channel')
-
     protected initPromise: Promise<unknown>
 
     protected async getOAuthCode(): Promise<string> {
-        window.open(LOGIN_URL, '_blank')
-
-        return new Promise(res => this.bc.addEventListener(
+        const promise = new Promise(res => EditorApp.bc.addEventListener(
             'message',
             e => res(e.data),
             {once: true}
         ))
+
+        window.open(LOGIN_URL, '_blank')
+
+        return promise as Promise<string>
     }
 
     protected async init() {
