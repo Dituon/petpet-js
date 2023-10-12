@@ -459,6 +459,10 @@ export class AvatarEditor {
     }
 
     get compiledTemplate(): AvatarTemplate | null {
-        return this.isRemoved ? null : {...this.template, pos: this.pos, angle: this.angle}
+        return this.isRemoved ? null : {
+            ...this.template,
+            pos: this.pos,
+            angle: Math.round(this.angle)
+        }
     }
 }
