@@ -277,9 +277,9 @@ export class AvatarModel extends ElementModel {
                 const [x, y, w, h] = pos as XYWH
                 if (angle) {
                     ctx.save();
-                    ctx.translate(x + w / 2, y + h / 2);
+                    ctx.translate(x, y);
                     ctx.rotate(angle * Math.PI / 180.0);
-                    ctx.translate(-x - w / 2, -y - h / 2);
+                    ctx.translate(-x, -y);
                 }
                 switch (this.template.fit) {
                     case AvatarFit.FILL:
@@ -309,7 +309,7 @@ export class AvatarModel extends ElementModel {
                         }
                         break
                 }
-                ctx.restore()
+                if (angle) ctx.restore()
                 break
             case AvatarPosType.DEFORM:
                 this.deformer.draw(ctx, frame, pos as RO)
