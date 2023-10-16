@@ -4,11 +4,12 @@ type Texture = any
 
 export class ImageDeformer {
     private fxCanvas = fx.canvas()
-    private textureMap: Map<HTMLCanvasElement, Texture> = new Map()
+    private textureMap: Map<HTMLCanvasElement, Texture>
     private readonly cache: boolean
 
     constructor(cache: boolean = true) {
         this.cache = cache
+        if (cache) this.textureMap = new Map()
     }
 
     draw(ctx: CanvasRenderingContext2D, image: HTMLCanvasElement, pos: number[][]) {

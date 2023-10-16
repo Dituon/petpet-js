@@ -235,6 +235,7 @@ export class PetpetModelViewer {
 
     async destroy() {
         await this.stop()
+        this.avatars.destroy()
         this.canvas.remove()
     }
 }

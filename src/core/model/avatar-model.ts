@@ -327,6 +327,10 @@ export class AvatarModel extends ElementModel {
         const frame = this.frames[0]
         return {width: frame.width, height: frame.height}
     }
+
+    destroy() {
+        this.deformer?.destroy()
+    }
 }
 
 export class AvatarModelList {
@@ -366,6 +370,10 @@ export class AvatarModelList {
     async getMaxLength() {
         await this.initPromise
         return this.maxLength || {posLength: 0, frameLength: undefined}
+    }
+
+    destroy() {
+        this.arr.forEach(avatar => avatar.destroy())
     }
 
     static createFrom(objArr: AvatarTemplate[], data: AvatarData, extraTemplates?: ExtraTemplate): AvatarModelList {
