@@ -1,25 +1,15 @@
 import * as fx from 'glfx-es6'
+import {BaseGlfxRenderer} from "./base-glfx-renderer";
 // see glfx.Texture
 type Texture = any
 
-export class ImageDeformer {
-    private fxCanvas = fx.canvas()
-    private textureMap: Map<HTMLCanvasElement, Texture>
-    private readonly cache: boolean
-
+export class ImageDeformer extends BaseGlfxRenderer{
     constructor(cache: boolean = true) {
-        this.cache = cache
-        if (cache) this.textureMap = new Map()
+        super(cache)
     }
 
     draw(ctx: CanvasRenderingContext2D, image: HTMLCanvasElement, pos: number[][]) {
-        const texture: Texture = this.cache && this.textureMap.has(image)
-            ? this.textureMap.get(image)
-            : this.fxCanvas.texture(image)
-
-        if (this.cache && !this.textureMap.has(image)) {
-            this.textureMap.set(image, texture)
-        }
+        const texture: Texture = this.getTexture(image)
 
         let [x1, y1] = pos[0]
         let [x2, y2] = pos[1]
@@ -45,13 +35,6 @@ export class ImageDeformer {
         ctx.drawImage(this.fxCanvas, 0, 0)
 
         if (!this.cache) texture.destroy()
-    }
-
-    destroy() {
-        if (!this.cache) return
-        for (const texture of [...this.textureMap.values()]) {
-            texture.destroy()
-        }
     }
 }
 

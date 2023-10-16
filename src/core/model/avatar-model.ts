@@ -12,6 +12,7 @@ import {
 import {Expression, Parser} from "expr-eval";
 import {decodeGif} from "../gif-synthesis/decoder";
 import {decodeVideo} from "../video-synthesis/decoder";
+import {ImageFilterRenderer} from "../image-synthesis/filter-renderer";
 
 export enum AvatarType {
     FROM = 'FROM',
@@ -45,6 +46,81 @@ export enum AvatarStyle {
     BINARIZATION = 'BINARIZATION'
 }
 
+export enum AvatarFilterType {
+    SWIRL = "SWIRL",
+    BULGE = "BULGE",
+    BLUR = "BLUR",
+    CONTRAST = "CONTRAST",
+    HSB = "HSB",
+    HALFTONE = "HALFTONE",
+    DOT_SCREEN = "DOT_SCREEN",
+    NOISE = "NOISE",
+    DENOISE = "DENOISE"
+}
+
+export interface AvatarSwirlFilter {
+    type: AvatarFilterType.SWIRL
+    radius: number
+    angle: number
+}
+
+export interface AvatarBulgeFilter {
+    type: AvatarFilterType.BULGE
+    radius: number
+    strength: number
+}
+
+export interface AvatarBlurFilter {
+    type: AvatarFilterType.BLUR
+    radius: number
+}
+
+export interface AvatarContrastFilter {
+    type: AvatarFilterType.CONTRAST
+    brightness: number
+    contrast: number
+}
+
+export interface AvatarHueFilter {
+    type: AvatarFilterType.HSB
+    hue: number
+    saturation: number
+    brightness: number
+}
+
+export interface AvatarHalftoneFilter {
+    type: AvatarFilterType.HALFTONE
+    angle: number
+    radius: number
+}
+
+export interface AvatarDotScreenFilter {
+    type: AvatarFilterType.DOT_SCREEN
+    angle: number
+    radius: number
+}
+
+export interface AvatarNoiseFilter {
+    type: AvatarFilterType.NOISE
+    amount: number
+}
+
+export interface AvatarDenoiseFilter {
+    type: AvatarFilterType.DENOISE
+    exponent: number
+}
+
+export type AvatarFilter =
+    AvatarSwirlFilter |
+    AvatarBulgeFilter |
+    AvatarBlurFilter |
+    AvatarContrastFilter |
+    AvatarHueFilter |
+    AvatarHalftoneFilter |
+    AvatarDotScreenFilter |
+    AvatarNoiseFilter |
+    AvatarDenoiseFilter
+
 export interface AvatarTemplate {
     type: AvatarType
 
@@ -55,6 +131,7 @@ export interface AvatarTemplate {
     cropType?: AvatarCropType
 
     style?: AvatarStyle[]
+    filter?: AvatarFilter[]
     fit: AvatarFit
 
     round?: boolean
@@ -159,6 +236,7 @@ export class AvatarModel extends ElementModel {
     private pos: XYWH[] | RO[]
     private readonly initPromise: Promise<void>
     private deformer?: ImageDeformer
+    private filterRenderer?: ImageFilterRenderer
 
     constructor(template: AvatarTemplate, data: AvatarData, extraTemplates?: ExtraTemplate) {
         super()
@@ -181,6 +259,7 @@ export class AvatarModel extends ElementModel {
     async updateTemplate() {
         await this.setCrop()
         await this.setStyle()
+        await this.setFilter()
         await this.setRound()
         await this.setPos()
     }
@@ -224,9 +303,16 @@ export class AvatarModel extends ElementModel {
                     this.frames = this.frames.map(binarizeImage)
                     break
                 default:
-                    throw new Error('unknown style ' + style)
+                    console.warn('Unknown style ' + style)
             }
         }
+    }
+
+    protected setFilter(): void {
+        if (!this.template?.filter?.length) return
+
+        this.filterRenderer = new ImageFilterRenderer()
+        this.frames = this.frames.map(img => this.filterRenderer.build(img, this.template.filter))
     }
 
     protected setRound() {
