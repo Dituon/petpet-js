@@ -1,8 +1,9 @@
-import {TextAlign, TextModel, TextStyle, TextTemplate, TextWrap} from "../../src/core"
+import {defaultTextTemplate, TextAlign, TextModel, TextStyle, TextTemplate, TextWrap} from "../../src/core"
 import {fabric} from "fabric"
 import {ITextboxOptions, ITextOptions} from "fabric/fabric-impl"
 
 import '../../src/app/loader/websafe-fonts.css'
+import {generateShortenedConfig} from "../util/object-differ";
 
 export const defaultTextOption: ITextOptions | ITextboxOptions = {
     fill: '#191919',
@@ -247,7 +248,7 @@ export class TextEditor {
     }
 
     get compiledTemplate(): TextTemplate | null {
-        return this.isRemoved ? null : {
+        return this.isRemoved ? null : generateShortenedConfig({
             text: this.text.text as string,
             pos: this.pos,
             color: this.color,
@@ -258,7 +259,7 @@ export class TextEditor {
             style: this.style,
             strokeColor: this.strokeColor,
             strokeSize: this.strokeSize
-        }
+        }, defaultTextTemplate)
     }
 
     static toPointsSize(pixelSize: number): number {

@@ -14,6 +14,7 @@ import avatar from '../avatar.png'
 import {IBaseFilter, IImageOptions, IPolylineOptions, IRectOptions, Point} from "fabric/fabric-impl"
 import {registerFilter} from '../util/fabric-filter-binarization'
 import {actionHandler, anchorWrapper, polygonPositionHandler, roundedCorners} from "../util/fabric-avatar-util";
+import {generateShortenedConfig} from "../util/object-differ";
 
 registerFilter()
 
@@ -459,10 +460,10 @@ export class AvatarEditor {
     }
 
     get compiledTemplate(): AvatarTemplate | null {
-        return this.isRemoved ? null : {
-            ...this.template,
-            pos: this.pos,
-            angle: Math.round(this.angle)
-        }
+        return this.isRemoved ? null : generateShortenedConfig({
+                ...this.template,
+                pos: this.pos,
+                angle: Math.round(this.angle)
+            }, defaultAvatarTemplate)
     }
 }

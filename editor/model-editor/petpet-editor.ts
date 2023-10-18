@@ -5,6 +5,7 @@ import {Setting} from "../../src/app/setting/setting";
 
 import './editor.css'
 import {TextEditor} from "./text-editor";
+import {generateShortenedConfig} from "../util/object-differ";
 
 export class PetpetEditor {
     protected template: PetpetTemplate = {
@@ -142,12 +143,12 @@ export class PetpetEditor {
     }
 
     get compiledTemplate(): PetpetTemplate {
-        return {
+        return generateShortenedConfig({
             ...this.template,
             avatar: this.avatarEditors.map(a => a.compiledTemplate).filter(Boolean),
             text: this.textEditors.map(t => t.compiledTemplate).filter(Boolean),
             key: undefined
-        }
+        }, defaultPetpetTemplate)
     }
 
     render() {
