@@ -46,6 +46,11 @@ export enum AvatarStyle {
     BINARIZATION = 'BINARIZATION'
 }
 
+export enum AvatarTransformOrigin {
+    DEFAULT = 'DEFAULT',
+    CENTER = 'CENTER'
+}
+
 export enum AvatarFilterType {
     SWIRL = "SWIRL",
     BULGE = "BULGE",
@@ -136,6 +141,7 @@ export interface AvatarTemplate {
 
     round?: boolean
     rotate?: boolean
+    origin?: AvatarTransformOrigin
     avatarOnTop?: boolean
     antialias?: boolean
     resampling?: boolean
@@ -162,6 +168,7 @@ export const defaultAvatarTemplate: AvatarTemplate = {
 
     round: false,
     rotate: false,
+    origin: AvatarTransformOrigin.DEFAULT,
     avatarOnTop: true,
 
     angle: 0,
@@ -362,14 +369,23 @@ export class AvatarModel extends ElementModel {
             case AvatarPosType.ZOOM:
                 const [x, y, w, h] = pos as XYWH
                 if (angle) {
-                    ctx.save();
-                    ctx.translate(x, y);
-                    ctx.rotate(angle * Math.PI / 180.0);
-                    ctx.translate(-x, -y);
+                    ctx.save()
+                    switch (this.template.origin) {
+                        case AvatarTransformOrigin.DEFAULT:
+                            ctx.translate(x, y)
+                            ctx.rotate(angle * Math.PI / 180.0)
+                            ctx.translate(-x, -y)
+                            break
+                        case AvatarTransformOrigin.CENTER:
+                            ctx.translate(x + w / 2, y + h / 2)
+                            ctx.rotate(angle * Math.PI / 180.0)
+                            ctx.translate(-x - w / 2, -y - h / 2)
+                            break
+                    }
                 }
                 switch (this.template.fit) {
                     case AvatarFit.FILL:
-                        ctx.drawImage(frame, x, y, w, h);
+                        ctx.drawImage(frame, x, y, w, h)
                         break
                     default:
                         const scale = Math[this.template.fit === AvatarFit.CONTAIN ? 'min' : 'max']
