@@ -59,7 +59,8 @@ export class PetpetModel {
         } else if (Array.isArray(background)) {
             this.backgroundModel.images = background
         } else {
-            throw new Error('unknown background', background)
+            console.warn(background)
+            throw new Error('Unknown background')
         }
     }
 
