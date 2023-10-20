@@ -4,6 +4,7 @@ import {
     AvatarPosType,
     AvatarStyle,
     AvatarTemplate,
+    AvatarTransformOrigin,
     AvatarType,
     defaultAvatarTemplate,
     RO,
@@ -218,6 +219,11 @@ export class AvatarEditor {
         this.template.round = bool
         this.avatarImage.set("clipPath", bool ? this.ROUND_CLIP_PATH : null)
         this.canvas.renderAll()
+    }
+
+    set rotate(bool: boolean) {
+        this.template.rotate = bool
+        this.template.origin = bool ? AvatarTransformOrigin.CENTER : AvatarTransformOrigin.DEFAULT
     }
 
     set angle(num: number) {
