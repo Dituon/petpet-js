@@ -25,7 +25,6 @@ export class TextEditor {
     readonly canvas: fabric.Canvas
     itext: fabric.IText
     textBox: fabric.Textbox
-    #align: TextAlign = TextAlign.LEFT
     #wrap: TextWrap = TextWrap.NONE
     #style: TextStyle = TextStyle.PLAIN
     #prevWidth: number
@@ -69,13 +68,13 @@ export class TextEditor {
 
     set pos(pos: [number, number] | [number, number, number]) {
         let [x, y] = pos
-        switch (this.#align) {
+        switch (this.text.textAlign.toUpperCase()) {
             case TextAlign.RIGHT:
                 x -= this.text.getScaledWidth()
                 break
             case TextAlign.CENTER:
                 x -= this.text.getScaledWidth() / 2
-                y -= this.text.getScaledHeight() / 2
+                y += this.text.getScaledHeight() / 2
                 break
         }
         this.text.left = x
@@ -86,13 +85,13 @@ export class TextEditor {
     get pos(): [number, number] | [number, number, number] {
         let x = Math.round(this.text.left)
         let y = Math.round(this.text.top + this.text.height)
-        switch (this.#align) {
+        switch (this.text.textAlign.toUpperCase()) {
             case TextAlign.RIGHT:
                 x += Math.round(this.text.getScaledWidth())
                 break
             case TextAlign.CENTER:
                 x += Math.round(this.text.getScaledWidth() / 2)
-                y += Math.round(this.text.getScaledHeight() / 2)
+                y -= Math.round(this.text.getScaledHeight() / 2)
                 break
         }
         return this.wrap === TextWrap.NONE ? [x, y] : [x, y, this.textBox.width]
@@ -114,7 +113,7 @@ export class TextEditor {
     }
 
     set align(align: TextAlign) {
-        this.text.textAlign = align.toLowerCase()
+        this.text.set({textAlign: align.toLowerCase()})
         this.canvas.renderAll()
     }
 
@@ -162,7 +161,7 @@ export class TextEditor {
     }
 
     set color(color: string) {
-        this.text.fill = color
+        this.text.set({fill: color})
         this.canvas.renderAll()
     }
 
@@ -254,7 +253,7 @@ export class TextEditor {
             color: this.color,
             size: Math.round(this.size),
             font: this.font === TextModel.DEFAULT_FONT_FAMILY ? undefined : this.font,
-            align: this.#align,
+            align: this.text.textAlign.toUpperCase() as TextAlign,
             wrap: this.#wrap,
             style: this.style,
             strokeColor: this.strokeColor,
