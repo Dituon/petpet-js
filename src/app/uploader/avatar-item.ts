@@ -1,6 +1,7 @@
-import {AvatarType} from "../../core/model/avatar-model"
+import {AvatarType} from "../../core/index.js"
 import {AvatarCropper} from "./avatar-cropper"
-import {getLangConfig} from "../loader/lang-loader";
+import {getLangConfig} from "../loader/index.js";
+import * as localforage from "localforage";
 
 const stopPropagation = e => {
     e.stopPropagation()
@@ -17,8 +18,7 @@ export class AvatarItem {
     #waitFilePromise = new Promise(res => this.#resolveWaitFilePromise = res)
     cropPos
 
-    /** @param {AvatarType} type */
-    constructor(type) {
+    constructor(type: AvatarType) {
         this.type = type
         this.#element.title = getLangConfig().rightClickOrLongPress
         this.#element.setAttribute('type', type)
@@ -43,14 +43,17 @@ export class AvatarItem {
         fileEle.accept = 'image/*'
         fileEle.addEventListener('change', () => this.setFiles(fileEle.files))
         this.#element.appendChild(fileEle)
+
+        localforage.getItem(this.type).then(data => {
+            this.setFile(data as File)
+        })
     }
 
     render() {
         return this.#element
     }
 
-    /** @param {(AvatarItem)=>void} callback */
-    set onchange(callback) {
+    set onchange(callback: (AvatarItem) => unknown) {
         this.#callbcak = callback
     }
 
@@ -63,9 +66,12 @@ export class AvatarItem {
         return this.#file
     }
 
-    /** @param { FileList } files */
-    setFiles(files) {
+    setFiles(files: FileList) {
         let file = files.item(0)
+        this.setFile(file);
+    }
+
+    setFile(file: File) {
         if (!file) return
         if (!file.type.startsWith('image')) {
             throw new Error("仅支持图片格式")
@@ -77,5 +83,6 @@ export class AvatarItem {
         this.#resolveWaitFilePromise()
         this.cropPos = undefined
         this.#callbcak && this.#callbcak(this)
+        localforage.setItem(this.type, file)
     }
 }
