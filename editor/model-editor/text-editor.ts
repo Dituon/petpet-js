@@ -18,7 +18,7 @@ export const defaultTextOption: ITextOptions | ITextboxOptions = {
 const baseControlsVisibility = {
     mb: false,
     mt: false,
-    mtr: false
+    // mtr: false
 }
 
 export class TextEditor {
@@ -83,18 +83,26 @@ export class TextEditor {
     }
 
     get pos(): [number, number] | [number, number, number] {
-        let x = Math.round(this.text.left)
-        let y = Math.round(this.text.top + this.text.height)
+        const a = this.text.angle * Math.PI / 180
+        const h = this.text.getScaledHeight()
+        const xOffset = h * Math.sin(a)
+        const yOffset = h * Math.cos(a)
+
+        let x = this.text.left - xOffset
+        let y = this.text.top + yOffset
         switch (this.text.textAlign.toUpperCase()) {
             case TextAlign.RIGHT:
-                x += Math.round(this.text.getScaledWidth())
+                x += this.text.getScaledWidth()
                 break
             case TextAlign.CENTER:
-                x += Math.round(this.text.getScaledWidth() / 2)
-                y -= Math.round(this.text.getScaledHeight() / 2)
+                x += (this.text.getScaledWidth() + xOffset) / 2
+                y = this.text.top + yOffset / 2
                 break
         }
-        return this.wrap === TextWrap.NONE ? [x, y] : [x, y, this.textBox.width]
+
+        x = Math.round(x)
+        y = Math.round(y)
+        return this.wrap === TextWrap.NONE ? [x, y] : [x, y, this.text.width]
     }
 
     set style(style: TextStyle) {
@@ -250,6 +258,7 @@ export class TextEditor {
         return this.isRemoved ? null : generateShortenedConfig({
             text: this.text.text as string,
             pos: this.pos,
+            angle: this.text.angle,
             color: this.color,
             size: Math.round(this.size),
             font: this.font === TextModel.DEFAULT_FONT_FAMILY ? undefined : this.font,
@@ -274,6 +283,7 @@ function copyTextOption(origin: fabric.IText, target: fabric.IText) {
     const {
         left,
         top,
+        angle,
         text,
         fill,
         textAlign,
@@ -282,5 +292,5 @@ function copyTextOption(origin: fabric.IText, target: fabric.IText) {
         fontStyle,
         width
     } = origin
-    target.set({left, top, text, fill, textAlign, fontSize, fontWeight, fontStyle, width})
+    target.set({left, top, angle, text, fill, textAlign, fontSize, fontWeight, fontStyle, width})
 }

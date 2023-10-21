@@ -1,4 +1,5 @@
 import {getColor} from "../utils/utils"
+import {ElementModel, TransformOrigin} from "./element-model";
 
 const staticCanvas = document.createElement('canvas')
 const staticCtx = staticCanvas.getContext('2d')
@@ -35,6 +36,8 @@ export interface TextTemplate {
     text: string
     color?: string
     pos?: [number, number] | [number, number, number]
+    angle: number
+    origin?: TransformOrigin
     size?: number
     font?: string
     style?: TextStyle
@@ -49,17 +52,19 @@ export const defaultTextTemplate: TextTemplate = {
     text: 'default text',
     color: '#191919',
     pos: [50, 50],
+    angle: 0,
+    origin: TransformOrigin.DEFAULT,
     size: 16,
     font: 'arial',
     style: TextStyle.PLAIN,
     wrap: TextWrap.NONE,
-    align: TextAlign.CENTER,
+    align: TextAlign.LEFT,
     position: [TextPosition.LEFT, TextPosition.TOP],
     strokeColor: '#ffffff',
     strokeSize: 0
 }
 
-export type DrawTextOptions = [string, number, number][]
+export type DrawTextOption = [string, number, number]
 
 export interface TextSettingOptions {
     x: number
@@ -78,7 +83,7 @@ export interface TextSettingOptions {
 export type FontStyle = 'normal' | 'bold' | 'italic' | 'bold italic'
 
 
-export class TextModel {
+export class TextModel extends ElementModel{
     static readonly TEXT_VAR_REGEX = /\$txt\d+\[(.*?)]/g
     static readonly DEFAULT_MAX_WIDTH = 300
     static readonly DEFAULT_FONT_FAMILY = 'Arial'
@@ -91,11 +96,12 @@ export class TextModel {
     width: number
     height: number
     backgroundSize: [number, number]
-    private drawOptions: DrawTextOptions
+    private drawOptions: DrawTextOption[]
     private onChangeCallback: (TextModel) => any
     private disabled: boolean = false
 
     constructor(template: TextTemplate = defaultTextTemplate) {
+        super()
         this.template = {...defaultTextTemplate, ...template}
         this.defaultPixelSize = template.size * TextModel.dpiScale
         this.pixelSize = this.defaultPixelSize
@@ -111,7 +117,7 @@ export class TextModel {
         this.setDrawOptions()
     }
 
-    setDrawOptions(): DrawTextOptions {
+    setDrawOptions(): DrawTextOption[] {
         let {
             font,
             wrap
@@ -122,7 +128,7 @@ export class TextModel {
         this.width = 0
         this.height = 0
         const lines = this.template.text.split('\n')
-        const result: DrawTextOptions = []
+        const result: DrawTextOption[] = []
         let i = 0
         switch (wrap) {
             case TextWrap.NONE: {
@@ -248,9 +254,27 @@ export class TextModel {
         return this.template.style
     }
 
+    private rotateCtx(ctx: CanvasRenderingContext2D, drawOption: DrawTextOption) {
+        let [_, x, y] = drawOption
+        ctx.save()
+        switch (this.template.origin) {
+            case TransformOrigin.DEFAULT:
+                ctx.translate(x, y)
+                ctx.rotate(this.template.angle * Math.PI / 180.0)
+                ctx.translate(-x, -y)
+                break
+            case TransformOrigin.CENTER:
+                ctx.translate(x + this.width / 2, y + this.height / 2)
+                ctx.rotate(this.template.angle * Math.PI / 180.0)
+                ctx.translate(-x - this.width / 2, -y - this.height / 2)
+                break
+        }
+    }
+
     public draw(ctx: CanvasRenderingContext2D) {
         if (this.disabled) return
         let {
+            angle,
             color,
             align,
             font,
@@ -263,14 +287,18 @@ export class TextModel {
         ctx.textBaseline = align === TextAlign.CENTER ? 'middle' : 'bottom'
 
         for (let drawOption of this.drawOptions) {
+            if (angle) this.rotateCtx(ctx, drawOption)
             ctx.fillText(...drawOption)
+            if (angle) ctx.restore()
         }
 
         if (strokeColor && strokeSize) {
             ctx.strokeStyle = strokeColor
             ctx.lineWidth = strokeSize
             for (let drawOption of this.drawOptions) {
+                if (angle) this.rotateCtx(ctx, drawOption)
                 ctx.strokeText(...drawOption)
+                if (angle) ctx.restore()
             }
         }
     }

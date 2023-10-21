@@ -4,7 +4,6 @@ import {
     AvatarPosType,
     AvatarStyle,
     AvatarTemplate,
-    AvatarTransformOrigin,
     AvatarType,
     defaultAvatarTemplate,
     RO,
@@ -16,6 +15,7 @@ import {IBaseFilter, IImageOptions, IPolylineOptions, IRectOptions, Point} from 
 import {registerFilter} from '../util/fabric-filter-binarization'
 import {actionHandler, anchorWrapper, polygonPositionHandler, roundedCorners} from "../util/fabric-avatar-util";
 import {generateShortenedConfig} from "../util/object-differ";
+import {TransformOrigin} from "../../src/core";
 
 registerFilter()
 
@@ -223,7 +223,7 @@ export class AvatarEditor {
 
     set rotate(bool: boolean) {
         this.template.rotate = bool
-        this.template.origin = bool ? AvatarTransformOrigin.CENTER : AvatarTransformOrigin.DEFAULT
+        this.template.origin = bool ? TransformOrigin.CENTER : TransformOrigin.DEFAULT
     }
 
     set angle(num: number) {

@@ -1,4 +1,4 @@
-import {ElementModel} from './element-model';
+import {ElementModel, TransformOrigin} from './element-model';
 import {assertArrayLength, getImageFromBlob} from "../utils/utils";
 import {
     binarizeImage,
@@ -44,11 +44,6 @@ export enum AvatarStyle {
     FLIP = 'FLIP',
     GRAY = 'GRAY',
     BINARIZATION = 'BINARIZATION'
-}
-
-export enum AvatarTransformOrigin {
-    DEFAULT = 'DEFAULT',
-    CENTER = 'CENTER'
 }
 
 export enum AvatarFilterType {
@@ -141,7 +136,7 @@ export interface AvatarTemplate {
 
     round?: boolean
     rotate?: boolean
-    origin?: AvatarTransformOrigin
+    origin?: TransformOrigin
     avatarOnTop?: boolean
     antialias?: boolean
     resampling?: boolean
@@ -168,7 +163,7 @@ export const defaultAvatarTemplate: AvatarTemplate = {
 
     round: false,
     rotate: false,
-    origin: AvatarTransformOrigin.DEFAULT,
+    origin: TransformOrigin.DEFAULT,
     avatarOnTop: true,
 
     angle: 0,
@@ -371,12 +366,12 @@ export class AvatarModel extends ElementModel {
                 if (angle) {
                     ctx.save()
                     switch (this.template.origin) {
-                        case AvatarTransformOrigin.DEFAULT:
+                        case TransformOrigin.DEFAULT:
                             ctx.translate(x, y)
                             ctx.rotate(angle * Math.PI / 180.0)
                             ctx.translate(-x, -y)
                             break
-                        case AvatarTransformOrigin.CENTER:
+                        case TransformOrigin.CENTER:
                             ctx.translate(x + w / 2, y + h / 2)
                             ctx.rotate(angle * Math.PI / 180.0)
                             ctx.translate(-x - w / 2, -y - h / 2)
