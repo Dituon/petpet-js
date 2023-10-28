@@ -1,10 +1,10 @@
-import * as fx from 'glfx-es6'
+import * as fx from '../glfx-esm'
 // see glfx.Texture
 export type Texture = any
 
 export class BaseGlfxRenderer {
     protected fxCanvas = fx.canvas()
-    protected readonly textureMap: Map<HTMLCanvasElement, Texture>
+    protected readonly textureMap: WeakMap<HTMLCanvasElement, Texture>
     protected readonly cache: boolean
 
     constructor(cache: boolean = true) {
@@ -28,9 +28,9 @@ export class BaseGlfxRenderer {
 
     destroy() {
         if (!this.cache) return
-        for (const [img, texture] of this.textureMap.entries()) {
-            this.textureMap.delete(img)
-            texture.destroy()
-        }
+        // for (const [img, texture] of this.textureMap.entries()) {
+        //     this.textureMap.delete(img)
+        //     texture.destroy()
+        // }
     }
 }

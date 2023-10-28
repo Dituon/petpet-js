@@ -14,7 +14,6 @@
     "croppr": "^2.3.1",
     "expr-eval": "^2.0.2",
     "gifuct-js": "^2.1.2",
-    "glfx-es6": "^0.0.3",
     "localforage": "^1.10.0"
   },
   "devDependencies": {

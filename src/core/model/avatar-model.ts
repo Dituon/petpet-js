@@ -10,9 +10,14 @@ import {
     mirrorImage
 } from "../image-synthesis";
 import {Expression, Parser} from "expr-eval";
-import {decodeGif} from "../gif-synthesis/decoder";
-import {decodeVideo} from "../video-synthesis/decoder";
-import {ImageFilterRenderer} from "../image-synthesis/filter-renderer";
+import {decodeGif} from "../gif-synthesis";
+import {decodeVideo} from "../video-synthesis";
+import {
+    AvatarBlurFilter, AvatarBulgeFilter,
+    AvatarContrastFilter,
+    AvatarDenoiseFilter, AvatarDotScreenFilter, AvatarHalftoneFilter,
+    AvatarHueFilter, AvatarNoiseFilter, AvatarSwimFilter, AvatarSwirlFilter, ImageFilterRenderer
+} from "../image-synthesis/filter-renderer";
 
 export enum AvatarType {
     FROM = 'FROM',
@@ -43,75 +48,14 @@ export enum AvatarStyle {
     MIRROR = 'MIRROR',
     FLIP = 'FLIP',
     GRAY = 'GRAY',
-    BINARIZATION = 'BINARIZATION'
-}
+    BINARIZATION = 'BINARIZATION',
 
-export enum AvatarFilterType {
-    SWIRL = "SWIRL",
-    BULGE = "BULGE",
-    BLUR = "BLUR",
-    CONTRAST = "CONTRAST",
-    HSB = "HSB",
-    HALFTONE = "HALFTONE",
-    DOT_SCREEN = "DOT_SCREEN",
-    NOISE = "NOISE",
-    DENOISE = "DENOISE"
-}
 
-export interface AvatarSwirlFilter {
-    type: AvatarFilterType.SWIRL
-    radius: number
-    angle: number
-}
-
-export interface AvatarBulgeFilter {
-    type: AvatarFilterType.BULGE
-    radius: number
-    strength: number
-}
-
-export interface AvatarBlurFilter {
-    type: AvatarFilterType.BLUR
-    radius: number
-}
-
-export interface AvatarContrastFilter {
-    type: AvatarFilterType.CONTRAST
-    brightness: number
-    contrast: number
-}
-
-export interface AvatarHueFilter {
-    type: AvatarFilterType.HSB
-    hue: number
-    saturation: number
-    brightness: number
-}
-
-export interface AvatarHalftoneFilter {
-    type: AvatarFilterType.HALFTONE
-    angle: number
-    radius: number
-}
-
-export interface AvatarDotScreenFilter {
-    type: AvatarFilterType.DOT_SCREEN
-    angle: number
-    radius: number
-}
-
-export interface AvatarNoiseFilter {
-    type: AvatarFilterType.NOISE
-    amount: number
-}
-
-export interface AvatarDenoiseFilter {
-    type: AvatarFilterType.DENOISE
-    exponent: number
 }
 
 export type AvatarFilter =
     AvatarSwirlFilter |
+    AvatarSwimFilter |
     AvatarBulgeFilter |
     AvatarBlurFilter |
     AvatarContrastFilter |
@@ -119,7 +63,7 @@ export type AvatarFilter =
     AvatarHalftoneFilter |
     AvatarDotScreenFilter |
     AvatarNoiseFilter |
-    AvatarDenoiseFilter
+    AvatarDenoiseFilter;
 
 export interface AvatarTemplate {
     type: AvatarType

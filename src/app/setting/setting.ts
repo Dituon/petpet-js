@@ -30,7 +30,7 @@ export type ValueAttribute = {
 // }
 
 export interface ValueAttributeMap {
-    [key: string]: ValueAttribute & { options?: [] }
+    [key: string]: ValueAttribute & { options?: string[] }
 }
 
 export class Setting {
