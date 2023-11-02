@@ -25,9 +25,6 @@ export function showReadme() {
         localStorage.setItem('readme', 'true')
     }
 
-    dialog.addEventListener('click', e => {
-        if (e.target === dialog) dialog.close()
-    })
     const closeButton = document.createElement('div')
     closeButton.classList.add('button-group')
     closeButton.addEventListener('click', close)

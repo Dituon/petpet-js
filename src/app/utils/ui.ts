@@ -119,5 +119,8 @@ export function getDialog(selector?): HTMLDialogElement{
         dialog.addEventListener('transitionend', () => oldClose.call(dialog), {once: true})
         dialog.classList.remove('show')
     }
+    dialog.addEventListener('click', e => {
+        if (e.target === dialog) dialog.close()
+    })
     return dialog
 }
