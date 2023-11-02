@@ -274,6 +274,9 @@ export class ImageFilterRenderer extends BaseGlfxRenderer {
                 case AvatarFilterType.DENOISE:
                     this.fxCanvas.denoise(filter.exponent || 20)
                     break
+                case AvatarFilterType.OIL:
+                    this.fxCanvas.oil(filter.skip, filter.levels, filter.range)
+                    break
                 default:
                     console.warn(`Unknown filter type`, filter)
             }

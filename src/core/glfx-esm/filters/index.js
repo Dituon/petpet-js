@@ -25,3 +25,4 @@ export {default as perspective} from './warp/perspective'
 export {default as swirl} from './warp/swirl'
 
 export {default as swim} from './warp/swim'
+export {default as oil} from './fun/oil'

@@ -178,6 +178,7 @@ export function canvas(canvas = document.createElement('canvas')) {
   canvas.sepia = wrap(filters.sepia);
 
   canvas.swim = wrap(filters.swim);
+  canvas.oil = wrap(filters.oil);
 
   return canvas;
 }
