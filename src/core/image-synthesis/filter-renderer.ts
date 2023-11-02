@@ -1,5 +1,6 @@
 import {BaseGlfxRenderer, Texture} from "./base-glfx-renderer";
 import {AvatarFilter} from "../model";
+import {copyAsCanvas} from "../utils/utils";
 
 export enum AvatarFilterType {
     SWIRL = "SWIRL",
@@ -11,7 +12,22 @@ export enum AvatarFilterType {
     HALFTONE = "HALFTONE",
     DOT_SCREEN = "DOT_SCREEN",
     NOISE = "NOISE",
-    DENOISE = "DENOISE"
+    DENOISE = "DENOISE",
+    OIL = "OIL"
+}
+
+export interface AvatarFilterNameMap {
+    "SWIRL": AvatarSwirlFilter
+    "BULGE": AvatarBulgeFilter
+    "SWIM": AvatarSwimFilter
+    "BLUR": AvatarBlurFilter
+    "CONTRAST": AvatarContrastFilter
+    "HSB": AvatarHSBFilter
+    "HALFTONE": AvatarHalftoneFilter
+    "DOT_SCREEN": AvatarDotScreenFilter
+    "NOISE": AvatarNoiseFilter
+    "DENOISE": AvatarDenoiseFilter
+    "OIL": AvatarOilFilter
 }
 
 export interface AvatarSwirlFilter {
@@ -53,7 +69,7 @@ export interface AvatarContrastFilter {
     contrast: number
 }
 
-export interface AvatarHueFilter {
+export interface AvatarHSBFilter {
     type: AvatarFilterType.HSB
     hue: number
     saturation: number
@@ -86,6 +102,13 @@ export interface AvatarNoiseFilter {
 export interface AvatarDenoiseFilter {
     type: AvatarFilterType.DENOISE
     exponent: number
+}
+
+export interface AvatarOilFilter {
+    type: AvatarFilterType.OIL
+    skip: number
+    levels: number
+    range: number
 }
 
 export const defaultAvatarSwirlFilter: AvatarSwirlFilter = {
@@ -125,7 +148,7 @@ export const defaultAvatarContrastFilter: AvatarContrastFilter = {
     contrast: 0
 }
 
-export const defaultAvatarHueFilter: AvatarHueFilter = {
+export const defaultAvatarHSBFilter: AvatarHSBFilter = {
     type: AvatarFilterType.HSB,
     hue: 0,
     saturation: 0,
@@ -158,34 +181,36 @@ export const defaultAvatarDenoiseFilter: AvatarDenoiseFilter = {
     exponent: 20
 }
 
-export function getDefaultFilter(type: AvatarFilterType): AvatarFilter {
-    switch (type) {
-        case AvatarFilterType.SWIRL:
-            return { ...defaultAvatarSwirlFilter }
-        case AvatarFilterType.BULGE:
-            return { ...defaultAvatarBulgeFilter }
-        case AvatarFilterType.SWIM:
-            return { ...defaultAvatarSwimFilter }
-        case AvatarFilterType.BLUR:
-            return { ...defaultAvatarBlurFilter }
-        case AvatarFilterType.CONTRAST:
-            return { ...defaultAvatarContrastFilter }
-        case AvatarFilterType.HSB:
-            return { ...defaultAvatarHueFilter }
-        case AvatarFilterType.HALFTONE:
-            return { ...defaultAvatarHalftoneFilter }
-        case AvatarFilterType.DOT_SCREEN:
-            return { ...defaultAvatarDotScreenFilter }
-        case AvatarFilterType.NOISE:
-            return { ...defaultAvatarNoiseFilter }
-        case AvatarFilterType.DENOISE:
-            return { ...defaultAvatarDenoiseFilter }
-        default:
-            throw new Error('Invalid AvatarFilterType')
-    }
+export const defaultAvatarOilFilter: AvatarOilFilter = {
+    type: AvatarFilterType.OIL,
+    skip: 4,
+    levels: 8,
+    range: 12
+}
+
+const filterMap: Record<keyof AvatarFilterNameMap, AvatarFilterNameMap[keyof AvatarFilterNameMap]> = {
+    SWIRL: defaultAvatarSwirlFilter,
+    BULGE: defaultAvatarBulgeFilter,
+    SWIM: defaultAvatarSwimFilter,
+    BLUR: defaultAvatarBlurFilter,
+    CONTRAST: defaultAvatarContrastFilter,
+    HSB: defaultAvatarHSBFilter,
+    HALFTONE: defaultAvatarHalftoneFilter,
+    DOT_SCREEN: defaultAvatarDotScreenFilter,
+    NOISE: defaultAvatarNoiseFilter,
+    DENOISE: defaultAvatarDenoiseFilter,
+    OIL: defaultAvatarOilFilter
+}
+
+export function getDefaultFilter<K extends keyof AvatarFilterNameMap>(type: K): AvatarFilterNameMap[K] {
+    // @ts-ignore
+    return {...filterMap[type]}
 }
 
 export class ImageFilterRenderer extends BaseGlfxRenderer {
+    protected nowImageEle: HTMLCanvasElement | HTMLImageElement
+    protected nowTexture: Texture
+
     protected centerX = 0.5
     protected centerY = 0.5
 
@@ -193,30 +218,34 @@ export class ImageFilterRenderer extends BaseGlfxRenderer {
         super(cache)
     }
 
-    build(image: HTMLCanvasElement, filters: AvatarFilter[]): HTMLCanvasElement {
-        if (!filters?.length) return image
+    texture(image: HTMLCanvasElement | HTMLImageElement): this {
+        this.nowImageEle = image
+        if (!this.nowTexture) {
+            this.nowTexture = this.getTexture(this.nowImageEle)
+        } else {
+            this.nowTexture.loadContentsOf(image)
+        }
+        this.fxCanvas.draw(this.nowTexture)
+        return this
+    }
 
-        const texture: Texture = this.getTexture(image)
+    apply(filters: AvatarFilter[]): this {
+        // if (!filters?.length) return this
 
-        const canvas = document.createElement('canvas')
-        canvas.width = image.width
-        canvas.height = image.height
-        const ctx = canvas.getContext('2d')
-
-        const iCentreX = image.width / 2
-        const iCentreY = image.height / 2
+        this.fxCanvas.draw(this.nowTexture)
+        const iCentreX = this.nowImageEle.width / 2
+        const iCentreY = this.nowImageEle.height / 2
         const iRadius = Math.min(iCentreX, iCentreY)
 
-        this.fxCanvas.draw(texture)
-
-        for (const filter of filters) {
+        for (let filter of filters) {
+            filter = {...getDefaultFilter(filter.type), ...filter}
             switch (filter.type) {
                 case AvatarFilterType.SWIRL:
                     this.fxCanvas.swirl(
                         iCentreX,
                         iCentreY,
                         filter.radius || iRadius,
-                        filter.angle || 3
+                        filter.angle
                     )
                     break
                 case AvatarFilterType.BULGE:
@@ -224,7 +253,7 @@ export class ImageFilterRenderer extends BaseGlfxRenderer {
                         iCentreX,
                         iCentreY,
                         filter.radius || iRadius,
-                        filter.strength || 0.5
+                        filter.strength
                     )
                     break
                 case AvatarFilterType.SWIM:
@@ -242,37 +271,37 @@ export class ImageFilterRenderer extends BaseGlfxRenderer {
                     break
                 case AvatarFilterType.CONTRAST:
                     this.fxCanvas.brightnessContrast(
-                        filter.brightness || 0,
-                        filter.contrast || 0
+                        filter.brightness,
+                        filter.contrast
                     )
                     break
                 case AvatarFilterType.HSB:
                     this.fxCanvas.hueSaturation(
-                        filter.hue || 0,
-                        filter.saturation || 0
+                        filter.hue,
+                        filter.saturation
                     )
                     break
                 case AvatarFilterType.HALFTONE:
                     this.fxCanvas.colorHalftone(
                         iCentreX,
                         iCentreY,
-                        filter.angle || 0,
-                        filter.radius || 4
+                        filter.angle,
+                        filter.radius * 2.828
                     )
                     break
                 case AvatarFilterType.DOT_SCREEN:
                     this.fxCanvas.dotScreen(
                         iCentreX,
                         iCentreY,
-                        filter.angle || 0,
-                        filter.radius || 4
+                        filter.angle,
+                        filter.radius * 2.828
                     )
                     break
                 case AvatarFilterType.NOISE:
-                    this.fxCanvas.noise(filter.amount || 0.25)
+                    this.fxCanvas.noise(filter.amount)
                     break
                 case AvatarFilterType.DENOISE:
-                    this.fxCanvas.denoise(filter.exponent || 20)
+                    this.fxCanvas.denoise(filter.exponent)
                     break
                 case AvatarFilterType.OIL:
                     this.fxCanvas.oil(filter.skip, filter.levels, filter.range)
@@ -283,7 +312,12 @@ export class ImageFilterRenderer extends BaseGlfxRenderer {
         }
 
         this.fxCanvas.update()
-        ctx.drawImage(this.fxCanvas, 0, 0)
-        return canvas
+        return this
+    }
+
+    build(image: HTMLCanvasElement | HTMLImageElement, filters: AvatarFilter[]): HTMLCanvasElement {
+        if (!filters?.length) return image as HTMLCanvasElement
+        this.texture(image).apply(filters)
+        return copyAsCanvas(this.fxCanvas)
     }
 }

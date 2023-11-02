@@ -3,8 +3,8 @@ import * as fx from '../glfx-esm'
 export type Texture = any
 
 export class BaseGlfxRenderer {
-    protected fxCanvas = fx.canvas()
-    protected readonly textureMap: WeakMap<HTMLCanvasElement, Texture>
+    public fxCanvas = fx.canvas()
+    protected readonly textureMap: WeakMap<HTMLCanvasElement | HTMLImageElement, Texture>
     protected readonly cache: boolean
 
     constructor(cache: boolean = true) {
@@ -14,7 +14,7 @@ export class BaseGlfxRenderer {
         }
     }
 
-    getTexture(image: HTMLCanvasElement): Texture {
+    getTexture(image: HTMLCanvasElement | HTMLImageElement): Texture {
         const texture = this.cache && this.textureMap.has(image)
             ? this.textureMap.get(image)
             : this.fxCanvas.texture(image)
