@@ -1,22 +1,37 @@
 // //@ts-ignore
 // import readmeHtml from '../../../readme.html?url'
+import {getDialog} from "./ui";
+
 const readmeHtml = './readme.html'
 import './readme-dialog.css'
 
+const ID = 'readme-dialog'
+
 export function showReadme() {
-    const dialog = document.createElement('dialog')
+    let dialog = document.getElementById(ID) as HTMLDialogElement
+    if (dialog){
+        dialog.showModal()
+        return
+    }
+
+    dialog = getDialog()
+    dialog.id = ID
     dialog.classList.add('readme')
     const iframe = document.createElement('iframe')
     iframe.src = readmeHtml
 
-    const closeButton = document.createElement('div')
-    closeButton.classList.add('button-group')
-    closeButton.addEventListener('click', () => {
+    const close = () => {
         dialog.close()
         localStorage.setItem('readme', 'true')
-    })
-    closeButton.innerHTML = '<div>OK</div>'
+    }
 
+    dialog.addEventListener('click', e => {
+        if (e.target === dialog) dialog.close()
+    })
+    const closeButton = document.createElement('div')
+    closeButton.classList.add('button-group')
+    closeButton.addEventListener('click', close)
+    closeButton.innerHTML = '<div>OK</div>'
 
     dialog.append(iframe, closeButton)
     document.body.appendChild(dialog)

@@ -106,3 +106,18 @@ export class Mask {
         this.element.remove()
     }
 }
+
+export function getDialog(selector?): HTMLDialogElement{
+    const dialog = selector ? document.querySelector(selector) : document.createElement('dialog')
+    const oldShow = dialog.showModal
+    dialog.showModal = () => {
+        oldShow.call(dialog)
+        dialog.classList.add('show')
+    }
+    const oldClose = dialog.close
+    dialog.close = () => {
+        dialog.addEventListener('transitionend', () => oldClose.call(dialog), {once: true})
+        dialog.classList.remove('show')
+    }
+    return dialog
+}

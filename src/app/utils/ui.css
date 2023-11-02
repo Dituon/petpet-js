@@ -26,3 +26,21 @@
 
     z-index: 150;
 }
+
+dialog {
+    opacity: 0;
+    transition: opacity 0.5s ease;
+}
+
+dialog.show {
+    opacity: 1;
+}
+
+dialog::backdrop {
+    background-color: #00000000;
+    transition: background-color 0.5s ease;
+}
+
+dialog.show::backdrop {
+    background-color: #00000088;
+}
