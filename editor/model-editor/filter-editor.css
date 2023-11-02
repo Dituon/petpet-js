@@ -1,0 +1,39 @@
+dialog:has(.filter-editor) {
+    height: auto;
+    padding: 0;
+}
+
+.filter-editor {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    padding: 1em;
+}
+
+.filter-editor>div:first-child {
+    background-color: var(--sub-bg);
+    width: inherit;
+    display: flex;
+    flex-wrap: nowrap;
+    flex-direction: column;
+    align-items: center;
+    height: 100%;
+    position: sticky;
+    top: 0;
+}
+
+.filter-editor>div:last-child {
+    display: flex;
+    flex-wrap: nowrap;
+    flex-direction: column;
+    align-items: center;
+}
+
+.filter-editor *:is(canvas, img) {
+    width: 18em;
+    height: 18em;
+}
+
+.filter-editor .setting-container {
+    margin: 0.8em 1em;
+}

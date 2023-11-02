@@ -16,6 +16,8 @@ import {registerFilter} from '../util/fabric-filter-binarization'
 import {actionHandler, anchorWrapper, polygonPositionHandler, roundedCorners} from "../util/fabric-avatar-util";
 import {generateShortenedConfig} from "../util/object-differ";
 import {TransformOrigin} from "../../src/core";
+import {BaseFilterEditor} from "./base-filter-editor";
+import {getDefaultFilter} from "../../src/core/image-synthesis/filter-renderer";
 
 registerFilter()
 
@@ -78,6 +80,7 @@ export class AvatarEditor {
     protected zoomPos: XYWH[] = []
     protected deformPos: RO[] = []
 
+    protected filterEditor: BaseFilterEditor = new BaseFilterEditor(AVATAR_IMG)
     protected frameIndex: number = 0
     protected settingProxyObject
     private isRemoved = false
@@ -408,6 +411,14 @@ export class AvatarEditor {
         }
     }
 
+    async editFilter() {
+        await this.filterEditor.showModal()
+        // @ts-ignore
+        this.avatarImage.setElement(this.filterEditor.builtAvatar)
+        this.template.filter = this.filterEditor.filters
+        this.canvas.renderAll()
+    }
+
     get settingObject() {
         if (this.settingProxyObject) return this.settingProxyObject
 
@@ -433,6 +444,7 @@ export class AvatarEditor {
                     return true
                 }
             }),
+            editFilter: () => this.editFilter(),
             hideToggle: () => this.hideToggle(),
             _delete: () => this.remove()
         }, {
@@ -467,9 +479,12 @@ export class AvatarEditor {
 
     get compiledTemplate(): AvatarTemplate | null {
         return this.isRemoved ? null : generateShortenedConfig({
-                ...this.template,
-                pos: this.pos,
-                angle: Math.round(this.angle)
-            }, defaultAvatarTemplate)
+            ...this.template,
+            // filter: this.template.filter.map(
+            //     f => generateShortenedConfig(f, getDefaultFilter(f.type))
+            // ),
+            pos: this.pos,
+            angle: Math.round(this.angle)
+        }, defaultAvatarTemplate)
     }
 }
