@@ -125,7 +125,11 @@ function wrap(func) {
 
 export function canvas(canvas = document.createElement('canvas')) {
   try {
-    store.set({gl: canvas.getContext('experimental-webgl', { premultipliedAlpha: false })});
+    store.set({
+      gl: canvas.getContext('webgl2')
+          || canvas.getContext('webgl')
+          || canvas.getContext('experimental-webgl', { premultipliedAlpha: false })
+    });
   } catch (e) {
     store.set({gl: null});
   }

@@ -1,20 +1,38 @@
 import * as store from './store'
 
-var defaultVertexSource = '\
-attribute vec2 vertex;\
-attribute vec2 _texCoord;\
-varying vec2 texCoord;\
-void main() {\
-  texCoord = _texCoord;\
-  gl_Position = vec4(vertex * 2.0 - 1.0, 0.0, 1.0);\
-}';
+function getDefaultVertexSource(version300 = false) {
+  return version300 ? `
+  in vec2 vertex;
+  in vec2 _texCoord;
+  out vec2 texCoord;
+  void main() {
+    texCoord = _texCoord;
+    gl_Position = vec4(vertex * 2.0 - 1.0, 0.0, 1.0);
+  }
+  ` : `
+  attribute vec2 vertex;
+  attribute vec2 _texCoord;
+  varying vec2 texCoord;
+  void main() {
+    texCoord = _texCoord;
+    gl_Position = vec4(vertex * 2.0 - 1.0, 0.0, 1.0);
+  }`
+}
 
-var defaultFragmentSource = '\
-uniform sampler2D texture;\
-varying vec2 texCoord;\
-void main() {\
-  gl_FragColor = texture2D(texture, texCoord);\
-}';
+function getDefaultFragmentSource(version300 = false) {
+  return version300 ? `
+  uniform sampler2D tex;
+  in vec2 texCoord;
+  out vec4 fragColor;
+  void main() {
+    fragColor = texture(tex, texCoord);
+  }` : `
+  uniform sampler2D texture;
+  varying vec2 texCoord;
+  void main() {
+    gl_FragColor = texture2D(texture, texCoord);
+  }`
+}
 
     
 export default class Shader {
@@ -25,14 +43,18 @@ export default class Shader {
     return gl.defaultShader;
   }
   
-  constructor(vertexSource, fragmentSource) {
+  constructor(vertexSource, fragmentSource, version300 = false) {
     var gl = store.get('gl')
     this.vertexAttribute = null;
     this.texCoordAttribute = null;
     this.program = gl.createProgram();
-    vertexSource = vertexSource || defaultVertexSource;
-    fragmentSource = fragmentSource || defaultFragmentSource;
+    vertexSource = vertexSource || getDefaultVertexSource(version300);
+    fragmentSource = fragmentSource || getDefaultFragmentSource(version300);
     fragmentSource = 'precision highp float;' + fragmentSource; // annoying requirement is annoying
+    if (version300) {
+      vertexSource = '#version 300 es\n' + vertexSource
+      fragmentSource = '#version 300 es\n' + fragmentSource
+    }
     gl.attachShader(this.program, compileSource(gl.VERTEX_SHADER, vertexSource));
     gl.attachShader(this.program, compileSource(gl.FRAGMENT_SHADER, fragmentSource));
     gl.linkProgram(this.program);
@@ -124,11 +146,11 @@ export default class Shader {
 }
 
 function isArray(obj) {
-  return Object.prototype.toString.call(obj) == '[object Array]';
+  return Object.prototype.toString.call(obj) === '[object Array]';
 }
 
 function isNumber(obj) {
-  return Object.prototype.toString.call(obj) == '[object Number]';
+  return Object.prototype.toString.call(obj) === '[object Number]';
 }
 
 function compileSource(type, source) {

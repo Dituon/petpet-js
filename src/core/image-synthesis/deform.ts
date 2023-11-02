@@ -1,4 +1,3 @@
-import * as fx from 'glfx-es6'
 import {BaseGlfxRenderer} from "./base-glfx-renderer";
 // see glfx.Texture
 type Texture = any
