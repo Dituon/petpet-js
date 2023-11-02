@@ -16,7 +16,7 @@ import {
     AvatarBlurFilter, AvatarBulgeFilter,
     AvatarContrastFilter,
     AvatarDenoiseFilter, AvatarDotScreenFilter, AvatarHalftoneFilter,
-    AvatarHueFilter, AvatarNoiseFilter, AvatarSwimFilter, AvatarSwirlFilter, ImageFilterRenderer
+    AvatarHSBFilter, AvatarNoiseFilter, AvatarOilFilter, AvatarSwimFilter, AvatarSwirlFilter, ImageFilterRenderer
 } from "../image-synthesis/filter-renderer";
 
 export enum AvatarType {
@@ -49,8 +49,6 @@ export enum AvatarStyle {
     FLIP = 'FLIP',
     GRAY = 'GRAY',
     BINARIZATION = 'BINARIZATION',
-
-
 }
 
 export type AvatarFilter =
@@ -59,11 +57,12 @@ export type AvatarFilter =
     AvatarBulgeFilter |
     AvatarBlurFilter |
     AvatarContrastFilter |
-    AvatarHueFilter |
+    AvatarHSBFilter |
     AvatarHalftoneFilter |
     AvatarDotScreenFilter |
     AvatarNoiseFilter |
-    AvatarDenoiseFilter;
+    AvatarDenoiseFilter |
+    AvatarOilFilter
 
 export interface AvatarTemplate {
     type: AvatarType
