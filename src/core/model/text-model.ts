@@ -87,7 +87,8 @@ export class TextModel extends ElementModel{
     static readonly TEXT_VAR_REGEX = /\$txt\d+\[(.*?)]/g
     static readonly DEFAULT_MAX_WIDTH = 300
     static readonly DEFAULT_FONT_FAMILY = 'Arial'
-    public static dpiScale = ((window.devicePixelRatio || 1) * 96) / 72
+    public static dpiScale = 1
+        // ((window.devicePixelRatio || 1) * 96) / 72
 
     private readonly template: TextTemplate
     fontStyle?: FontStyle
